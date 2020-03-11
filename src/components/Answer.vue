@@ -31,7 +31,7 @@
       <el-button
         type="text"
         @click="deleteAnswer"
-        v-if="isAnswerer"
+        v-if="answered"
         icon="el-icon-delete"
         style="color:red;"
       >删除</el-button>
@@ -164,8 +164,18 @@ export default {
           this.review = "";
           reviewForm["rid"] = rid;
           reviewForm["review_time"] = this.$nowTimestamp();
-          reviewForm["userInfo"] = this.$userInfo(false);
-          this.reviews.push(reviewForm);
+          var reviewInfo = {
+            review: reviewForm,
+            userInfo: this.$userInfo(false),
+            anonymous: true,
+            approved: false,
+            approveCount: 0,
+            questioned: this.questioned && !this.answered,
+            answered: this.answered
+          };
+          console.log(reviewInfo);
+
+          this.reviews.push(reviewInfo);
         }
       });
     },
@@ -183,7 +193,7 @@ export default {
       this.$emit("deleteAnswer");
     }
   },
-  props: ["answerInfo", "uid", "isAnswerer"],
+  props: ["answerInfo", "uid", "answered", "questioned"],
   computed: {
     answer_time() {
       return this.$getTimeString(this.answer.answer_time);

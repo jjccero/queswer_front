@@ -2,16 +2,17 @@
   <div>
     <div>
       <UserInfo :userInfo="reviewInfo.userInfo"></UserInfo>
-      <span class="review_time">{{(review.reply_rid!=null?'回复':'评论')+'于 '+review_time}}</span>
+      <div class="review_time">
+        <span>{{reviewInfo.questioned?"(提问者)":" "}}</span>
+        <span>{{reviewInfo.answered?"(回答者)":" "}}</span>
+        <span>{{(review.reply_rid!=null?'回复':'评论')+'于 '+review_time}}</span>
+      </div>
     </div>
-    <div>
-      <span>{{reviewInfo.questioned?"(提问者)":" "}}</span>
-      <span>{{reviewInfo.answered?"(回答者)":" "}}</span>
-    </div>
+    <div></div>
     <div
       style="margin-top:10px;"
       :class="{'review_deleted':review.review===null}"
-    >{{review.review!=null?review.review:'该评论已删除'}}</div>
+    >{{reviewInfo.review!=null?review.review:'该评论已删除'}}</div>
 
     <div>
       <el-button type="text" @click="reply" style="color:gray;">赞{{reviewInfo.approveCount}}</el-button>
@@ -54,7 +55,7 @@ export default {
         rid: this.review.rid
       };
       _deleteReview(params).then(res => {
-        if (res.data === 1) {
+        if (res.data === true) {
           this.review.review = null;
         }
       });

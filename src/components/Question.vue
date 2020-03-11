@@ -29,7 +29,8 @@
           <answer
             :answerInfo="answerInfo"
             :uid="uid"
-            :isAnswerer="isAnswerer(answerInfo.answer.aid)"
+            :answered="isAnswerer(answerInfo.answer.aid)"
+            :questioned="questioned"
             @deleteAnswer="deleteAnswer"
           ></answer>
         </div>
@@ -85,7 +86,7 @@ export default {
         answer: null,
         anonymous: false
       },
-
+      questioned: false,
       showAnswerDrawer: false
     };
   },
@@ -106,6 +107,7 @@ export default {
       this.followed = res.data.followed;
       this.followCount = res.data.followCount;
       this.viewCount = res.data.viewCount;
+      this.questioned = res.data.questioned;
       _getAnswers({
         qid: this.answer.qid,
         uid: this.uid
