@@ -13,7 +13,7 @@
       <el-button type="text" class="follow" style="margin-left:0">{{followCount}}</el-button>
       <el-divider direction="vertical"></el-divider>
       <i class="el-icon-view"></i>
-      <span class="viewed">0</span>
+      <span class="viewed">{{viewCount}}</span>
       <el-divider direction="vertical"></el-divider>
 
       <el-button type="text" @click="showAnswerDrawer=true" icon="el-icon-edit">回答</el-button>
@@ -52,7 +52,7 @@
           ></el-input>
         </el-col>
       </el-row>
-      <el-checkbox v-model="anonymous">开启匿名</el-checkbox>
+      <el-checkbox v-model="answer.anonymous">开启匿名</el-checkbox>
       <el-button type="primary" @click="addAnswer">提交</el-button>
     </el-drawer>
   </div>
@@ -75,13 +75,17 @@ export default {
       question: {},
       followed: false,
       followCount: 0,
+      viewCount: 0,
       topics: [],
       answers: [],
       answer: {
+        uid: null,
+        qid: null,
         aid: null,
-        answer: null
+        answer: null,
+        anonymous: false
       },
-      anonymous: false,
+
       showAnswerDrawer: false
     };
   },
@@ -90,8 +94,10 @@ export default {
     UserInfo
   },
   created() {
+    this.answer.uid = this.uid;
+    this.answer.qid = Number(this.$route.query.qid);
     _getQuestion({
-      qid: this.$route.query.qid,
+      qid: this.answer.qid,
       uid: this.uid
     }).then(res => {
       if (res.data.answer != null) this.answer = res.data.answer;
@@ -99,8 +105,9 @@ export default {
       this.topics = res.data.topics;
       this.followed = res.data.followed;
       this.followCount = res.data.followCount;
+      this.viewCount = res.data.viewCount;
       _getAnswerList({
-        qid: this.$route.query.qid,
+        qid: this.answer.qid,
         uid: this.uid
       }).then(res => {
         this.answers = res.data;
@@ -168,6 +175,7 @@ export default {
       };
       _deleteAnswer(params).then(res => {
         if (res.data === 1) {
+          this.answer.aid = null;
           this.deleteFromList(this.answer.aid);
           this.$message({
             showClose: true,
@@ -182,32 +190,29 @@ export default {
         var answer = this.answers[i];
         if (answer.aid === aid) {
           this.answers.splice(i, 1);
-          this.answer = {
-            aid: null,
-            answer: null
-          };
           return;
         }
       }
     },
     addAnswer() {
-      var answerForm = {
-        uid: this.uid,
-        qid: this.question.qid,
-        answer: this.answer.answer,
-        anonymous: this.anonymous
-      };
-      _addAnswer(answerForm).then(res => {
+      console.log(this.answer);
+
+      // var answerForm = {
+      //   uid: this.uid,
+      //   qid: this.question.qid,
+      //   answer: this.answer.answer,
+      //   anonymous: this.answer.anonymous
+      // };
+      _addAnswer(this.answer).then(res => {
         var aid = Number(res.data);
         if (aid > 0) {
           if (this.answer != null) {
             this.deleteFromList(this.answer.aid);
           }
-          answerForm["aid"] = res.data;
-          answerForm["answer_time"] = this.$nowTimestamp();
-          answerForm["userInfo"] = this.$userInfo(this.anonymous);
-          this.answer = answerForm;
-          this.answers.push(answerForm);
+          this.answer["aid"] = res.data;
+          this.answer["answer_time"] = this.$nowTimestamp();
+          this.answer["userInfo"] = this.$userInfo(this.answer.anonymous);
+          this.answers.push(this.answer);
           this.showAnswerDrawer = false;
         }
       });

@@ -4,7 +4,7 @@
     <span style="float: left; margin-left: 10px;">
       <b :class="{'anonymous':userInfo.anonymous}">{{userInfo.nickname}}</b>
       <div></div>
-      <span v-if="!userInfo.anonymous" style="font-size: 15px;color: gray;">{{userInfo.intro}}</span>
+      <span style="font-size: 15px;color: gray;">{{userInfo.intro}}</span>
     </span>
   </div>
 </template>

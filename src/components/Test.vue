@@ -44,7 +44,7 @@ export default {
     },
     signup() {
       var namestr = "鼠牛虎兔龙蛇马羊猴鸡狗猪";
-      for (var i = 150; i < 1100; ++i) {
+      for (var i = 31; i < 1100; ++i) {
         var params = {
           // username: "jjc" + i,
           // password: "jjc",
@@ -53,7 +53,7 @@ export default {
           //   namestr[Math.floor(Math.random() * 12)],
           // sex: 2,
           uid: i,
-          aid: 20,
+          aid: 9,
           attitude: true
         };
         _addAttitude(params).then(res => {
