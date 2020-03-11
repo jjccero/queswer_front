@@ -24,12 +24,12 @@
     <div></div>
 
     <el-card :body-style="{ padding: '10px' }">
-      <template v-for="answer in answers">
-        <div :key="answer.aid" style="text-align:left;">
+      <template v-for="answerInfo in answers">
+        <div :key="answerInfo.answer.aid" style="text-align:left;">
           <answer
-            :answer="answer"
+            :answerInfo="answerInfo"
             :uid="uid"
-            :isAnswerer="isAnswerer(answer.aid)"
+            :isAnswerer="isAnswerer(answerInfo.answer.aid)"
             @deleteAnswer="deleteAnswer"
           ></answer>
         </div>
@@ -61,7 +61,7 @@
 import {
   _getQuestion,
   _addFollow,
-  _getAnswerList,
+  _getAnswers,
   _deleteFollow,
   _getUserInfo,
   _addAnswer,
@@ -106,7 +106,7 @@ export default {
       this.followed = res.data.followed;
       this.followCount = res.data.followCount;
       this.viewCount = res.data.viewCount;
-      _getAnswerList({
+      _getAnswers({
         qid: this.answer.qid,
         uid: this.uid
       }).then(res => {
@@ -174,9 +174,9 @@ export default {
         aid: this.answer.aid
       };
       _deleteAnswer(params).then(res => {
-        if (res.data === 1) {
-          this.answer.aid = null;
+        if (res.data === true) {
           this.deleteFromList(this.answer.aid);
+          this.answer.aid = null;
           this.$message({
             showClose: true,
             message: "删除成功",
@@ -187,8 +187,8 @@ export default {
     },
     deleteFromList(aid) {
       for (var i = 0; i < this.answers.length; ++i) {
-        var answer = this.answers[i];
-        if (answer.aid === aid) {
+        var answerInfo = this.answers[i];
+        if (answerInfo.answer.aid === aid) {
           this.answers.splice(i, 1);
           return;
         }
@@ -197,12 +197,6 @@ export default {
     addAnswer() {
       console.log(this.answer);
 
-      // var answerForm = {
-      //   uid: this.uid,
-      //   qid: this.question.qid,
-      //   answer: this.answer.answer,
-      //   anonymous: this.answer.anonymous
-      // };
       _addAnswer(this.answer).then(res => {
         var aid = Number(res.data);
         if (aid > 0) {
@@ -211,8 +205,14 @@ export default {
           }
           this.answer["aid"] = res.data;
           this.answer["answer_time"] = this.$nowTimestamp();
-          this.answer["userInfo"] = this.$userInfo(this.answer.anonymous);
-          this.answers.push(this.answer);
+          var answerInfo = {
+            answer: this.answer,
+            against: 0,
+            agree: 0,
+            attituded: null,
+            userInfo: this.$userInfo(this.answer.anonymous)
+          };
+          this.answers.push(answerInfo);
           this.showAnswerDrawer = false;
         }
       });

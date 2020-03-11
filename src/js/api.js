@@ -22,12 +22,8 @@ export const _deleteFollow = params => {
   return axios.get("/deleteFollow", { params: params });
 };
 
-export const _getAnswerList = params => {
-  return axios.get("/getAnswerList", { params: params });
-};
-
-export const _getAttitude = params => {
-  return axios.get("/getAttitude", { params: params });
+export const _getAnswers = params => {
+  return axios.get("/getAnswers", { params: params });
 };
 
 export const _addAttitude = params => {
@@ -38,8 +34,8 @@ export const _deleteAttitude = params => {
   return axios.get("/deleteAttitude", { params: params });
 };
 
-export const _getReviewList = params => {
-  return axios.get("/getReviewList", { params: params });
+export const _getReviews = params => {
+  return axios.get("/getReviews", { params: params });
 };
 
 export const _deleteReview = params => {

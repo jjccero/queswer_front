@@ -1,10 +1,10 @@
 <template>
   <div style="width:100%;">
     <div>
-      <userInfo :userInfo="answer.userInfo"></userInfo>
+      <userInfo :userInfo="answerInfo.userInfo"></userInfo>
     </div>
     <div v-html="answer.answer" class="answer"></div>
-    <div class="answer_time">回答于 {{this.answer_time}}</div>
+    <div class="answer_time">回答于 {{answer_time}}</div>
     <div>
       <el-button
         size="small"
@@ -24,7 +24,7 @@
       <el-button
         type="text"
         :loading="reviewLoading"
-        @click="getReviewList"
+        @click="getReviews"
         icon="el-icon-chat-round"
         style="color:gray;"
       >{{showReview?'收起':'评论'}}</el-button>
@@ -39,17 +39,17 @@
     </div>
     <el-card :body-style="{ padding: '10px' }" v-if="showReview" style="margin:10px 0 0 0;">
       <el-row>
-        <template v-for="review in reviewList">
-          <div :key="review.rid">
+        <template v-for="reviewInfo in reviews">
+          <div :key="reviewInfo.review.rid">
             <review
-              :review="review"
+              :reviewInfo="reviewInfo"
               :uid="uid"
-              :reply_userInfo="getUserInfo(review.reply_rid)"
+              :reply_userInfo="getUserInfo(reviewInfo.review.reply_rid)"
               @reply="reply"
             ></review>
           </div>
         </template>
-        <el-row v-show="reviewList.length==0">暂无评论</el-row>
+        <el-row v-show="reviews.length==0">暂无评论</el-row>
       </el-row>
       <el-row>
         <el-col :span="12">{{ReplyInfo}}</el-col>
@@ -74,7 +74,7 @@ import {
   _getAttitude,
   _addAttitude,
   _deleteAttitude,
-  _getReviewList,
+  _getReviews,
   _addReview
 } from "../js/api";
 import review from "../components/Review";
@@ -87,14 +87,15 @@ export default {
   },
   data() {
     return {
-      attituded: null,
-      agree: 0,
-      against: 0,
+      attituded: this.answerInfo.attituded,
+      agree: this.answerInfo.agree,
+      against: this.answerInfo.against,
       showReview: false,
-      reviewList: [],
+      reviews: [],
       review: "",
       reply_rid: null,
-      reviewLoading: false
+      reviewLoading: false,
+      answer: this.answerInfo.answer
     };
   },
   created() {
@@ -102,11 +103,6 @@ export default {
       uid: this.uid,
       aid: this.answer.aid
     };
-    _getAttitude(params).then(res => {
-      this.attituded = res.data.attituded;
-      this.agree = res.data.attitudes[0];
-      this.against = res.data.attitudes[1];
-    });
   },
   methods: {
     addAttitude(attitude) {
@@ -120,7 +116,7 @@ export default {
       };
       if (this.attituded === attitude) {
         _deleteAttitude(params).then(res => {
-          if (res.data === 1) {
+          if (res.data === true) {
             this.attituded = null;
             if (attitude) {
               --this.agree;
@@ -132,7 +128,7 @@ export default {
       } else {
         params["attitude"] = attitude;
         _addAttitude(params).then(res => {
-          if (res.data > 0) {
+          if (res.data === true) {
             if (attitude) {
               if (this.attituded === false) --this.against;
               ++this.agree;
@@ -146,12 +142,12 @@ export default {
         });
       }
     },
-    getReviewList() {
+    getReviews() {
       this.showReview = !this.showReview;
       if (this.showReview === false) return;
       this.reviewLoading = true;
-      _getReviewList({ aid: this.answer.aid, uid: this.uid }).then(res => {
-        this.reviewList = res.data;
+      _getReviews({ aid: this.answer.aid, uid: this.uid }).then(res => {
+        this.reviews = res.data;
         this.reviewLoading = false;
       });
     },
@@ -169,7 +165,7 @@ export default {
           reviewForm["rid"] = rid;
           reviewForm["review_time"] = this.$nowTimestamp();
           reviewForm["userInfo"] = this.$userInfo(false);
-          this.reviewList.push(reviewForm);
+          this.reviews.push(reviewForm);
         }
       });
     },
@@ -187,7 +183,7 @@ export default {
       this.$emit("deleteAnswer");
     }
   },
-  props: ["answer", "uid", "isAnswerer"],
+  props: ["answerInfo", "uid", "isAnswerer"],
   computed: {
     answer_time() {
       return this.$getTimeString(this.answer.answer_time);
@@ -198,13 +194,13 @@ export default {
         (notReply ? "评论" : "回复") +
         "给" +
         (notReply
-          ? this.answer.userInfo.nickname
+          ? this.answerInfo.userInfo.nickname
           : this.getUserInfo(this.reply_rid).nickname)
       );
     },
     reviewSet() {
       var set = {};
-      this.reviewList.forEach(element => {
+      this.reviews.forEach(element => {
         set[element.rid] = element.userInfo;
       });
       return set;

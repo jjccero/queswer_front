@@ -1,12 +1,12 @@
 <template>
   <div>
     <div>
-      <UserInfo :userInfo="review.userInfo"></UserInfo>
+      <UserInfo :userInfo="reviewInfo.userInfo"></UserInfo>
       <span class="review_time">{{(review.reply_rid!=null?'回复':'评论')+'于 '+review_time}}</span>
     </div>
     <div>
-      <span>{{review.questioner?"(提问者)":" "}}</span>
-      <span>{{review.answerer?"(回答者)":" "}}</span>
+      <span>{{reviewInfo.questioned?"(提问者)":" "}}</span>
+      <span>{{reviewInfo.answered?"(回答者)":" "}}</span>
     </div>
     <div
       style="margin-top:10px;"
@@ -14,7 +14,7 @@
     >{{review.review!=null?review.review:'该评论已删除'}}</div>
 
     <div>
-      <el-button type="text" @click="reply" style="color:gray;">赞0</el-button>
+      <el-button type="text" @click="reply" style="color:gray;">赞{{reviewInfo.approveCount}}</el-button>
       <el-button type="text" @click="reply" style="color:gray;" icon="el-icon-chat-dot-round">回复</el-button>
       <el-button
         type="text"
@@ -32,7 +32,12 @@ import { _deleteReview } from "../js/api";
 import UserInfo from "../components/UserInfo";
 export default {
   name: "review",
-  props: ["review", "uid", "reply_userInfo", "answerd"],
+  data() {
+    return {
+      review: this.reviewInfo.review
+    };
+  },
+  props: ["reviewInfo", "uid", "reply_userInfo"],
   computed: {
     review_time() {
       return this.$getTimeString(this.review.review_time);
