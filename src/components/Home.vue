@@ -1,13 +1,17 @@
 <template>
   <el-container>
-    <el-header class="header" height="50px">
+    <el-header class="mheader" height="50px">
       <el-col :span="4">
         <div class="grid-content"></div>
       </el-col>
       <el-col :span="16">问答社区</el-col>
       <el-col :span="4">
-        <el-dropdown class="loginInfo">
-          <span>{{logined?user.nickname:'请登录'}}</span>
+        <el-dropdown class="loginInfo" style>
+          <span>
+            {{logined?user.nickname:'请登录'}}
+            <i class="el-icon-arrow-down el-icon--right"></i>
+          </span>
+
           <el-dropdown-menu>
             <el-dropdown-item @click.native="logout" v-if="logined">注销</el-dropdown-item>
             <el-dropdown-item @click.native="login" v-else>登陆</el-dropdown-item>
@@ -46,7 +50,7 @@
       </el-collapse>
       <el-main>
         <transition name="fade" mode="out-in">
-          <router-view :user="user"></router-view>
+          <router-view :uid="user.uid"></router-view>
         </transition>
       </el-main>
     </el-container>
@@ -56,7 +60,9 @@
 export default {
   data() {
     return {
-      user: null
+      user: {
+        uid: null
+      }
     };
   },
   created() {
@@ -64,29 +70,33 @@ export default {
   },
   methods: {
     login() {
-      // this.$toLogin(this);
+      this.$toLogin(this);
     },
     logout() {
-      this.user = null;
+      this.user = {
+        uid: null
+      };
       sessionStorage.removeItem("user");
     },
     showUser() {
-      this.user = JSON.parse(sessionStorage.getItem("user"));
+      var user = JSON.parse(sessionStorage.getItem("user"));
+      if (user != null) this.user = user;
     }
   },
   computed: {
     logined() {
-      return this.user != null;
+      return this.user.uid != null;
     }
   }
 };
 </script>
 <style lang="less" scoped>
-.header {
+.mheader {
   color: #ffffff;
   background: #000000;
   text-align: center;
   line-height: 50px;
+  height: 50px;
 }
 .grid-content {
   min-height: 50px;

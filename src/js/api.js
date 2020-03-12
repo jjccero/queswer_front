@@ -50,8 +50,12 @@ export const _addReview = params => {
   return axios.post("/addReview", params);
 };
 
-export const _addAnswer = params => {
-  return axios.post("/addAnswer", params);
+export const _insertAnswer = params => {
+  return axios.post("insertAnswer", params);
+};
+
+export const _updateAnswer = params => {
+  return axios.post("updateAnswer", params);
 };
 export const _getUserInfo = params => {
   return axios.post("/getUserInfo", params);
@@ -74,4 +78,8 @@ export const _signup = params => {
 
 export const _addQuestion = params => {
   return axios.post("/addQuestion", params);
+};
+
+export const _updateApprove = params => {
+  return axios.get("updateApprove", { params: params });
 };

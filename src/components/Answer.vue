@@ -30,6 +30,13 @@
       >{{showReview?'收起':'评论'}}</el-button>
       <el-button
         type="text"
+        @click="updateAnswer"
+        v-if="answered"
+        icon="el-icon-edit-outline"
+        style="color:gray;"
+      >修改</el-button>
+      <el-button
+        type="text"
         @click="deleteAnswer"
         v-if="answered"
         icon="el-icon-delete"
@@ -54,7 +61,12 @@
       <el-row>
         <el-col :span="12">{{ReplyInfo}}</el-col>
         <el-col :span="12">
-          <el-button type="primary" @click="reply_rid=null" v-show="reply_rid!=null">取消</el-button>
+          <el-button
+            type="text"
+            @click="reply_rid=null"
+            v-show="reply_rid!=null"
+            icon="el-icon-close"
+          >取消</el-button>
         </el-col>
       </el-row>
       <el-row>
@@ -66,7 +78,11 @@
         </el-col>
       </el-row>
     </el-card>
-    <el-divider direction="horizontal" class="answer_divider">{{answer.aid}}</el-divider>
+    <el-divider
+      direction="horizontal"
+      class="answer_divider"
+      content-position="right"
+    >{{answer.aid}}</el-divider>
   </div>
 </template>
 <script>
@@ -191,7 +207,8 @@ export default {
     },
     deleteAnswer() {
       this.$emit("deleteAnswer");
-    }
+    },
+    updateAnswer() {}
   },
   props: ["answerInfo", "uid", "answered", "questioned"],
   computed: {
@@ -211,7 +228,7 @@ export default {
     reviewSet() {
       var set = {};
       this.reviews.forEach(element => {
-        set[element.rid] = element.userInfo;
+        set[element.review.rid] = element.userInfo;
       });
       return set;
     }

@@ -24,6 +24,15 @@
     <div></div>
 
     <el-card :body-style="{ padding: '10px' }">
+      <answer
+        v-if="answers.length>0"
+        :answerInfo="answers[0]"
+        :uid="uid"
+        :answered="true"
+        :questioned="questioned"
+        @deleteAnswer="deleteAnswer"
+      ></answer>
+      <el-divider>更多回答</el-divider>
       <template v-for="answerInfo in answers">
         <div :key="answerInfo.answer.aid" style="text-align:left;">
           <answer
@@ -54,7 +63,7 @@
         </el-col>
       </el-row>
       <el-checkbox v-model="answer.anonymous">开启匿名</el-checkbox>
-      <el-button type="primary" @click="addAnswer">提交</el-button>
+      <el-button type="primary" @click="insertAnswer">提交</el-button>
     </el-drawer>
   </div>
 </template>
@@ -65,7 +74,8 @@ import {
   _getAnswers,
   _deleteFollow,
   _getUserInfo,
-  _addAnswer,
+  _insertAnswer,
+  _updateAnswer,
   _deleteAnswer
 } from "../js/api";
 import answer from "../components/Answer";
@@ -196,37 +206,56 @@ export default {
         }
       }
     },
-    addAnswer() {
-      console.log(this.answer);
-
-      _addAnswer(this.answer).then(res => {
-        var aid = Number(res.data);
-        if (aid > 0) {
-          if (this.answer != null) {
-            this.deleteFromList(this.answer.aid);
+    insertAnswer() {
+      if (this.answer.aid != null) {
+        _updateAnswer(this.answer).then(res => {
+          if (res.data === true) {
+            if (this.answer != null) {
+              this.deleteFromList(this.answer.aid);
+            }
+            this.answer["aid"] = res.data;
+            this.answer["answer_time"] = this.$nowTimestamp();
+            var answerInfo = {
+              answer: this.answer,
+              against: 0,
+              agree: 0,
+              attituded: null,
+              userInfo: this.$userInfo(this.answer.anonymous)
+            };
+            this.answers.push(answerInfo);
+            this.showAnswerDrawer = false;
           }
-          this.answer["aid"] = res.data;
-          this.answer["answer_time"] = this.$nowTimestamp();
-          var answerInfo = {
-            answer: this.answer,
-            against: 0,
-            agree: 0,
-            attituded: null,
-            userInfo: this.$userInfo(this.answer.anonymous)
-          };
-          this.answers.push(answerInfo);
-          this.showAnswerDrawer = false;
-        }
-      });
+        });
+      } else {
+        _insertAnswer(this.answer).then(res => {
+          var aid = Number(res.data);
+          if (aid > 0) {
+            if (this.answer != null) {
+              this.deleteFromList(this.answer.aid);
+            }
+            this.answer["aid"] = res.data;
+            this.answer["answer_time"] = this.$nowTimestamp();
+            var answerInfo = {
+              answer: this.answer,
+              against: 0,
+              agree: 0,
+              attituded: null,
+              userInfo: this.$userInfo(this.answer.anonymous)
+            };
+            this.answers.push(answerInfo);
+            this.showAnswerDrawer = false;
+          }
+        });
+      }
     },
     isAnswerer(aid) {
       return this.answer.aid === aid;
     }
   },
-  props: ["user"],
+  props: ["uid"],
   computed: {
-    uid() {
-      return this.user != null ? this.user.uid : null;
+    existAnswer() {
+      return this.answer.aid != null;
     }
   }
 };
