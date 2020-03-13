@@ -14,8 +14,8 @@ export const _getQuestion = params => {
   return axios.get("/getQuestion", { params: params });
 };
 
-export const _addFollow = params => {
-  return axios.get("/addFollow", { params: params });
+export const _insertFollow = params => {
+  return axios.get("/insertFollow", { params: params });
 };
 
 export const _deleteFollow = params => {
@@ -26,8 +26,8 @@ export const _getAnswers = params => {
   return axios.get("/getAnswers", { params: params });
 };
 
-export const _addAttitude = params => {
-  return axios.post("/addAttitude", params);
+export const _updateAttitude = params => {
+  return axios.post("updateAttitude", params);
 };
 
 export const _deleteAttitude = params => {
@@ -46,8 +46,8 @@ export const _deleteAnswer = params => {
   return axios.get("/deleteAnswer", { params: params });
 };
 
-export const _addReview = params => {
-  return axios.post("/addReview", params);
+export const _insertReview = params => {
+  return axios.post("/insertReview", params);
 };
 
 export const _insertAnswer = params => {
@@ -76,8 +76,8 @@ export const _signup = params => {
   return axios.post("/signup", params);
 };
 
-export const _addQuestion = params => {
-  return axios.post("/addQuestion", params);
+export const _insertQuestion = params => {
+  return axios.post("insertQuestion", params);
 };
 
 export const _updateApprove = params => {

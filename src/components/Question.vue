@@ -70,7 +70,7 @@
 <script>
 import {
   _getQuestion,
-  _addFollow,
+  _insertFollow,
   _getAnswers,
   _deleteFollow,
   _getUserInfo,
@@ -83,11 +83,21 @@ import UserInfo from "../components/UserInfo";
 export default {
   data() {
     return {
-      question: {},
-      followed: false,
-      followCount: 0,
-      viewCount: 0,
-      topics: [],
+      questionInfo: {
+        question: {
+          anonymous: false,
+          question: null,
+          detail: null,
+          question_time: 0,
+          uid: null
+        },
+        follow: false,
+        followed: false,
+        followCount: 0,
+        viewCount: 0,
+        topics: [],
+        questioned: false
+      },
       answers: [],
       answer: {
         uid: null,
@@ -96,7 +106,7 @@ export default {
         answer: null,
         anonymous: false
       },
-      questioned: false,
+
       showAnswerDrawer: false
     };
   },
@@ -105,26 +115,28 @@ export default {
     UserInfo
   },
   created() {
-    this.answer.uid = this.uid;
-    this.answer.qid = Number(this.$route.query.qid);
-    _getQuestion({
-      qid: this.answer.qid,
-      uid: this.uid
-    }).then(res => {
-      if (res.data.answer != null) this.answer = res.data.answer;
-      this.question = res.data.question;
-      this.topics = res.data.topics;
-      this.followed = res.data.followed;
-      this.followCount = res.data.followCount;
-      this.viewCount = res.data.viewCount;
-      this.questioned = res.data.questioned;
-      _getAnswers({
-        qid: this.answer.qid,
-        uid: this.uid
-      }).then(res => {
-        this.answers = res.data;
-      });
-    });
+    var questionInfo = this.$route.params.questionInfo;
+    console.log(questionInfo);
+    if (questionInfo === undefined)
+      if (this.questionInfo == null)
+        _getQuestion({
+          qid: this.answer.qid,
+          uid: this.uid
+        }).then(res => {
+          if (res.data.answer != null) this.answer = res.data.answer;
+          this.question = res.data.question;
+          this.topics = res.data.topics;
+          this.followed = res.data.followed;
+          this.followCount = res.data.followCount;
+          this.viewCount = res.data.viewCount;
+          this.questioned = res.data.questioned;
+          _getAnswers({
+            qid: this.answer.qid,
+            uid: this.uid
+          }).then(res => {
+            this.answers = res.data;
+          });
+        });
   },
   methods: {
     handleFollow() {
@@ -137,7 +149,7 @@ export default {
         uid: this.uid
       };
       if (this.followed == false) {
-        _addFollow(params).then(res => {
+        _insertFollow(params).then(res => {
           switch (res.data) {
             case 1:
               this.$message({
@@ -256,6 +268,16 @@ export default {
   computed: {
     existAnswer() {
       return this.answer.aid != null;
+    },
+    question() {
+      if (this.questionInfo != null) return this.questionInfo.question;
+      else
+        return {
+          question: "",
+          detail: "",
+          anonymous: false,
+          qid: null
+        };
     }
   }
 };

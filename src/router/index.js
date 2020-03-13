@@ -25,6 +25,7 @@ export default new Router({
         },
         {
           path: "/question",
+          name: "问题",
           component: () => import("@/components/Question")
         },
         {

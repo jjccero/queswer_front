@@ -8,14 +8,14 @@
     <div>
       <el-button
         size="small"
-        @click="addAttitude(true)"
+        @click="updateAttitude(true)"
         icon="el-icon-caret-top"
         type="primary"
         plain
       >{{getCountString(agree)}} {{attituded?"已赞同":''}}</el-button>
       <el-button
         size="small"
-        @click="addAttitude(false)"
+        @click="updateAttitude(false)"
         icon="el-icon-caret-bottom"
         style="margin-left:0px;"
         type="danger"
@@ -45,19 +45,19 @@
       <el-button type="text" icon="el-icon-warning-outline" style="color:gray;">举报</el-button>
     </div>
     <el-card :body-style="{ padding: '10px' }" v-if="showReview" style="margin:10px 0 0 0;">
-      <el-row>
-        <template v-for="reviewInfo in reviews">
-          <div :key="reviewInfo.review.rid">
-            <review
-              :reviewInfo="reviewInfo"
-              :uid="uid"
-              :reply_userInfo="getUserInfo(reviewInfo.review.reply_rid)"
-              @reply="reply"
-            ></review>
-          </div>
-        </template>
-        <el-row v-show="reviews.length==0">暂无评论</el-row>
-      </el-row>
+      <div slot="header" style="text-align:center;">
+        <span>共{{reviewCount}}条评论</span>
+      </div>
+      <template v-for="reviewInfo in reviews">
+        <div :key="reviewInfo.review.rid">
+          <review
+            :reviewInfo="reviewInfo"
+            :uid="uid"
+            :reply_userInfo="getUserInfo(reviewInfo.review.reply_rid)"
+            @reply="reply"
+          ></review>
+        </div>
+      </template>
       <el-row>
         <el-col :span="12">{{ReplyInfo}}</el-col>
         <el-col :span="12">
@@ -74,7 +74,7 @@
           <el-input v-model="review"></el-input>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary" @click="addReview">添加评论</el-button>
+          <el-button type="primary" @click="insertReview">添加评论</el-button>
         </el-col>
       </el-row>
     </el-card>
@@ -88,10 +88,10 @@
 <script>
 import {
   _getAttitude,
-  _addAttitude,
+  _updateAttitude,
   _deleteAttitude,
   _getReviews,
-  _addReview
+  _insertReview
 } from "../js/api";
 import review from "../components/Review";
 import UserInfo from "../components/UserInfo";
@@ -111,17 +111,13 @@ export default {
       review: "",
       reply_rid: null,
       reviewLoading: false,
-      answer: this.answerInfo.answer
+      answer: this.answerInfo.answer,
+      reviewCount: this.answerInfo.reviewCount
     };
   },
-  created() {
-    var params = {
-      uid: this.uid,
-      aid: this.answer.aid
-    };
-  },
+  created() {},
   methods: {
-    addAttitude(attitude) {
+    updateAttitude(attitude) {
       if (this.uid == null) {
         this.$toLogin(this);
         return;
@@ -143,7 +139,7 @@ export default {
         });
       } else {
         params["attitude"] = attitude;
-        _addAttitude(params).then(res => {
+        _updateAttitude(params).then(res => {
           if (res.data === true) {
             if (attitude) {
               if (this.attituded === false) --this.against;
@@ -167,14 +163,14 @@ export default {
         this.reviewLoading = false;
       });
     },
-    addReview() {
+    insertReview() {
       var reviewForm = {
         uid: this.uid,
         aid: this.answer.aid,
         reply_rid: this.reply_rid,
         review: this.review
       };
-      _addReview(reviewForm).then(res => {
+      _insertReview(reviewForm).then(res => {
         var rid = Number(res.data);
         if (rid > 0) {
           this.review = "";

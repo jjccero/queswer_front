@@ -1,48 +1,28 @@
 <template>
   <div>
     <el-button @click="signup" plain>注册一些账号</el-button>
-    <el-button @click="addQuestion" type="primary" plain>神秘功能</el-button>
-    <div v-for="question in questions" :key="question.qid" @click="getQuestion(question.qid)">
-      <span style="cursor:pointer;">{{question.question}}</span>
-      <el-divider></el-divider>
-    </div>
+    <el-button @click="addQuestion" type="primary" plain>添加一个问题</el-button>
+    <div
+      v-for="questionInfo in questionInfos"
+      :key="questionInfo.question.qid"
+      @click="toQuestion(questionInfo)"
+    ></div>
   </div>
 </template>
 <script>
 import {
   _signup,
-  _getQuestions,
-  _addQuestion,
-  _addAttitude,
+  _insertQuestion,
+  _updateAttitude,
   _approveReview
 } from "../js/api";
 export default {
-  created() {
-    this.getQuestions();
-  },
   data() {
     return {
-      questions: []
+      questionInfos: []
     };
   },
   methods: {
-    getQuestion(qid) {
-      this.$router.push({
-        path: "/question",
-        query: {
-          qid: qid
-        }
-      });
-    },
-    getQuestions() {
-      var params = {
-        offset: 0,
-        limit: 100
-      };
-      _getQuestions(params).then(res => {
-        this.questions = res.data;
-      });
-    },
     signup() {
       var namestr = "鼠牛虎兔龙蛇马羊猴鸡狗猪";
       for (var i = 31; i < 1100; ++i) {
@@ -63,13 +43,13 @@ export default {
         // });
       }
     },
-    addQuestion() {
+    insertQuestion() {
       var param = {
         uid: this.$getUid(),
         question: "hh",
         anonymous: false
       };
-      _addQuestion(param).then(res => {
+      _insertQuestion(param).then(res => {
         console.log(res.data);
       });
     }
