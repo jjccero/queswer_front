@@ -8,12 +8,11 @@
       <el-col :span="4">
         <el-dropdown class="loginInfo" style>
           <span>
-            {{logined?user.nickname:'请登录'}}
+            {{user.uid!=null?user.nickname:'请登录'}}
             <i class="el-icon-arrow-down el-icon--right"></i>
           </span>
-
           <el-dropdown-menu>
-            <el-dropdown-item @click.native="logout" v-if="logined">注销</el-dropdown-item>
+            <el-dropdown-item @click.native="logout" v-if="user.uid!=null">注销</el-dropdown-item>
             <el-dropdown-item @click.native="login" v-else>登陆</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -81,11 +80,6 @@ export default {
     showUser() {
       var user = JSON.parse(sessionStorage.getItem("user"));
       if (user != null) this.user = user;
-    }
-  },
-  computed: {
-    logined() {
-      return this.user.uid != null;
     }
   }
 };

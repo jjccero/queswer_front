@@ -15,7 +15,7 @@
         icon="el-icon-star-on"
       ></el-button>
       <el-button v-else type="text" @click="handleFollow" icon="el-icon-star-off"></el-button>
-      <el-button type="text" class="follow" style="margin-left:0">{{questionInfo.followCount}}</el-button>
+      <el-button type="text" class="follow" style>{{questionInfo.followCount}}</el-button>
       <el-divider direction="vertical"></el-divider>
       <i class="el-icon-view"></i>
       <span class="viewed">{{questionInfo.viewCount}}</span>
@@ -27,9 +27,7 @@
     <div style="color:gray;font-size:10px;">问题描述：</div>
     <div v-html="questionInfo.question.detail"></div>
     <el-card :body-style="{ padding: '10px' }">
-      <div
-        v-if="questionInfo.defaultAnswer != null&&questionInfo.defaultAnswer != questionInfo.userAnswer"
-      >
+      <div v-if="questionInfo.defaultAnswer != null">
         <answer
           :answerInfo="questionInfo.defaultAnswer"
           :uid="uid"
@@ -41,7 +39,7 @@
       <div v-if="questionInfo.userAnswer!= null">
         <el-divider>我的回答</el-divider>
         <answer
-          :answerInfo="questionInfo.defaultAnswer"
+          :answerInfo="questionInfo.userAnswer"
           :uid="uid"
           :answered="true"
           :questioned="questionInfo.questioned"
@@ -54,7 +52,7 @@
           <answer
             :answerInfo="answerInfo"
             :uid="uid"
-            :answered="isAnswerer(answerInfo.answer.aid)"
+            :answered="false"
             :questioned="questionInfo.questioned"
             @deleteAnswer="deleteAnswer"
           ></answer>
@@ -100,6 +98,7 @@ export default {
   data() {
     return {
       questionInfo: {
+        qid: this.$route.query.qid,
         question: {
           anonymous: false,
           question: null,
@@ -124,7 +123,8 @@ export default {
         aid: null,
         answer: null,
         anonymous: false,
-        answer_time: null
+        answer_time: null,
+        modify_answer_time: null
       },
       showAnswerDrawer: false
     };
@@ -140,6 +140,9 @@ export default {
       uid: this.uid
     }).then(res => {
       this.questionInfo = res.data;
+      if (this.questionInfo.userAnswer != null) {
+        this.answer = this.questionInfo.userAnswer.answer;
+      }
       _getAnswers({
         qid: this.$route.query.qid,
         uid: this.uid
@@ -167,7 +170,6 @@ export default {
               this.answerInfos[this.answerSet[aid_key]] = answerInfo;
             } else {
               //不存在这个key
-
               this.answerInfos.push(answerInfo);
               this.answerSet[aid_key] = old_length++;
             }
@@ -237,7 +239,7 @@ export default {
       };
       _deleteAnswer(params).then(res => {
         if (res.data === true) {
-          this.deleteFromList(this.answer.aid);
+          this.questionInfo.userAnswer = null;
           this.answer.aid = null;
           this.$message({
             showClose: true,
@@ -248,11 +250,16 @@ export default {
       });
     },
     insertAnswer() {
+      this.answer.uid = this.uid;
+      this.answer.qid = this.questionInfo.question.qid;
       if (this.answer.aid != null) {
         _updateAnswer(this.answer).then(res => {
           if (res.data === true) {
             this.answer.answer_time = this.$nowTimestamp();
-            this.userAnswer.answer = this.answer;
+            this.questionInfo.userAnswer.answer = this.answer;
+            this.questionInfo.userAnswer.userInfo = this.$userInfo(
+              this.answer.anonymous
+            );
             this.showAnswerDrawer = false;
           }
         });
@@ -269,14 +276,11 @@ export default {
               attituded: null,
               userInfo: this.$userInfo(this.answer.anonymous)
             };
-            this.answerInfo = answerInfo;
+            this.questionInfo.userAnswer = answerInfo;
             this.showAnswerDrawer = false;
           }
         });
       }
-    },
-    isAnswerer(aid) {
-      return this.answer.aid === aid;
     }
   },
   props: ["uid"],
@@ -291,5 +295,6 @@ export default {
 }
 .follow {
   font-size: 17px;
+  margin-left: 0;
 }
 </style>
