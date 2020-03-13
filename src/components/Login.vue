@@ -17,9 +17,6 @@
         <el-row></el-row>
       </el-card>
     </el-row>
-    <!-- <el-row>
-      <el-col :span="24">copyright by jiangjingcheng</el-col>
-    </el-row>-->
   </div>
 </template>
 <script>

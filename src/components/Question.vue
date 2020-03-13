@@ -2,44 +2,60 @@
   <div style="text-align:left;">
     <div>
       <el-tag
-        v-for="topic in topics"
+        v-for="topic in questionInfo.topics"
         :key="topic.tid"
         style="margin-right:10px;"
       >{{topic.topic_name}}</el-tag>
     </div>
     <div>
-      <el-button v-if="followed" type="text" @click="handleFollow" icon="el-icon-star-on"></el-button>
+      <el-button
+        v-if="questionInfo.followed"
+        type="text"
+        @click="handleFollow"
+        icon="el-icon-star-on"
+      ></el-button>
       <el-button v-else type="text" @click="handleFollow" icon="el-icon-star-off"></el-button>
-      <el-button type="text" class="follow" style="margin-left:0">{{followCount}}</el-button>
+      <el-button type="text" class="follow" style="margin-left:0">{{questionInfo.followCount}}</el-button>
       <el-divider direction="vertical"></el-divider>
       <i class="el-icon-view"></i>
-      <span class="viewed">{{viewCount}}</span>
+      <span class="viewed">{{questionInfo.viewCount}}</span>
       <el-divider direction="vertical"></el-divider>
 
       <el-button type="text" @click="showAnswerDrawer=true" icon="el-icon-edit">回答</el-button>
     </div>
-    <div class="title">{{question.question}}</div>
+    <div class="title">{{questionInfo.question.question}}</div>
     <div style="color:gray;font-size:10px;">问题描述：</div>
-    <div v-html="question.detail"></div>
-    <div></div>
-
+    <div v-html="questionInfo.question.detail"></div>
     <el-card :body-style="{ padding: '10px' }">
-      <answer
-        v-if="answers.length>0"
-        :answerInfo="answers[0]"
-        :uid="uid"
-        :answered="true"
-        :questioned="questioned"
-        @deleteAnswer="deleteAnswer"
-      ></answer>
+      <div
+        v-if="questionInfo.defaultAnswer != null&&questionInfo.defaultAnswer != questionInfo.userAnswer"
+      >
+        <answer
+          :answerInfo="questionInfo.defaultAnswer"
+          :uid="uid"
+          :answered="false"
+          :questioned="questionInfo.questioned"
+          @deleteAnswer="deleteAnswer"
+        ></answer>
+      </div>
+      <div v-if="questionInfo.userAnswer!= null">
+        <el-divider>我的回答</el-divider>
+        <answer
+          :answerInfo="questionInfo.defaultAnswer"
+          :uid="uid"
+          :answered="true"
+          :questioned="questionInfo.questioned"
+          @deleteAnswer="deleteAnswer"
+        ></answer>
+      </div>
       <el-divider>更多回答</el-divider>
-      <template v-for="answerInfo in answers">
+      <template v-for="answerInfo in answerInfos">
         <div :key="answerInfo.answer.aid" style="text-align:left;">
           <answer
             :answerInfo="answerInfo"
             :uid="uid"
             :answered="isAnswerer(answerInfo.answer.aid)"
-            :questioned="questioned"
+            :questioned="questionInfo.questioned"
             @deleteAnswer="deleteAnswer"
           ></answer>
         </div>
@@ -96,17 +112,20 @@ export default {
         followCount: 0,
         viewCount: 0,
         topics: [],
-        questioned: false
+        questioned: false,
+        defaultAnswer: null,
+        userAnswer: null
       },
-      answers: [],
+      answerSet: {},
+      answerInfos: [],
       answer: {
         uid: null,
         qid: null,
         aid: null,
         answer: null,
-        anonymous: false
+        anonymous: false,
+        answer_time: null
       },
-
       showAnswerDrawer: false
     };
   },
@@ -115,28 +134,47 @@ export default {
     UserInfo
   },
   created() {
-    var questionInfo = this.$route.params.questionInfo;
-    console.log(questionInfo);
-    if (questionInfo === undefined)
-      if (this.questionInfo == null)
-        _getQuestion({
-          qid: this.answer.qid,
-          uid: this.uid
-        }).then(res => {
-          if (res.data.answer != null) this.answer = res.data.answer;
-          this.question = res.data.question;
-          this.topics = res.data.topics;
-          this.followed = res.data.followed;
-          this.followCount = res.data.followCount;
-          this.viewCount = res.data.viewCount;
-          this.questioned = res.data.questioned;
-          _getAnswers({
-            qid: this.answer.qid,
-            uid: this.uid
-          }).then(res => {
-            this.answers = res.data;
-          });
-        });
+    _getQuestion({
+      qid: this.$route.query.qid,
+      aid: this.$route.query.aid,
+      uid: this.uid
+    }).then(res => {
+      this.questionInfo = res.data;
+      _getAnswers({
+        qid: this.$route.query.qid,
+        uid: this.uid
+      }).then(res => {
+        var answerInfos = res.data;
+        var old_length = this.answerInfos.length;
+        for (var i = 0; i < answerInfos.length; ++i) {
+          var answerInfo = answerInfos[i];
+          if (
+            this.questionInfo.defaultAnswer != null &&
+            answerInfo.answer.aid === this.questionInfo.defaultAnswer.answer.aid
+          ) {
+            //若已经是默认回答
+            this.questionInfo.defaultAnswer = answerInfo;
+          } else if (
+            this.questionInfo.userAnswer != null &&
+            answerInfo.answer.aid === this.questionInfo.userAnswer.answer.aid
+          ) {
+            this.questionInfo.userAnswer = answerInfo;
+          } else {
+            var aid_key = "" + answerInfo.answer.aid;
+            if (this.answerSet.hasOwnProperty(aid_key)) {
+              //set中已存在这个key，应该替换掉旧的
+              console.log(answerInfo);
+              this.answerInfos[this.answerSet[aid_key]] = answerInfo;
+            } else {
+              //不存在这个key
+
+              this.answerInfos.push(answerInfo);
+              this.answerSet[aid_key] = old_length++;
+            }
+          }
+        }
+      });
+    });
   },
   methods: {
     handleFollow() {
@@ -209,32 +247,12 @@ export default {
         }
       });
     },
-    deleteFromList(aid) {
-      for (var i = 0; i < this.answers.length; ++i) {
-        var answerInfo = this.answers[i];
-        if (answerInfo.answer.aid === aid) {
-          this.answers.splice(i, 1);
-          return;
-        }
-      }
-    },
     insertAnswer() {
       if (this.answer.aid != null) {
         _updateAnswer(this.answer).then(res => {
           if (res.data === true) {
-            if (this.answer != null) {
-              this.deleteFromList(this.answer.aid);
-            }
-            this.answer["aid"] = res.data;
-            this.answer["answer_time"] = this.$nowTimestamp();
-            var answerInfo = {
-              answer: this.answer,
-              against: 0,
-              agree: 0,
-              attituded: null,
-              userInfo: this.$userInfo(this.answer.anonymous)
-            };
-            this.answers.push(answerInfo);
+            this.answer.answer_time = this.$nowTimestamp();
+            this.userAnswer.answer = this.answer;
             this.showAnswerDrawer = false;
           }
         });
@@ -242,11 +260,8 @@ export default {
         _insertAnswer(this.answer).then(res => {
           var aid = Number(res.data);
           if (aid > 0) {
-            if (this.answer != null) {
-              this.deleteFromList(this.answer.aid);
-            }
-            this.answer["aid"] = res.data;
-            this.answer["answer_time"] = this.$nowTimestamp();
+            this.answer.aid = res.data;
+            this.answer.answer_time = this.$nowTimestamp();
             var answerInfo = {
               answer: this.answer,
               against: 0,
@@ -254,7 +269,7 @@ export default {
               attituded: null,
               userInfo: this.$userInfo(this.answer.anonymous)
             };
-            this.answers.push(answerInfo);
+            this.answerInfo = answerInfo;
             this.showAnswerDrawer = false;
           }
         });
@@ -265,21 +280,7 @@ export default {
     }
   },
   props: ["uid"],
-  computed: {
-    existAnswer() {
-      return this.answer.aid != null;
-    },
-    question() {
-      if (this.questionInfo != null) return this.questionInfo.question;
-      else
-        return {
-          question: "",
-          detail: "",
-          anonymous: false,
-          qid: null
-        };
-    }
-  }
+  computed: {}
 };
 </script>
 
