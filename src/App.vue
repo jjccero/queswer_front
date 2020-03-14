@@ -19,4 +19,11 @@ export default {
   color: #2c3e50;
   margin-top: 0px;
 }
+body {
+  margin: 0;
+  padding: 0;
+  min-width: 800px;
+  background-color: #f6f6f6;
+  height: 100%;
+}
 </style>

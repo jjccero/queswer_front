@@ -15,7 +15,7 @@
         icon="el-icon-star-on"
       ></el-button>
       <el-button v-else type="text" @click="handleFollow" icon="el-icon-star-off"></el-button>
-      <el-button type="text" class="follow" style>{{questionInfo.followCount}}</el-button>
+      <el-button type="text" class="follow" style="margin-left:0">{{questionInfo.followCount}}</el-button>
       <el-divider direction="vertical"></el-divider>
       <i class="el-icon-view"></i>
       <span class="viewed">{{questionInfo.viewCount}}</span>
@@ -93,7 +93,7 @@ import {
   _deleteAnswer
 } from "../js/api";
 import answer from "../components/Answer";
-import UserInfo from "../components/UserInfo";
+import userInfo from "../components/UserInfo";
 export default {
   data() {
     return {
@@ -131,11 +131,13 @@ export default {
   },
   components: {
     answer,
-    UserInfo
+    userInfo
   },
   created() {
+    var qid = this.$route.query.qid;
+    if (qid == null) return;
     _getQuestion({
-      qid: this.$route.query.qid,
+      qid: qid,
       aid: this.$route.query.aid,
       uid: this.uid
     }).then(res => {
@@ -295,6 +297,5 @@ export default {
 }
 .follow {
   font-size: 17px;
-  margin-left: 0;
 }
 </style>

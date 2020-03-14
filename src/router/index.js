@@ -24,17 +24,19 @@ export default new Router({
           component: () => import("@/components/TopicList")
         },
         {
-          path: "/question",
-          name: "问题",
-          component: () => import("@/components/Question")
-        },
-        {
           path: "/test",
           name: "开发者接口",
           component: () => import("@/components/Test")
+        },
+        {
+          path: "/question",
+          name: "问题",
+          component: () => import("@/components/Question"),
+          hidden: true
         }
       ]
     },
+
     {
       path: "/login",
       name: "登陆",

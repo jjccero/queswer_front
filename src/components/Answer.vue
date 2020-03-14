@@ -185,8 +185,6 @@ export default {
             questioned: this.questioned && !this.answered,
             answered: this.answered
           };
-          console.log(reviewInfo);
-
           this.reviews.push(reviewInfo);
         }
       });

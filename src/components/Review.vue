@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <UserInfo :userInfo="reviewInfo.userInfo"></UserInfo>
+      <userInfo :userInfo="reviewInfo.userInfo"></userInfo>
       <div class="review_time">
         <span>{{reviewInfo.questioned?"(提问者)":" "}}</span>
         <span>{{reviewInfo.answered?"(回答者)":" "}}</span>
@@ -38,7 +38,7 @@
 </template>
 <script>
 import { _deleteReview, _updateApprove } from "../js/api";
-import UserInfo from "../components/UserInfo";
+import userInfo from "../components/UserInfo";
 export default {
   name: "review",
   data() {
@@ -95,7 +95,7 @@ export default {
     }
   },
   components: {
-    UserInfo
+    userInfo
   }
 };
 </script>
