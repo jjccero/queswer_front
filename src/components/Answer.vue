@@ -1,5 +1,5 @@
 <template>
-  <div style="width:100%;">
+  <div>
     <div>
       <userInfo :userInfo="answerInfo.userInfo"></userInfo>
     </div>
@@ -58,25 +58,23 @@
           ></review>
         </div>
       </template>
-      <el-row>
-        <el-col :span="12">{{ReplyInfo}}</el-col>
-        <el-col :span="12">
-          <el-button
-            type="text"
-            @click="reply_rid=null"
-            v-show="reply_rid!=null"
-            icon="el-icon-close"
-          >取消</el-button>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="20">
-          <el-input v-model="review"></el-input>
-        </el-col>
-        <el-col :span="4">
-          <el-button type="primary" @click="insertReview">添加评论</el-button>
-        </el-col>
-      </el-row>
+      <div>
+        <el-button
+          type="text"
+          @click="reply_rid=null"
+          v-show="reply_rid!=null"
+          icon="el-icon-close"
+        >取消</el-button>
+      </div>
+      <div>
+        <el-input style="width:85%;" v-model="review" :placeholder="ReplyInfo"></el-input>
+        <el-button
+          style="float:right;margin-bottom:10px;"
+          type="primary"
+          @click="insertReview"
+          plain
+        >评论</el-button>
+      </div>
     </el-card>
     <el-divider
       direction="horizontal"
@@ -232,6 +230,7 @@ export default {
 
 <style>
 .answer_time {
+  margin-top: 10px;
   font-size: 10px;
   color: gray;
 }
@@ -239,7 +238,7 @@ export default {
   margin: 10px 0 10px 0;
 }
 .answer {
-  margin-top: 10px;
+  clear: both;
   text-align: left;
   min-height: 200px;
 }

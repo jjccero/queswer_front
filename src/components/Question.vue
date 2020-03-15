@@ -1,13 +1,13 @@
 <template>
   <div style="text-align:left;">
-    <div>
+    <div style="float:left;">
       <el-tag
         v-for="topic in questionInfo.topics"
         :key="topic.tid"
         style="margin-right:10px;"
       >{{topic.topic_name}}</el-tag>
     </div>
-    <div>
+    <div style="float:right;">
       <el-button
         v-if="questionInfo.followed"
         type="text"
@@ -23,10 +23,10 @@
 
       <el-button type="text" @click="showAnswerDrawer=true" icon="el-icon-edit">回答</el-button>
     </div>
-    <div class="title">{{questionInfo.question.question}}</div>
-    <div style="color:gray;font-size:10px;">问题描述：</div>
+    <h1 style="clear:both;">{{questionInfo.question.question}}</h1>
+    <div style="color:gray;font-size:10px;margin-top:10px;">问题描述：</div>
     <div v-html="questionInfo.question.detail"></div>
-    <el-card :body-style="{ padding: '10px' }">
+    <el-card style="margin-top:10px;" :body-style="{ padding: '10px' }">
       <div v-if="questionInfo.defaultAnswer != null">
         <answer
           :answerInfo="questionInfo.defaultAnswer"
@@ -37,7 +37,6 @@
         ></answer>
       </div>
       <div v-if="questionInfo.userAnswer!= null">
-        <el-divider>我的回答</el-divider>
         <answer
           :answerInfo="questionInfo.userAnswer"
           :uid="uid"
@@ -46,7 +45,9 @@
           @deleteAnswer="deleteAnswer"
         ></answer>
       </div>
-      <el-divider>更多回答</el-divider>
+    </el-card>
+    <el-card :body-style="{ padding: '10px' }">
+      <el-divider class="divider">更多回答</el-divider>
       <template v-for="answerInfo in answerInfos">
         <div :key="answerInfo.answer.aid" style="text-align:left;">
           <answer
@@ -190,46 +191,40 @@ export default {
         qid: this.$route.query.qid,
         uid: this.uid
       };
-      if (this.followed == false) {
+      if (this.questionInfo.followed == false) {
         _insertFollow(params).then(res => {
-          switch (res.data) {
-            case 1:
-              this.$message({
-                showClose: true,
-                message: "关注成功",
-                type: "success"
-              });
-              this.followed = true;
-              ++this.followCount;
-              break;
-            default:
-              this.$message({
-                showClose: true,
-                message: "已关注",
-                type: "error"
-              });
-              break;
+          if (res.data === true) {
+            this.$message({
+              showClose: true,
+              message: "关注成功",
+              type: "success"
+            });
+            this.questionInfo.followed = true;
+            ++this.questionInfo.followCount;
+          } else {
+            this.$message({
+              showClose: true,
+              message: "已关注",
+              type: "error"
+            });
           }
         });
       } else {
         _deleteFollow(params).then(res => {
-          switch (res.data) {
-            case 1:
-              this.$message({
-                showClose: true,
-                message: "取消关注成功",
-                type: "success"
-              });
-              this.followed = false;
-              --this.followCount;
-              break;
-            default:
-              this.$message({
-                showClose: true,
-                message: "已取消关注",
-                type: "error"
-              });
-              break;
+          if (res.data) {
+            this.$message({
+              showClose: true,
+              message: "取消关注成功",
+              type: "success"
+            });
+            this.questionInfo.followed = false;
+            --this.questionInfo.followCount;
+          } else {
+            this.$message({
+              showClose: true,
+              message: "已取消关注",
+              type: "error"
+            });
           }
         });
       }
@@ -292,10 +287,14 @@ export default {
 
 <style>
 .title {
+  clear: both;
   font-size: 30px;
   font-weight: bold;
 }
 .follow {
   font-size: 17px;
+}
+.divider {
+  margin: 10px 0 10px 0;
 }
 </style>

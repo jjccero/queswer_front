@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-button @click="signup" plain>注册一些账号</el-button>
-    <el-button @click="addQuestion" type="primary" plain>添加一个问题</el-button>
+    <el-button @click="insertQuestion" type="primary" plain>添加一个问题</el-button>
     <div
       v-for="questionInfo in questionInfos"
       :key="questionInfo.question.qid"

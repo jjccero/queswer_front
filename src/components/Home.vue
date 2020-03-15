@@ -3,14 +3,20 @@
     <div class="head_bar">
       <div class="head_queswer">问答社区</div>
       <el-dropdown class="head_user">
-        <span>
-          {{user.uid!=null?user.nickname:'请登录'}}
-          <i class="el-icon-arrow-down el-icon--right"></i>
+        <span v-if="user.uid!=null" style="float: right;">
+          <span style="float:right;">{{user.nickname}}</span>
+          <avater :uid="user.uid" :avater="user.avater" class="bar_icon"></avater>
+          <el-dropdown-menu>
+            <el-dropdown-item @click.native="login">个人主页</el-dropdown-item>
+            <el-dropdown-item @click.native="logout">注销</el-dropdown-item>
+          </el-dropdown-menu>
         </span>
-        <el-dropdown-menu>
-          <el-dropdown-item @click.native="logout" v-if="user.uid!=null">注销</el-dropdown-item>
-          <el-dropdown-item @click.native="login" v-else>登陆</el-dropdown-item>
-        </el-dropdown-menu>
+        <span v-else>
+          未登录
+          <el-dropdown-menu>
+            <el-dropdown-item @click.native="login">登陆</el-dropdown-item>
+          </el-dropdown-menu>
+        </span>
       </el-dropdown>
       <el-menu :default-active="$route.path" mode="horizontal" class="menu" router>
         <!-- 1级菜单 -->
@@ -29,11 +35,16 @@
   </div>
 </template>
 <script>
+import avater from "../components/Avater";
 export default {
+  components: {
+    avater
+  },
   data() {
     return {
       user: {
-        uid: null
+        uid: null,
+        avater: null
       }
     };
   },
@@ -72,8 +83,8 @@ export default {
   float: left;
   margin-left: 60px;
   line-height: 61px;
-  font-size: 30px;
   font-weight: bold;
+  font-size: 30px;
   color: rgb(0, 132, 255);
 }
 .menu {
@@ -83,5 +94,11 @@ export default {
 .main_view {
   margin: 0px 60px 0 60px;
   clear: both;
+}
+.bar_icon {
+  width: 31px;
+  margin: 15px 10px 15px 0;
+  border-radius: 50%;
+  float: right;
 }
 </style>

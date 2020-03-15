@@ -1,10 +1,9 @@
 <template>
-  <div style="overflow:auto">
+  <div style>
     <ul
       v-infinite-scroll="load"
-      infinite-scroll-disabled="empty"
-      v-loading="loadList"
-      style="-webkit-padding-start: 0px;"
+      infinite-scroll-disabled="loading"
+      style="overflow:auto;height:1000px;-webkit-padding-start: 0px;"
     >
       <el-card
         :body-style="{ padding: '10px' }"
@@ -14,8 +13,12 @@
         <questionInfo :questionInfo="questionInfo"></questionInfo>
       </el-card>
     </ul>
-    <p v-if="loadList">加载中...</p>
-    <p v-if="empty">没有更多了</p>
+    <div>
+      <el-card v-if="loading||noMore" :body-style="{ padding: '0px' }">
+        <p v-if="loading">加载中...</p>
+        <p v-if="noMore">没有更多了</p>
+      </el-card>
+    </div>
   </div>
 </template>
 <script>
@@ -24,10 +27,11 @@ import questionInfo from "../components/QuestionInfo";
 export default {
   data() {
     return {
-      loadList: false,
+      loading: false,
       questionInfos: [],
-      limit: 2,
-      empty: false
+      offset: 0,
+      count: 5,
+      noMore: false
     };
   },
   components: {
@@ -35,27 +39,34 @@ export default {
   },
   methods: {
     load() {
-      if (this.empty || this.loadList) return;
-      this.loadList = true;
+      console.log("load");
+      if (this.noMore) return;
+      this.loading = true;
       var params = {
         uid: this.uid,
-        offset: 0,
-        limit: 100
+        offset: this.offset,
+        count: this.count
       };
       _getQuestions(params).then(res => {
         this.questionInfos = this.questionInfos.concat(res.data);
-        this.empty = true;
-        this.loadList = false;
+        this.offset += res.data.length;
+        if (res.data.length < this.count) {
+          this.noMore = true;
+        }
+        this.loading = false;
       });
     }
   },
   created() {},
-  computed: {
-    changePlaceHolder() {
-      return "输入感兴趣的" + this.types[this.select] + "吧！";
-    }
-  }
+  computed: {}
 };
 </script>
 <style>
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  background-color: transparent;
+}
+.load_card {
+}
 </style>

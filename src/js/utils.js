@@ -75,7 +75,8 @@ export const userInfo = anonymous => {
     uid: user.uid,
     nickname: user.nickname,
     anonymous: anonymous,
-    intro: user.intro
+    intro: user.intro,
+    avater: user.avater
   };
   return UserInfo;
 };
