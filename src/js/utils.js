@@ -35,8 +35,10 @@ export const getTimeString = timestamp => {
   ) {
     if (now.getDate() == date.getDate()) {
       return date.format(dateFormats[0]);
-    } else {
+    } else if (now.getDate() == date.getDate() + 1) {
       return "昨天" + date.format(dateFormats[0]);
+    } else {
+      return date.format(dateFormats[1]);
     }
   }
   return date.format(dateFormats[1]);

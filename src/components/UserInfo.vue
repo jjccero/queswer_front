@@ -1,11 +1,11 @@
 <template>
   <div class="userInfo">
-    <avater :uid="userInfo.uid" :avater="userInfo.avater" class="icon" />
-    <div style="float: left; margin-left: 10px;">
-      <div style="height:20px;line-height:20px;">
+    <avater :uid="userInfo.uid" :avater="userInfo.avater" class="avater" />
+    <div>
+      <div class="text_hidden">
         <b :class="{'anonymous':userInfo.anonymous}">{{userInfo.nickname}}</b>
       </div>
-      <div style="height:20px;line-height:20px;">
+      <div class="text_hidden">
         <span style="font-size: 15px;color: gray;">{{userInfo.intro}}</span>
       </div>
     </div>
@@ -37,7 +37,16 @@ export default {
 .anonymous {
   color: gray;
 }
-.icon {
+.text_hidden {
+  height: 20px;
+  line-height: 20px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  float: left;
+  margin-left: 10px;
+}
+.avater {
   width: 40px;
   border-radius: 50%;
   float: left;

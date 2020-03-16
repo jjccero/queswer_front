@@ -1,56 +1,94 @@
 <template>
-  <div class="questionInfo">
-    <div @click="toQuestion" class="question">{{questionInfo.question.question}}</div>
-    <div v-if="questionInfo.defaultAnswer!=null">
-      <div style="margin-top:10px;clear: left; ">
-        <userInfo :userInfo="questionInfo.defaultAnswer.userInfo"></userInfo>
+  <div class="questionInfo" style="width:100%;">
+    <div style="line-height:30px;">
+      <div v-if="questionInfo.defaultAnswer!=null">
+        <userInfoSmall style :userInfo="questionInfo.defaultAnswer.userInfo"></userInfoSmall>
+        <b style="margin-left:10px;">回答了问题</b>
+        <span
+          class="answer_time"
+          style="float:right;"
+        >{{$getTimeString(questionInfo.defaultAnswer.answer.answer_time)}}</span>
       </div>
+      <div v-else>
+        <userInfoSmall style :userInfo="questionInfo.userInfo"></userInfoSmall>
+        <b style="margin-left:10px;">提出了问题</b>
+        <span
+          class="answer_time"
+          style="float:right;"
+        >{{$getTimeString(questionInfo.question.question_time)}}</span>
+      </div>
+    </div>
+    <div @click="toQuestion" class="question">{{questionInfo.question.question}}</div>
+    <div v-if="questionInfo.defaultAnswer!=null" style="width:100%;margin-top:10px;">
       <div
-        style="clear: left;"
-        @click="showAll"
         ref="answer"
-        class="answer"
+        class="questionInfo_answer"
         :style="answerStyle"
         v-html="questionInfo.defaultAnswer.answer.answer"
       ></div>
+      <div>
+        <el-button
+          v-show="!isShowAll"
+          @click="showAll"
+          type="text"
+          class="showAll_btn"
+          icon="el-icon-arrow-down"
+        >查看全文</el-button>
+      </div>
+      <div style="margin-top:10px;">
+        <attitude :uid="uid" :answerInfo="questionInfo.defaultAnswer"></attitude>
+      </div>
     </div>
-    <div v-else>等你回答</div>
+    <el-divider class="divider"></el-divider>
   </div>
 </template>
 <script>
-import userInfo from "../components/UserInfo";
+import userInfoSmall from "../components/UserInfoSmall";
+import attitude from "../components/Attitude";
 export default {
   name: "questionInfo",
-  props: ["questionInfo"],
+  props: ["questionInfo", "uid"],
   components: {
-    userInfo
+    attitude,
+    userInfoSmall
   },
   data() {
     return {
       isShowAll: false,
       answerStyle: {
-        height: "200px"
+        maxHeight: "200px"
       }
     };
   },
+  mounted() {
+    if (this.questionInfo.defaultAnswer != null) {
+      var obj = this.$refs.answer;
+      if (obj.scrollHeight < 200) {
+        this.isShowAll = true;
+      }
+    }
+  },
   methods: {
     showAll() {
-      this.isShowAll = !this.isShowAll;
-      if (this.isShowAll) {
-        var obj = this.$refs.answer;
-        this.answerStyle.height = obj.scrollHeight + "px";
-      } else {
-        this.answerStyle.height = "200px";
-      }
+      this.isShowAll = true;
+      var obj = this.$refs.answer;
+      this.answerStyle.maxHeight = obj.scrollHeight + "px";
     },
     toQuestion() {
       this.$router.push({
         path: "/question",
         query: {
           qid: this.questionInfo.question.qid,
-          aid: this.questionInfo.defaultAnswer.answer.aid
+          aid: this.aid
         }
       });
+    }
+  },
+  computed: {
+    aid() {
+      return this.questionInfo.defaultAnswer != null
+        ? this.questionInfo.defaultAnswer.answer.aid
+        : null;
     }
   }
 };
@@ -60,10 +98,24 @@ export default {
   font-weight: bold;
   font-size: 20px;
   cursor: pointer;
+  clear: both;
 }
 .questionInfo {
+  width: 100%;
   text-align: left;
+  clear: both;
+}
+.questionInfo_answer {
+  clear: both;
   overflow: hidden;
-  float: left;
+  text-overflow: ellipsis;
+}
+.showAll_btn {
+  width: 100%;
+  color: gray;
+  text-align: center;
+}
+.divider {
+  margin: 10px 0 10px 0;
 }
 </style>

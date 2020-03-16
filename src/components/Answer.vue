@@ -4,30 +4,16 @@
       <userInfo :userInfo="answerInfo.userInfo"></userInfo>
     </div>
     <div v-html="answer.answer" class="answer"></div>
-    <div class="answer_time">回答于 {{answer_time}}</div>
-    <div>
-      <el-button
-        size="small"
-        @click="updateAttitude(true)"
-        icon="el-icon-caret-top"
-        type="primary"
-        plain
-      >{{getCountString(agree)}} {{attituded?"已赞同":''}}</el-button>
-      <el-button
-        size="small"
-        @click="updateAttitude(false)"
-        icon="el-icon-caret-bottom"
-        style="margin-left:0px;"
-        type="danger"
-        plain
-      >{{getCountString(against)}} {{attituded===false?"已反对":''}}</el-button>
+    <div class="answer_time" style="margin-top:10px;">回答于 {{answer_time}}</div>
+    <div style="margin:10px 0 10px 0;">
+      <attitude :uid="uid" :answerInfo="answerInfo"></attitude>
       <el-button
         type="text"
         :loading="reviewLoading"
         @click="getReviews"
         icon="el-icon-chat-round"
-        style="color:gray;"
-      >{{showReview?'收起':'评论'}}</el-button>
+        style="color:gray;margin-left:20px;"
+      >{{reviewCount}}</el-button>
       <el-button
         type="text"
         @click="updateAnswer"
@@ -42,11 +28,11 @@
         icon="el-icon-delete"
         style="color:red;"
       >删除</el-button>
-      <el-button type="text" icon="el-icon-warning-outline" style="color:gray;">举报</el-button>
+      <el-button size="small" type="text" icon="el-icon-warning-outline" style="color:gray;">举报</el-button>
     </div>
     <el-card :body-style="{ padding: '10px' }" v-if="showReview" style="margin:10px 0 0 0;">
       <div slot="header" style="text-align:center;">
-        <span>共{{reviewCount}}条评论</span>
+        <span style="font-size:14px;">共{{reviewCount}}条评论</span>
       </div>
       <template v-for="reviewInfo in reviews">
         <div :key="reviewInfo.review.rid">
@@ -76,34 +62,23 @@
         >评论</el-button>
       </div>
     </el-card>
-    <el-divider
-      direction="horizontal"
-      class="answer_divider"
-      content-position="right"
-    >{{answer.aid}}</el-divider>
+    <el-divider class="divider"></el-divider>
   </div>
 </template>
 <script>
-import {
-  _getAttitude,
-  _updateAttitude,
-  _deleteAttitude,
-  _getReviews,
-  _insertReview
-} from "../js/api";
+import { _getReviews, _insertReview } from "../js/api";
 import review from "../components/Review";
-import UserInfo from "../components/UserInfo";
+import userInfo from "../components/UserInfo";
+import attitude from "../components/Attitude";
 export default {
   name: "answer",
   components: {
     review,
-    UserInfo
+    userInfo,
+    attitude
   },
   data() {
     return {
-      attituded: this.answerInfo.attituded,
-      agree: this.answerInfo.agree,
-      against: this.answerInfo.against,
       showReview: false,
       reviews: [],
       review: "",
@@ -115,43 +90,6 @@ export default {
   },
   created() {},
   methods: {
-    updateAttitude(attitude) {
-      if (this.uid == null) {
-        this.$toLogin(this);
-        return;
-      }
-      var params = {
-        uid: this.uid,
-        aid: this.answer.aid
-      };
-      if (this.attituded === attitude) {
-        _deleteAttitude(params).then(res => {
-          if (res.data === true) {
-            this.attituded = null;
-            if (attitude) {
-              --this.agree;
-            } else {
-              --this.against;
-            }
-          }
-        });
-      } else {
-        params["attitude"] = attitude;
-        _updateAttitude(params).then(res => {
-          if (res.data === true) {
-            if (attitude) {
-              if (this.attituded === false) --this.against;
-              ++this.agree;
-              this.attituded = true;
-            } else {
-              if (this.attituded === true) --this.agree;
-              ++this.against;
-              this.attituded = false;
-            }
-          }
-        });
-      }
-    },
     getReviews() {
       this.showReview = !this.showReview;
       if (this.showReview === false) return;
@@ -190,9 +128,7 @@ export default {
     reply(reply_rid) {
       this.reply_rid = reply_rid;
     },
-    getCountString(count) {
-      return this.$getCountString(count);
-    },
+
     getUserInfo(rid) {
       if (rid != null) return this.reviewSet[rid];
       else return null;
@@ -229,17 +165,10 @@ export default {
 </script>
 
 <style>
-.answer_time {
-  margin-top: 10px;
-  font-size: 10px;
-  color: gray;
-}
-.answer_divider {
-  margin: 10px 0 10px 0;
-}
 .answer {
   clear: both;
   text-align: left;
   min-height: 200px;
+  overflow: hidden;
 }
 </style>

@@ -7,31 +7,30 @@ export default new Router({
   routes: [
     {
       path: "/",
-      name: "发现",
-      component: () => import("@/components/Home"),
+      component: () => import("@/views/Home"),
       redirect: "/index",
       children: [
         {
           path: "/index",
           name: "主页",
           iconCls: "el-icon-setting",
-          component: () => import("@/components/Index")
+          component: () => import("@/views/Index")
         },
         {
           path: "/topics",
           name: "话题",
           iconCls: "el-icon-chat-dot-round",
-          component: () => import("@/components/TopicList")
+          component: () => import("@/views/TopicList")
         },
         {
-          path: "/test",
+          path: "/developApi",
           name: "开发者接口",
-          component: () => import("@/components/Test")
+          component: () => import("@/views/DevelopApi")
         },
         {
           path: "/question",
           name: "问题",
-          component: () => import("@/components/Question"),
+          component: () => import("@/views/Question"),
           hidden: true
         }
       ]
@@ -40,7 +39,7 @@ export default new Router({
     {
       path: "/login",
       name: "登陆",
-      component: () => import("@/components/Login"),
+      component: () => import("@/views/Login"),
       hidden: true
     }
   ]

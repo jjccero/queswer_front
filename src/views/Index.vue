@@ -5,12 +5,14 @@
       infinite-scroll-disabled="loading"
       style="overflow:auto;height:1000px;-webkit-padding-start: 0px;"
     >
-      <el-card
-        :body-style="{ padding: '10px' }"
-        v-for="questionInfo in questionInfos"
-        :key="questionInfo.question.qid"
-      >
-        <questionInfo :questionInfo="questionInfo"></questionInfo>
+      <el-card :body-style="{ padding: '10px' }">
+        <div slot="header">hh</div>
+        <questionInfo
+          v-for="questionInfo in questionInfos"
+          :key="questionInfo.question.qid"
+          :questionInfo="questionInfo"
+          :uid="uid"
+        ></questionInfo>
       </el-card>
     </ul>
     <div>
@@ -25,6 +27,7 @@
 import { _getQuestions } from "../js/api";
 import questionInfo from "../components/QuestionInfo";
 export default {
+  props: ["uid"],
   data() {
     return {
       loading: false,

@@ -1,21 +1,17 @@
 <template>
   <div>
-    <div>
-      <userInfo style="float:left;" :userInfo="reviewInfo.userInfo"></userInfo>
-      <span v-if="reply_userInfo!=null" style="float:left;">
-        <i class="el-icon-arrow-right reply_i"></i>
-        <userInfo style="margin-left:20px;" :userInfo="reply_userInfo"></userInfo>
-      </span>
-
-      <div class="review_time">
-        <span>{{reviewInfo.questioned?"(提问者)":" "}}</span>
-        <span>{{reviewInfo.answered?"(回答者)":" "}}</span>
-        <span>{{(review.reply_rid!=null?'回复':'评论')+'于 '+review_time}}</span>
-      </div>
+    <userInfoSmall style="float:left;" :userInfo="reviewInfo.userInfo"></userInfoSmall>
+    <span v-if="reply_userInfo!=null" style="float:left;">
+      <i class="el-icon-arrow-right reply_i"></i>
+      <userInfoSmall style="margin-left:20px;" :userInfo="reply_userInfo"></userInfoSmall>
+    </span>
+    <div class="review_time">
+      <span>{{reviewInfo.questioned?"(提问者)":" "}}</span>
+      <span>{{reviewInfo.answered?"(回答者)":" "}}</span>
+      <span>{{(review.reply_rid!=null?'回复':'评论')+'于 '+review_time}}</span>
     </div>
-    <div></div>
     <div
-      style="clear:left;"
+      style="clear:left;margin:10px 0 0 0"
       :class="{'review_deleted':review.review===null}"
     >{{review.review!=null?review.review:'该评论已删除'}}</div>
 
@@ -40,7 +36,7 @@
 </template>
 <script>
 import { _deleteReview, _updateApprove } from "../js/api";
-import userInfo from "../components/UserInfo";
+import userInfoSmall from "../components/UserInfoSmall";
 export default {
   name: "review",
   data() {
@@ -97,7 +93,7 @@ export default {
     }
   },
   components: {
-    userInfo
+    userInfoSmall
   }
 };
 </script>
@@ -110,9 +106,9 @@ export default {
 }
 .review_time {
   float: right;
-  margin: 0 0;
   text-align: left;
   font-size: 10px;
+  line-height: 30px;
   color: gray;
 }
 .review_divider {
@@ -121,7 +117,7 @@ export default {
 .reply_i {
   float: left;
   margin-left: 20px;
-  line-height: 40px;
+  line-height: 30px;
   font-weight: bold;
 }
 </style>
