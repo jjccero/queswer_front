@@ -26,14 +26,8 @@
         :style="answerStyle"
         v-html="questionInfo.defaultAnswer.answer.answer"
       ></div>
-      <div>
-        <el-button
-          v-show="!isShowAll"
-          @click="showAll"
-          type="text"
-          class="showAll_btn"
-          icon="el-icon-arrow-down"
-        >查看全文</el-button>
+      <div v-show="!isShowAll" class="hide_all">
+        <el-button @click="showAll" type="text" class="showAll_btn" icon="el-icon-arrow-down">查看全文</el-button>
       </div>
       <div style="margin-top:10px;">
         <attitude :uid="uid" :answerInfo="questionInfo.defaultAnswer"></attitude>
@@ -112,10 +106,22 @@ export default {
 }
 .showAll_btn {
   width: 100%;
-  color: gray;
+  color: black;
   text-align: center;
 }
 .divider {
   margin: 10px 0 10px 0;
+}
+.hide_all {
+  height: 40px;
+  position: absolute;
+  width: 100%;
+  margin-top: -40px;
+  margin-left: -10px;
+  background-image: linear-gradient(
+    -180deg,
+    rgba(255, 255, 255, 0) 0%,
+    #fff 70%
+  );
 }
 </style>
