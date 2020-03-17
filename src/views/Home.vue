@@ -1,31 +1,33 @@
 <template>
   <div>
     <div class="home_header">
-      <div class="home_queswer">问答社区</div>
-      <el-dropdown class="home_user">
-        <span v-if="user.uid!=null" style="float: right;">
-          <span style="float:right;">{{user.nickname}}</span>
-          <avater :uid="user.uid" :avater="user.avater" class="home_avater"></avater>
-          <el-dropdown-menu>
-            <el-dropdown-item @click.native="login">个人主页</el-dropdown-item>
-            <el-dropdown-item @click.native="logout">注销</el-dropdown-item>
-          </el-dropdown-menu>
-        </span>
-        <span v-else>
-          未登录
-          <el-dropdown-menu>
-            <el-dropdown-item @click.native="login">登陆</el-dropdown-item>
-          </el-dropdown-menu>
-        </span>
-      </el-dropdown>
-      <el-menu :default-active="$route.path" mode="horizontal" class="home_menu" router>
-        <!-- 1级菜单 -->
-        <template v-for="item in $router.options.routes[0].children">
-          <el-menu-item v-if="!item.hidden" :index="item.path" :key="item.path">
-            <span>{{item.name}}</span>
-          </el-menu-item>
-        </template>
-      </el-menu>
+      <div class="home_main">
+        <div class="home_queswer">问答社区</div>
+        <el-dropdown class="home_user">
+          <span v-if="user.uid!=null" style="float: right;">
+            <span style="float:right;">{{user.nickname}}</span>
+            <avater :uid="user.uid" :avater="user.avater" class="home_avater"></avater>
+            <el-dropdown-menu>
+              <el-dropdown-item @click.native="login">个人主页</el-dropdown-item>
+              <el-dropdown-item @click.native="logout">注销</el-dropdown-item>
+            </el-dropdown-menu>
+          </span>
+          <span v-else>
+            未登录
+            <el-dropdown-menu>
+              <el-dropdown-item @click.native="login">登陆</el-dropdown-item>
+            </el-dropdown-menu>
+          </span>
+        </el-dropdown>
+        <el-menu :default-active="$route.path" mode="horizontal" class="home_menu" router>
+          <!-- 1级菜单 -->
+          <template v-for="item in $router.options.routes[0].children">
+            <el-menu-item v-if="!item.hidden" :index="item.path" :key="item.path">
+              <span>{{item.name}}</span>
+            </el-menu-item>
+          </template>
+        </el-menu>
+      </div>
     </div>
     <div class="home_main">
       <transition name="fade" mode="out-in">
@@ -68,7 +70,6 @@ export default {
 <style>
 .home_user {
   float: right;
-  margin-right: 60px;
   line-height: 61px;
 }
 .home_header {
@@ -81,7 +82,6 @@ export default {
 }
 .home_queswer {
   float: left;
-  margin-left: 60px;
   line-height: 61px;
   font-weight: bold;
   font-size: 30px;
@@ -92,7 +92,8 @@ export default {
   margin-left: 20px;
 }
 .home_main {
-  margin: 0px 60px 0 60px;
+  width: 800px;
+  margin: 0 auto;
   clear: both;
 }
 .home_avater {

@@ -83,6 +83,23 @@ export default {
       return this.questionInfo.defaultAnswer != null
         ? this.questionInfo.defaultAnswer.answer.aid
         : null;
+    },
+    ReplyInfo() {
+      var notReply = this.reply_rid === null;
+      return (
+        (notReply ? "评论" : "回复") +
+        "给" +
+        (notReply
+          ? this.answerInfo.userInfo.nickname
+          : this.getUserInfo(this.reply_rid).nickname)
+      );
+    },
+    reviewSet() {
+      var set = {};
+      this.reviews.forEach(element => {
+        set[element.review.rid] = element.userInfo;
+      });
+      return set;
     }
   }
 };
@@ -113,8 +130,8 @@ export default {
   margin: 10px 0 10px 0;
 }
 .hide_all {
+  position: relative;
   height: 40px;
-  position: absolute;
   width: 100%;
   margin-top: -40px;
   margin-left: -10px;

@@ -1,29 +1,23 @@
 <template>
   <div>
-    <el-tabs
-      type="border-card"
-      v-model="tab_index"
-      v-infinite-scroll="load"
-      infinite-scroll-disabled="loading"
-      style="overflow:auto;height:1000px;-webkit-padding-start: 0px;"
-    >
-      <el-tab-pane label="热榜" name="0">
+    <el-tabs type="border-card" v-model="tab_index" style="margin-bottom:10px;">
+      <el-tab-pane
+        label="热榜"
+        name="0"
+        style="overflow:scroll;max-height:1600px;"
+        v-infinite-scroll="load"
+        infinite-scroll-disabled="loading"
+      >
         <questionInfo
           v-for="questionInfo in questionInfos"
           :key="questionInfo.question.qid"
           :questionInfo="questionInfo"
           :uid="uid"
         ></questionInfo>
-        <p v-if="loading">加载中...</p>
-        <p v-if="noMore">没有更多了</p>
       </el-tab-pane>
       <el-tab-pane label="关注">关注。。</el-tab-pane>
       <el-tab-pane label="周围">回答。。</el-tab-pane>
     </el-tabs>
-
-    <div>
-      <el-card v-if="loading||noMore" :body-style="{ padding: '0px' }"></el-card>
-    </div>
   </div>
 </template>
 <script>
@@ -33,21 +27,28 @@ export default {
   props: ["uid"],
   data() {
     return {
+      loadingg: true,
       loading: false,
       questionInfos: [],
       offset: 0,
-      count: 5,
-      noMore: false,
-      tab_index: "0"
+      count: 10,
+      tab_index: "0",
+      tab_style: {
+        maxHeight: window.innerHeight - 140 + "px"
+      }
     };
   },
   components: {
     questionInfo
   },
+  mounted() {
+    window.onresize = () => {
+      this.tab_style.maxHeight = window.innerHeight - 140 + "px";
+    };
+  },
   methods: {
     load() {
-      console.log("load");
-      if (this.noMore) return;
+      if (this.loading) return;
       this.loading = true;
       var params = {
         uid: this.uid,
@@ -58,9 +59,15 @@ export default {
         this.questionInfos = this.questionInfos.concat(res.data);
         this.offset += res.data.length;
         if (res.data.length < this.count) {
-          this.noMore = true;
-        }
-        this.loading = false;
+          this.$message({
+            message: "暂时没有更多了",
+            type: "warning"
+          });
+          setTimeout(() => {
+            this.loading = false;
+            console.log("冷却完成");
+          }, 1000);
+        } else this.loading = false;
       });
     }
   },
