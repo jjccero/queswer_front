@@ -26,7 +26,11 @@
     <h1 style="clear:both;">{{questionInfo.question.question}}</h1>
     <div style="color:gray;font-size:10px;margin-top:10px;">问题描述：</div>
     <div v-html="questionInfo.question.detail"></div>
-    <el-card style="margin-top:10px;" :body-style="{ padding: '10px' }">
+    <el-card
+      v-if="questionInfo.defaultAnswer != null||questionInfo.userAnswer!= null"
+      style="margin-top:10px;"
+      :body-style="{ padding: '10px' }"
+    >
       <div v-if="questionInfo.defaultAnswer != null">
         <answer
           :answerInfo="questionInfo.defaultAnswer"

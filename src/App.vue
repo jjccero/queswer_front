@@ -22,7 +22,7 @@ export default {
 body {
   margin: 0;
   padding: 0;
-  min-width: 920px;
+  min-width: 880px;
   background-color: #f6f6f6;
 }
 </style>

@@ -4,9 +4,10 @@
       <el-tab-pane
         label="热榜"
         name="0"
-        style="overflow:scroll;max-height:1600px;"
+        style="overflow:auto;max-height:1200px;"
         v-infinite-scroll="load"
         infinite-scroll-disabled="loading"
+        :style="tab_style"
       >
         <questionInfo
           v-for="questionInfo in questionInfos"
@@ -41,11 +42,7 @@ export default {
   components: {
     questionInfo
   },
-  mounted() {
-    window.onresize = () => {
-      this.tab_style.maxHeight = window.innerHeight - 140 + "px";
-    };
-  },
+
   methods: {
     load() {
       if (this.loading) return;
@@ -76,7 +73,7 @@ export default {
 };
 </script>
 <style>
-::-webkit-scrollbar {
+.el-tabs--border-card > .el-tabs__content > ::-webkit-scrollbar {
   width: 0;
   height: 0;
   background-color: transparent;

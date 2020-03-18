@@ -19,20 +19,31 @@
       </div>
     </div>
     <div @click="toQuestion" class="question">{{questionInfo.question.question}}</div>
-    <div v-if="questionInfo.defaultAnswer!=null" style="width:100%;margin-top:10px;">
-      <div
-        ref="answer"
-        class="questionInfo_answer"
-        :style="answerStyle"
-        v-html="questionInfo.defaultAnswer.answer.answer"
-      ></div>
-      <div v-show="!isShowAll" class="hide_all">
-        <el-button @click="showAll" type="text" class="showAll_btn" icon="el-icon-arrow-down">查看全文</el-button>
+    <div style="width:100%;margin-top:10px;">
+      <div v-if="questionInfo.defaultAnswer!=null">
+        <div
+          ref="answer"
+          class="questionInfo_answer"
+          :style="answerStyle"
+          v-html="questionInfo.defaultAnswer.answer.answer"
+        ></div>
+        <div v-show="!isShowAll" class="hide_all">
+          <el-button @click="showAll" type="text" class="showAll_btn" icon="el-icon-arrow-down">查看全文</el-button>
+        </div>
+        <div style="margin-top:10px;">
+          <attitude :uid="uid" :answerInfo="questionInfo.defaultAnswer"></attitude>
+        </div>
       </div>
-      <div style="margin-top:10px;">
-        <attitude :uid="uid" :answerInfo="questionInfo.defaultAnswer"></attitude>
+      <div v-else>
+        <div
+          ref="answer"
+          class="questionInfo_answer"
+          :style="answerStyle"
+          v-html="questionInfo.question.detail"
+        ></div>
       </div>
     </div>
+
     <el-divider class="divider"></el-divider>
   </div>
 </template>
