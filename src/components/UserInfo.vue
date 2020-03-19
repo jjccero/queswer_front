@@ -34,9 +34,7 @@ export default {
   height: 50px;
   float: left;
 }
-.anonymous {
-  color: gray;
-}
+
 .text_hidden {
   height: 20px;
   line-height: 20px;

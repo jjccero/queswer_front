@@ -106,4 +106,7 @@ export default {
   font-size: 10px;
   color: gray;
 }
+.anonymous {
+  color: gray;
+}
 </style>

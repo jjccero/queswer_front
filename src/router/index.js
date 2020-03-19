@@ -32,6 +32,11 @@ export default new Router({
           name: "问题",
           component: () => import("@/views/Question"),
           hidden: true
+        },
+        {
+          path: "/user",
+          name: "用户",
+          component: () => import("@/views/UserDetail")
         }
       ]
     },

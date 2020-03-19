@@ -21,39 +21,42 @@
       @click="getReviews"
       icon="el-icon-chat-round"
       style="color:gray;margin-left:10px;"
-    >{{showReview?'收起':reviewCount}}</el-button>
-    <el-card :body-style="{ padding: '10px' }" v-if="showReview" style="margin:10px 0 0 0;">
-      <div slot="header" style="text-align:center;">
-        <span style="font-size:14px;">共{{reviewCount}}条评论</span>
+    >{{reviewCount}}</el-button>
+    <el-dialog :visible.sync="showReview">
+      <div slot="title" class="review_title">
+        <b>共{{reviewCount}}条评论</b>
       </div>
-      <template v-for="reviewInfo in reviews">
-        <div :key="reviewInfo.review.rid">
-          <review
-            :reviewInfo="reviewInfo"
-            :uid="uid"
-            :reply_userInfo="getUserInfo(reviewInfo.review.reply_rid)"
-            @reply="reply"
-          ></review>
+      <el-card :body-style="{ padding: '10px' }" v-if="showReview">
+        <div style="height:600px;overflow:auto;">
+          <template v-for="reviewInfo in reviews">
+            <div :key="reviewInfo.review.rid">
+              <review
+                :reviewInfo="reviewInfo"
+                :uid="uid"
+                :reply_userInfo="getUserInfo(reviewInfo.review.reply_rid)"
+                @reply="reply"
+              ></review>
+            </div>
+          </template>
         </div>
-      </template>
-      <div>
-        <el-button
-          type="text"
-          @click="reply_rid=null"
-          v-show="reply_rid!=null"
-          icon="el-icon-close"
-        >取消</el-button>
-      </div>
-      <div>
-        <el-input style="width:85%;" v-model="review" :placeholder="ReplyInfo"></el-input>
-        <el-button
-          style="float:right;margin-bottom:10px;"
-          type="primary"
-          @click="insertReview"
-          plain
-        >评论</el-button>
-      </div>
-    </el-card>
+        <div style="margin-top:10px;">
+          <el-input style="width:420px;" v-model="review" :placeholder="ReplyInfo"></el-input>
+          <el-button
+            style="float:right;margin-bottom:10px;"
+            type="primary"
+            @click="insertReview"
+            plain
+          >评论</el-button>
+          <el-button
+            type="danger"
+            @click="reply_rid=null"
+            v-show="reply_rid!=null"
+            style="float:right;margin:0 10px 0 0;"
+            plain
+          >取消</el-button>
+        </div>
+      </el-card>
+    </el-dialog>
   </span>
 </template>
 <script>
@@ -100,7 +103,8 @@ export default {
       review: "",
       reply_rid: null,
       reviewLoading: false,
-      reviewCount: this.answerInfo.reviewCount
+      reviewCount: this.answerInfo.reviewCount,
+      center: true
     };
   },
   methods: {
@@ -192,3 +196,24 @@ export default {
   }
 };
 </script>
+<style>
+.el-dialog {
+  width: 600px;
+}
+.el-dialog > * {
+  padding: 0;
+}
+.el-card__body > ::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  background-color: transparent;
+}
+.review_title {
+  height: 56px;
+  line-height: 56px;
+  text-align: center;
+}
+.el-dialog__header {
+  height: 56px;
+}
+</style>
