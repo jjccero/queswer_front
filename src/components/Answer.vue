@@ -4,7 +4,10 @@
       <userInfo :userInfo="answerInfo.userInfo"></userInfo>
     </div>
     <div v-html="answer.answer" class="answer"></div>
-    <div class="answer_time" style="margin-top:10px;">回答于 {{$getTimeString(answer.answer_time)}}</div>
+    <div
+      class="gmt_create"
+      style="margin-top:10px;"
+    >回答于 {{$getTimeString(answer.gmt_modify!=null?answer.gmt_modify:answer.gmt_create)}}</div>
     <div style="margin:10px 0 10px 0;">
       <attitude :uid="uid" :answerInfo="answerInfo"></attitude>
       <el-button

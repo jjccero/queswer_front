@@ -28,12 +28,6 @@
             <b>·</b>
             <span class="user_detail_value">少年健身教练</span>
           </div>
-          <!-- <div>
-            <span class="user_detail_field">教育经历</span>
-            <span class="user_detail_value">贵州大学</span>
-            <b>·</b>
-            <span class="user_detail_value">计算机学院</span>
-          </div>-->
         </div>
       </div>
     </div>

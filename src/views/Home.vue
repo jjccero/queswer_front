@@ -102,7 +102,7 @@ export default {
   border-radius: 50%;
   float: right;
 }
-.answer_time {
+.gmt_create {
   font-size: 10px;
   color: gray;
 }

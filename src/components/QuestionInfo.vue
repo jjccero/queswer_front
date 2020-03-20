@@ -5,17 +5,17 @@
         <userInfoSmall style :userInfo="questionInfo.defaultAnswer.userInfo"></userInfoSmall>
         <b style="margin-left:10px;">回答了问题</b>
         <span
-          class="answer_time"
+          class="gmt_create"
           style="float:right;"
-        >{{$getTimeString(questionInfo.defaultAnswer.answer.answer_time)}}</span>
+        >{{$getTimeString(questionInfo.defaultAnswer.answer.gmt_create)}}</span>
       </div>
       <div v-else>
         <userInfoSmall style :userInfo="questionInfo.userInfo"></userInfoSmall>
         <b style="margin-left:10px;">提出了问题</b>
         <span
-          class="answer_time"
+          class="gmt_create"
           style="float:right;"
-        >{{$getTimeString(questionInfo.question.question_time)}}</span>
+        >{{$getTimeString(questionInfo.question.gmt_create)}}</span>
       </div>
     </div>
     <div @click="toQuestion" class="question">{{questionInfo.question.question}}</div>

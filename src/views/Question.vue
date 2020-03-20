@@ -108,7 +108,8 @@ export default {
           anonymous: false,
           question: null,
           detail: null,
-          question_time: 0,
+          gmt_create: 0,
+          gmt_modify: null,
           uid: null
         },
         follow: false,
@@ -128,8 +129,8 @@ export default {
         aid: null,
         answer: null,
         anonymous: false,
-        answer_time: null,
-        modify_answer_time: null
+        gmt_create: 0,
+        gmt_modify: null
       },
       showAnswerDrawer: false
     };
@@ -256,7 +257,7 @@ export default {
       if (this.answer.aid != null) {
         _updateAnswer(this.answer).then(res => {
           if (res.data === true) {
-            this.answer.answer_time = this.$nowTimestamp();
+            this.answer.gmt_modify = this.$nowTimestamp();
             this.questionInfo.userAnswer.answer = this.answer;
             this.questionInfo.userAnswer.userInfo = this.$userInfo(
               this.answer.anonymous
@@ -269,7 +270,7 @@ export default {
           var aid = Number(res.data);
           if (aid > 0) {
             this.answer.aid = res.data;
-            this.answer.answer_time = this.$nowTimestamp();
+            this.answer.gmt_create = this.$nowTimestamp();
             var answerInfo = {
               answer: this.answer,
               against: 0,

@@ -5,10 +5,10 @@
       <i class="el-icon-arrow-right reply_i"></i>
       <userInfoSmall style="margin-left:20px;" :userInfo="reply_userInfo"></userInfoSmall>
     </span>
-    <div class="review_time">
+    <div class="gmt_create review_time">
       <span>{{reviewInfo.questioned?"(提问者)":" "}}</span>
       <span>{{reviewInfo.answered?"(回答者)":" "}}</span>
-      <span>{{(review.reply_rid!=null?'回复':'评论')+'于 '+review_time}}</span>
+      <span>{{(review.reply_rid!=null?'回复':'评论')+'于 '+$getTimeString(this.review.gmt_create)}}</span>
     </div>
     <div
       style="clear:left;margin:10px 0 0 0"
@@ -47,9 +47,6 @@ export default {
   },
   props: ["reviewInfo", "uid", "reply_userInfo"],
   computed: {
-    review_time() {
-      return this.$getTimeString(this.review.review_time);
-    },
     reviewed() {
       return this.uid != null && this.uid == this.review.uid;
     },
@@ -107,9 +104,7 @@ export default {
 .review_time {
   float: right;
   text-align: left;
-  font-size: 10px;
   line-height: 30px;
-  color: gray;
 }
 .review_divider {
   margin: 0 0 10px 0;
