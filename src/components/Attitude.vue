@@ -199,6 +199,7 @@ export default {
 <style>
 .el-dialog {
   width: 600px;
+  margin-top: 10vh;
 }
 .el-dialog > * {
   padding: 0;

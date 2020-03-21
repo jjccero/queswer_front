@@ -1,19 +1,18 @@
 <template>
-  <div>
+  <div v-if="userInfo!=null">
     <div class="user_card" style="width:100%;">
-      <div style="background-color: #1e50b3;height:100px;">
-        <el-button type="info" style="float:right;margin-top:30px;">私信</el-button>
-        <el-button type="info" style="float:right;margin-top:30px;" icon="el-icon-user">关注</el-button>
-        <el-button type="info" style="float:right;margin-top:30px;" plain>私信</el-button>
+      <div style="background-color: #999999;height:60px;">
+        <el-button type="info" style="float:right;margin-top:10px;">私信</el-button>
+        <el-button type="info" style="float:right;margin-top:10px;" icon="el-icon-user">关注</el-button>
+        <el-button type="info" style="float:right;margin-top:10px;" plain>私信</el-button>
       </div>
       <div>
         <div class="user_avater_border">
           <img :src="avaterUrl" class="user_avater" alt="hhh" />
         </div>
         <div class="user_detail">
-          <div style="font-size:30px;font-weight:bold;">百慕拉</div>
-          <div class="user_detail_value">我不是吉田</div>
-
+          <div style="font-size:30px;font-weight:bold;clear:right;">{{userInfo.user.nickname}}</div>
+          <div class="user_detail_value">{{userInfo.user.intro}}</div>
           <div>
             <span class="user_detail_field">坐标</span>
             <span class="user_detail_value">M78</span>
@@ -38,16 +37,34 @@
   </div>
 </template>
 <script>
+import { _selectUserInfo } from "../js/api";
 export default {
   data() {
     return {
-      avaterUrl: "api/img/null.png",
+      userInfo: null,
       str: "<p>gg</p>"
     };
   },
   props: ["uid"],
   name: "people",
-  created() {}
+  created() {
+    var people_uid = this.$route.query.uid;
+    _selectUserInfo({
+      people_uid: people_uid,
+      uid: this.uid
+    }).then(res => {
+      this.userInfo = res.data;
+    });
+  },
+  computed: {
+    avaterUrl() {
+      return (
+        "api/img/" +
+        (this.userInfo.user.avater ? this.userInfo.user.uid : "null") +
+        ".png"
+      );
+    }
+  }
 };
 </script>
 <style>
@@ -58,7 +75,7 @@ export default {
   border-radius: 5%;
 }
 .user_avater_border {
-  margin: -50px 0 0 20px;
+  margin: -30px 0 0 20px;
   background-color: #ffffff;
   width: 168px;
   height: 168px;
@@ -75,6 +92,7 @@ export default {
   float: left;
   margin: 0 40px 10px;
   text-align: left;
+  width: 532px;
 }
 .user_detail > * {
   float: left;

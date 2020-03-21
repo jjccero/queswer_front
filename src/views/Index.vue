@@ -4,7 +4,7 @@
       <el-tab-pane
         label="热榜"
         name="0"
-        style="overflow:auto;max-height:1200px;"
+        style="overflow:auto;"
         v-infinite-scroll="load"
         infinite-scroll-disabled="loading"
         :style="tab_style"
@@ -68,7 +68,11 @@ export default {
       });
     }
   },
-  created() {},
+  mounted() {
+    window.onresize = () => {
+      this.tab_style.maxHeight = window.innerHeight - 142 + "px";
+    };
+  },
   computed: {}
 };
 </script>
@@ -80,5 +84,8 @@ export default {
 }
 .el-tabs--border-card > .el-tabs__content {
   padding: 10px;
+}
+.el-tabs--border-card > .el-tabs__header {
+  background-color: #ffffff;
 }
 </style>

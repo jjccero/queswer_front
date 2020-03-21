@@ -47,11 +47,14 @@
           :answered="true"
           :questioned="questionInfo.questioned"
           @deleteAnswer="deleteAnswer"
+          @insertAnswer="showAnswerDrawer=true"
         ></answer>
       </div>
     </el-card>
     <el-card :body-style="{ padding: '10px' }">
-      <el-divider class="divider">更多回答</el-divider>
+      <el-divider
+        class="divider"
+      >{{answerInfos.length===0?'暂无其他回答':('更多'+answerInfos.length+'个回答')}}</el-divider>
       <template v-for="answerInfo in answerInfos">
         <div :key="answerInfo.answer.aid" style="text-align:left;">
           <answer

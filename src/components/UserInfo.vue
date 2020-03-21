@@ -2,10 +2,10 @@
   <div class="userInfo">
     <avater :uid="userInfo.user.uid" :avater="userInfo.user.avater" class="avater" />
     <div>
-      <div class="text_hidden">
+      <div class="userInfo_text">
         <b :class="{'anonymous':userInfo.anonymous}">{{userInfo.user.nickname}}</b>
       </div>
-      <div class="text_hidden">
+      <div class="userInfo_text">
         <span style="font-size: 15px;color: gray;">{{userInfo.user.intro}}</span>
       </div>
     </div>
@@ -34,8 +34,12 @@ export default {
   height: 50px;
   float: left;
 }
-
-.text_hidden {
+.avater {
+  width: 40px;
+  border-radius: 50%;
+  float: left;
+}
+.userInfo_text {
   height: 20px;
   line-height: 20px;
   overflow: hidden;
@@ -43,10 +47,5 @@ export default {
   text-overflow: ellipsis;
   float: left;
   margin-left: 10px;
-}
-.avater {
-  width: 40px;
-  border-radius: 50%;
-  float: left;
 }
 </style>

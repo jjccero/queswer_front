@@ -5,10 +5,8 @@
         <div class="home_queswer">问答社区</div>
         <el-dropdown class="home_user">
           <span v-if="user.uid!=null" style="float: right;">
-            <span style="float:right;">{{user.nickname}}</span>
             <avater :uid="user.uid" :avater="user.avater" class="home_avater"></avater>
             <el-dropdown-menu>
-              <el-dropdown-item @click.native="login">个人主页</el-dropdown-item>
               <el-dropdown-item @click.native="logout">注销</el-dropdown-item>
             </el-dropdown-menu>
           </span>
@@ -97,9 +95,9 @@ export default {
   clear: both;
 }
 .home_avater {
-  width: 31px;
-  margin: 15px 10px 15px 0;
-  border-radius: 50%;
+  width: 41px;
+  margin: 10px 0 10px 0;
+  border-radius: 10%;
   float: right;
 }
 .gmt_create {

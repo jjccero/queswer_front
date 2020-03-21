@@ -8,7 +8,7 @@
       class="gmt_create"
       style="margin-top:10px;"
     >回答于 {{$getTimeString(answer.gmt_modify!=null?answer.gmt_modify:answer.gmt_create)}}</div>
-    <div style="margin:10px 0 10px 0;">
+    <div style="margin-top:10px">
       <attitude :uid="uid" :answerInfo="answerInfo"></attitude>
       <el-button
         type="text"
@@ -48,7 +48,9 @@ export default {
     deleteAnswer() {
       this.$emit("deleteAnswer");
     },
-    updateAnswer() {}
+    updateAnswer() {
+      this.$emit("insertAnswer");
+    }
   },
   props: ["answerInfo", "uid", "answered", "questioned"]
 };
@@ -60,7 +62,7 @@ export default {
   text-align: left;
   min-height: 200px;
   overflow: hidden;
-  color: brown;
-  text-decoration: line-through;
+  /* color: brown;
+  text-decoration: line-through; */
 }
 </style>
