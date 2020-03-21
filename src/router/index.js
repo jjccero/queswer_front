@@ -34,9 +34,9 @@ export default new Router({
           hidden: true
         },
         {
-          path: "/user",
+          path: "/people",
           name: "用户",
-          component: () => import("@/views/UserDetail")
+          component: () => import("@/views/People")
         }
       ]
     },

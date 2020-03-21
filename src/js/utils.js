@@ -74,11 +74,8 @@ export const nowTimestamp = () => {
 export const userInfo = anonymous => {
   var user = JSON.parse(sessionStorage.getItem("user"));
   var UserInfo = {
-    uid: user.uid,
-    nickname: user.nickname,
     anonymous: anonymous,
-    intro: user.intro,
-    avater: user.avater
+    user: user
   };
   return UserInfo;
 };

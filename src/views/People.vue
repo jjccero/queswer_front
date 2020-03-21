@@ -2,9 +2,9 @@
   <div>
     <div class="user_card" style="width:100%;">
       <div style="background-color: #1e50b3;height:100px;">
-        <el-button type="info" style="float:right;">私信</el-button>
-        <el-button type="info" style="float:right;" icon="el-icon-user">关注</el-button>
-        <el-button type="info" style="float:right;">私信</el-button>
+        <el-button type="info" style="float:right;margin-top:30px;">私信</el-button>
+        <el-button type="info" style="float:right;margin-top:30px;" icon="el-icon-user">关注</el-button>
+        <el-button type="info" style="float:right;margin-top:30px;" plain>私信</el-button>
       </div>
       <div>
         <div class="user_avater_border">
@@ -32,7 +32,7 @@
       </div>
     </div>
     <div style="height:600px;margin-top:10px;float:left;">
-      <div class="user_card" style="height:600px; width:500px;"></div>
+      <div class="user_card" style="height:600px; width:500px;" v-html="str"></div>
       <div class="user_card" style="height:600px; width:290px;margin-left:10px;"></div>
     </div>
   </div>
@@ -41,9 +41,13 @@
 export default {
   data() {
     return {
-      avaterUrl: "api/img/null.png"
+      avaterUrl: "api/img/null.png",
+      str: "<p>gg</p>"
     };
-  }
+  },
+  props: ["uid"],
+  name: "people",
+  created() {}
 };
 </script>
 <style>

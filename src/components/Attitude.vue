@@ -79,8 +79,8 @@ export default {
         (notReply ? "评论" : "回复") +
         "给" +
         (notReply
-          ? this.answerInfo.userInfo.nickname
-          : this.getUserInfo(this.reply_rid).nickname)
+          ? this.answerInfo.userInfo.user.nickname
+          : this.getUserInfo(this.reply_rid).user.nickname)
       );
     },
     reviewSet() {
@@ -131,7 +131,7 @@ export default {
         if (rid > 0) {
           this.review = "";
           reviewForm["rid"] = rid;
-          reviewForm["review_time"] = this.$nowTimestamp();
+          reviewForm["gmt_create"] = this.$nowTimestamp();
           var reviewInfo = {
             review: reviewForm,
             userInfo: this.$userInfo(false),

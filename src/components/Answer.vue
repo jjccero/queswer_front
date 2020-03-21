@@ -60,5 +60,7 @@ export default {
   text-align: left;
   min-height: 200px;
   overflow: hidden;
+  color: brown;
+  text-decoration: line-through;
 }
 </style>

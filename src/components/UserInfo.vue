@@ -1,12 +1,12 @@
 <template>
   <div class="userInfo">
-    <avater :uid="userInfo.uid" :avater="userInfo.avater" class="avater" />
+    <avater :uid="userInfo.user.uid" :avater="userInfo.user.avater" class="avater" />
     <div>
       <div class="text_hidden">
-        <b :class="{'anonymous':userInfo.anonymous}">{{userInfo.nickname}}</b>
+        <b :class="{'anonymous':userInfo.anonymous}">{{userInfo.user.nickname}}</b>
       </div>
       <div class="text_hidden">
-        <span style="font-size: 15px;color: gray;">{{userInfo.intro}}</span>
+        <span style="font-size: 15px;color: gray;">{{userInfo.user.intro}}</span>
       </div>
     </div>
   </div>

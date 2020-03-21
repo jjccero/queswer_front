@@ -35,7 +35,7 @@ export default {
       count: 10,
       tab_index: "0",
       tab_style: {
-        maxHeight: window.innerHeight - 140 + "px"
+        maxHeight: window.innerHeight - 142 + "px"
       }
     };
   },

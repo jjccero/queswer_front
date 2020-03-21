@@ -1,7 +1,10 @@
 <template>
   <span class="userInfoSmall">
-    <avater :uid="userInfo.uid" :avater="userInfo.avater" class="userInfoSmall_avater" />
-    <b class="userInfoSmall_text" :class="{'anonymous':userInfo.anonymous}">{{userInfo.nickname}}</b>
+    <avater :uid="userInfo.user.uid" :avater="userInfo.user.avater" class="userInfoSmall_avater" />
+    <b
+      class="userInfoSmall_text"
+      :class="{'anonymous':userInfo.anonymous}"
+    >{{userInfo.user.nickname}}</b>
   </span>
 </template>
 <script>
