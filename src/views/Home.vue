@@ -3,6 +3,7 @@
     <div class="home_header">
       <div class="home_main">
         <div class="home_queswer">问答社区</div>
+
         <el-dropdown class="home_user">
           <span v-if="user.uid!=null" style="float: right;">
             <avater :uid="user.uid" :avater="user.avater" class="home_avater"></avater>
@@ -22,6 +23,7 @@
           <template v-for="item in $router.options.routes[0].children">
             <el-menu-item v-if="!item.hidden" :index="item.path" :key="item.path">
               <span>{{item.name}}</span>
+              <i :class="item.iconCls"></i>
             </el-menu-item>
           </template>
         </el-menu>
@@ -45,7 +47,8 @@ export default {
       user: {
         uid: null,
         avater: null
-      }
+      },
+      content: ""
     };
   },
   created() {
@@ -68,7 +71,7 @@ export default {
 <style>
 .home_user {
   float: right;
-  line-height: 61px;
+  line-height: 50px;
 }
 .home_header {
   width: 100%;
@@ -80,7 +83,7 @@ export default {
 }
 .home_queswer {
   float: left;
-  line-height: 61px;
+  line-height: 50px;
   font-weight: bold;
   font-size: 30px;
   color: rgb(0, 132, 255);
@@ -95,8 +98,8 @@ export default {
   clear: both;
 }
 .home_avater {
-  width: 41px;
-  margin: 10px 0 10px 0;
+  width: 40px;
+  margin: 5px 0 5px 0;
   border-radius: 10%;
   float: right;
 }
@@ -106,5 +109,23 @@ export default {
 }
 .anonymous {
   color: gray;
+}
+
+.el-menu.el-menu--horizontal {
+  border-bottom: 0;
+  height: 50px;
+}
+.el-menu--horizontal > .el-menu-item {
+  line-height: 50px;
+  height: 50px;
+}
+.question {
+  font-weight: bold;
+  font-size: 20px;
+  cursor: pointer;
+  clear: both;
+}
+.divider {
+  margin: 10px 0 10px 0;
 }
 </style>

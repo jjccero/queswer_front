@@ -35,7 +35,7 @@ export default {
       count: 10,
       tab_index: "0",
       tab_style: {
-        maxHeight: window.innerHeight - 142 + "px"
+        maxHeight: window.innerHeight - 131 + "px"
       }
     };
   },
@@ -70,7 +70,7 @@ export default {
   },
   mounted() {
     window.onresize = () => {
-      this.tab_style.maxHeight = window.innerHeight - 142 + "px";
+      this.tab_style.maxHeight = window.innerHeight - 131 + "px";
     };
   },
   computed: {}

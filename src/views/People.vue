@@ -8,7 +8,7 @@
       </div>
       <div>
         <div class="user_avater_border">
-          <img :src="avaterUrl" class="user_avater" alt="hhh" />
+          <img :src="avaterUrl" class="user_avater" />
         </div>
         <div class="user_detail">
           <div style="font-size:30px;font-weight:bold;clear:right;">{{userInfo.user.nickname}}</div>
@@ -49,12 +49,14 @@ export default {
   name: "people",
   created() {
     var people_uid = this.$route.query.uid;
-    _selectUserInfo({
-      people_uid: people_uid,
-      uid: this.uid
-    }).then(res => {
-      this.userInfo = res.data;
-    });
+    if (people_uid != null) {
+      _selectUserInfo({
+        people_uid: people_uid,
+        uid: this.uid
+      }).then(res => {
+        this.userInfo = res.data;
+      });
+    }
   },
   computed: {
     avaterUrl() {

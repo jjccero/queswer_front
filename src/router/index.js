@@ -12,14 +12,12 @@ export default new Router({
       children: [
         {
           path: "/index",
-          name: "主页",
-          iconCls: "el-icon-setting",
+          iconCls: "el-icon-s-home",
           component: () => import("@/views/Index")
         },
         {
           path: "/topics",
           name: "话题",
-          iconCls: "el-icon-chat-dot-round",
           component: () => import("@/views/TopicList")
         },
         {
@@ -38,10 +36,14 @@ export default new Router({
           name: "用户",
           component: () => import("@/views/People"),
           hidden: true
+        },
+        {
+          path: "/search",
+          iconCls: "el-icon-search",
+          component: () => import("@/views/Search")
         }
       ]
     },
-
     {
       path: "/login",
       name: "登陆",

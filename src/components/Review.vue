@@ -1,17 +1,19 @@
 <template>
   <div>
-    <userInfoSmall style="float:left;" :userInfo="reviewInfo.userInfo"></userInfoSmall>
-    <span v-if="reply_userInfo!=null" style="float:left;">
-      <i class="el-icon-arrow-right reply_i"></i>
-      <userInfoSmall style="margin-left:20px;" :userInfo="reply_userInfo"></userInfoSmall>
-    </span>
-    <div class="gmt_create review_time">
-      <span>{{reviewInfo.questioned?"(提问者)":" "}}</span>
-      <span>{{reviewInfo.answered?"(回答者)":" "}}</span>
-      <span>{{(review.reply_rid!=null?'回复':'评论')+'于 '+$getTimeString(this.review.gmt_create)}}</span>
+    <div style="height:30px;">
+      <userInfoSmall style="float:left;" :userInfo="reviewInfo.userInfo"></userInfoSmall>
+      <span v-if="reply_userInfo!=null" style="float:left;">
+        <i class="el-icon-arrow-right reply_i"></i>
+        <userInfoSmall style="margin-left:20px;" :userInfo="reply_userInfo"></userInfoSmall>
+      </span>
+      <div class="gmt_create review_time">
+        <span>{{reviewInfo.questioned?"(提问者)":" "}}</span>
+        <span>{{reviewInfo.answered?"(回答者)":" "}}</span>
+        <span>{{(review.reply_rid!=null?'回复':'评论')+'于 '+$getTimeString(this.review.gmt_create)}}</span>
+      </div>
     </div>
     <div
-      style="clear:left;margin:10px 0 0 0"
+      style="clear:left;margin-top:10px;"
       :class="{'review_deleted':review.review===null}"
     >{{review.review!=null?review.review:'该评论已删除'}}</div>
 

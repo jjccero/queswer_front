@@ -1,7 +1,12 @@
 <template>
   <div class="userInfo">
-    <avater :uid="userInfo.user.uid" :avater="userInfo.user.avater" class="avater" />
-    <div>
+    <avater
+      style="float:left;"
+      :uid="userInfo.user.uid"
+      :avater="userInfo.user.avater"
+      class="avater"
+    />
+    <div style="float:left;">
       <div class="userInfo_text">
         <b :class="{'anonymous':userInfo.anonymous}">{{userInfo.user.nickname}}</b>
       </div>
@@ -31,13 +36,11 @@ export default {
 </script>
 <style>
 .userInfo {
-  height: 50px;
-  float: left;
+  height: 40px;
 }
 .avater {
   width: 40px;
   border-radius: 50%;
-  float: left;
 }
 .userInfo_text {
   height: 20px;
@@ -45,7 +48,6 @@ export default {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  float: left;
   margin-left: 10px;
 }
 </style>

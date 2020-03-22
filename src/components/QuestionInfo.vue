@@ -18,8 +18,12 @@
         >{{$getTimeString(questionInfo.question.gmt_create)}}</span>
       </div>
     </div>
-    <div @click="toQuestion" class="question">{{questionInfo.question.question}}</div>
-    <div style="width:100%;margin-top:10px;">
+    <div
+      @click="toQuestion"
+      class="question"
+      style="margin-top:10px;"
+    >{{questionInfo.question.question}}</div>
+    <div style="margin-top:10px;">
       <div v-if="questionInfo.defaultAnswer!=null">
         <div
           ref="answer"
@@ -80,13 +84,16 @@ export default {
       this.answerStyle.maxHeight = obj.scrollHeight + "px";
     },
     toQuestion() {
-      this.$router.push({
-        path: "/question",
-        query: {
-          qid: this.questionInfo.question.qid,
-          aid: this.aid
-        }
-      });
+      window.open(
+        this.$router.resolve({
+          path: "/question",
+          query: {
+            qid: this.questionInfo.question.qid,
+            aid: this.aid
+          }
+        }).href,
+        "_blank"
+      );
     }
   },
   computed: {
@@ -116,12 +123,6 @@ export default {
 };
 </script>
 <style>
-.question {
-  font-weight: bold;
-  font-size: 20px;
-  cursor: pointer;
-  clear: both;
-}
 .questionInfo {
   width: 100%;
   text-align: left;
@@ -137,9 +138,7 @@ export default {
   color: black;
   text-align: center;
 }
-.divider {
-  margin: 10px 0 10px 0;
-}
+
 .hide_all {
   position: relative;
   height: 40px;

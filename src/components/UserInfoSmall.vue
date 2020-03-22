@@ -29,7 +29,6 @@ export default {
 .userInfoSmall {
   height: 30px;
   float: left;
-  margin-bottom: 10px;
 }
 .userInfoSmall_text {
   height: 30px;

@@ -88,10 +88,13 @@ export const _selectUserInfo = params => {
   return axios.get("selectUserInfo", { params: params });
 };
 
-export const _selectQuestionInfosByQuestion = params => {
-  return axios.get("selectQuestionInfosByQuestion", { params: params });
+export const _searchQuestionInfos = params => {
+  return axios.get("searchQuestionInfos", { params: params });
 };
 
+export const _searchUserInfos = params => {
+  return axios.get("searchUserInfos", { params: params });
+};
 export const _createIndex = params => {
   return axios.get("createIndex", { params: params });
 };

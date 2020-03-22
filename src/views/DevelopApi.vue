@@ -2,8 +2,7 @@
   <div>
     <el-button @click="signup" plain>注册一些账号</el-button>
     <el-button @click="insertQuestion" type="primary" plain>添加一个问题</el-button>
-    <el-button @click="createIndex" type="primary" plain>重新建立问题索引</el-button>
-    <el-button @click="selectQuestionInfosByQuestion" type="primary" plain>搜索</el-button>
+    <el-button @click="createIndex" type="primary" plain>重新建立索引</el-button>
   </div>
 </template>
 <script>
@@ -12,7 +11,6 @@ import {
   _insertQuestion,
   _updateAttitude,
   _approveReview,
-  _selectQuestionInfosByQuestion,
   _createIndex
 } from "../js/api";
 export default {
@@ -23,16 +21,10 @@ export default {
     };
   },
   methods: {
-    selectQuestionInfosByQuestion() {
-      _selectQuestionInfosByQuestion({
-        question: "特",
-        uid: this.uid
-      }).then(res => {
+    createIndex() {
+      _createIndex().then(res => {
         console.log(res.data);
       });
-    },
-    createIndex() {
-      _createIndex().then(res => {});
     },
     signup() {
       var namestr = "鼠牛虎兔龙蛇马羊猴鸡狗猪";
