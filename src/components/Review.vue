@@ -9,7 +9,7 @@
       <div class="gmt_create review_time">
         <span>{{reviewInfo.questioned?"(提问者)":" "}}</span>
         <span>{{reviewInfo.answered?"(回答者)":" "}}</span>
-        <span>{{(review.reply_rid!=null?'回复':'评论')+'于 '+$getTimeString(this.review.gmt_create)}}</span>
+        <span>{{(review.reply_rid!=null?'回复':'评论')+'于 '+$getTimeString(this.review.gmtCreate)}}</span>
       </div>
     </div>
     <div
@@ -47,13 +47,16 @@ export default {
       approveLoading: false
     };
   },
-  props: ["reviewInfo", "uid", "reply_userInfo"],
+  props: ["reviewInfo", "reply_userInfo"],
   computed: {
     reviewed() {
-      return this.uid != null && this.uid == this.review.uid;
+      return this.uId != null && this.uId == this.review.uId;
     },
     canDelete() {
       return this.reviewed && !this.review.deleted;
+    },
+    uId() {
+      return this.$store.getter.uId;
     }
   },
   created() {},
@@ -63,7 +66,7 @@ export default {
     },
     deleteReview() {
       var params = {
-        uid: this.uid,
+        uId: this.uId,
         rid: this.review.rid
       };
       _deleteReview(params).then(res => {
@@ -77,7 +80,7 @@ export default {
       this.approveLoading = true;
       var approve = !this.reviewInfo.approved;
       var params = {
-        uid: this.uid,
+        uId: this.uId,
         rid: this.review.rid,
         approve: approve
       };

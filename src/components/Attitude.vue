@@ -29,11 +29,10 @@
       <el-card :body-style="{ padding: '10px' }" v-if="showReview">
         <div style="height:600px;overflow:auto;">
           <template v-for="reviewInfo in reviews">
-            <div :key="reviewInfo.review.rid">
+            <div :key="reviewInfo.review.rId">
               <review
                 :reviewInfo="reviewInfo"
-                :uid="uid"
-                :reply_userInfo="getUserInfo(reviewInfo.review.reply_rid)"
+                :reply_userInfo="getUserInfo(reviewInfo.review.replyRId)"
                 @reply="reply"
               ></review>
             </div>
@@ -49,8 +48,8 @@
           >评论</el-button>
           <el-button
             type="danger"
-            @click="reply_rid=null"
-            v-show="reply_rid!=null"
+            @click="replyRId=null"
+            v-show="replyRId!=null"
             style="float:right;margin:0 10px 0 0;"
             plain
           >取消</el-button>
@@ -74,25 +73,28 @@ export default {
   },
   computed: {
     ReplyInfo() {
-      var notReply = this.reply_rid === null;
+      var notReply = this.replyRId === null;
       return (
         (notReply ? "评论" : "回复") +
         "给" +
         (notReply
           ? this.answerInfo.userInfo.user.nickname
-          : this.getUserInfo(this.reply_rid).user.nickname)
+          : this.getUserInfo(this.replyRId).user.nickname)
       );
     },
     reviewSet() {
       var set = {};
       this.reviews.forEach(element => {
-        set[element.review.rid] = element.userInfo;
+        set[element.review.rId] = element.userInfo;
       });
       return set;
+    },
+    uId() {
+      return this.$store.getter.uId;
     }
   },
 
-  props: ["answerInfo", "uid"],
+  props: ["answerInfo"],
   data() {
     return {
       attituded: this.answerInfo.attituded,
@@ -101,7 +103,7 @@ export default {
       showReview: false,
       reviews: [],
       review: "",
-      reply_rid: null,
+      replyRId: null,
       reviewLoading: false,
       reviewCount: this.answerInfo.reviewCount,
       center: true
@@ -112,7 +114,7 @@ export default {
       this.showReview = !this.showReview;
       if (this.showReview === false) return;
       this.reviewLoading = true;
-      _getReviews({ aid: this.answerInfo.answer.aid, uid: this.uid }).then(
+      _getReviews({ aId: this.answerInfo.answer.aId, uId: this.uId }).then(
         res => {
           this.reviews = res.data;
           this.reviewLoading = false;
@@ -121,17 +123,17 @@ export default {
     },
     insertReview() {
       var reviewForm = {
-        uid: this.uid,
-        aid: this.answerInfo.answer.aid,
-        reply_rid: this.reply_rid,
+        uId: this.uId,
+        aId: this.answerInfo.answer.aId,
+        replyRId: this.replyRId,
         review: this.review
       };
       _insertReview(reviewForm).then(res => {
-        var rid = Number(res.data);
-        if (rid > 0) {
+        var rId = Number(res);
+        if (rId > 0) {
           this.review = "";
-          reviewForm["rid"] = rid;
-          reviewForm["gmt_create"] = this.$nowTimestamp();
+          reviewForm["rId"] = rId;
+          reviewForm["gmtCreate"] = this.$nowTimestamp();
           var reviewInfo = {
             review: reviewForm,
             userInfo: this.$userInfo(false),
@@ -145,25 +147,21 @@ export default {
         }
       });
     },
-    reply(reply_rid) {
-      this.reply_rid = reply_rid;
+    reply(replyRId) {
+      this.replyRId = replyRId;
     },
 
-    getUserInfo(rid) {
-      if (rid != null) return this.reviewSet[rid];
+    getUserInfo(rId) {
+      if (rId != null) return this.reviewSet[rId];
       else return null;
     },
     getCountString(count) {
       return this.$getCountString(count);
     },
     updateAttitude(attitude) {
-      if (this.uid == null) {
-        this.$toLogin(this);
-        return;
-      }
       var params = {
-        uid: this.uid,
-        aid: this.answerInfo.answer.aid
+        uId: this.uId,
+        aId: this.answerInfo.answer.aId
       };
       if (this.attituded === attitude) {
         _deleteAttitude(params).then(res => {

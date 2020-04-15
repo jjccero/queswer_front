@@ -7,7 +7,7 @@
         <span
           class="gmt_create"
           style="float:right;"
-        >{{$getTimeString(questionInfo.defaultAnswer.answer.gmt_create)}}</span>
+        >{{$getTimeString(questionInfo.defaultAnswer.answer.gmtCreate)}}</span>
       </div>
       <div v-else>
         <userInfoSmall style :userInfo="questionInfo.userInfo"></userInfoSmall>
@@ -15,7 +15,7 @@
         <span
           class="gmt_create"
           style="float:right;"
-        >{{$getTimeString(questionInfo.question.gmt_create)}}</span>
+        >{{$getTimeString(questionInfo.question.gmtCreate)}}</span>
       </div>
     </div>
     <div
@@ -35,7 +35,7 @@
           <el-button @click="showAll" type="text" class="showAll_btn" icon="el-icon-arrow-down">查看全文</el-button>
         </div>
         <div style="margin-top:10px;">
-          <attitude :uid="uid" :answerInfo="questionInfo.defaultAnswer"></attitude>
+          <attitude :answerInfo="questionInfo.defaultAnswer"></attitude>
         </div>
       </div>
       <div v-else>
@@ -47,7 +47,6 @@
         ></div>
       </div>
     </div>
-
     <el-divider class="divider"></el-divider>
   </div>
 </template>
@@ -56,7 +55,7 @@ import userInfoSmall from "../components/UserInfoSmall";
 import attitude from "../components/Attitude";
 export default {
   name: "questionInfo",
-  props: ["questionInfo", "uid"],
+  props: ["questionInfo"],
   components: {
     attitude,
     userInfoSmall

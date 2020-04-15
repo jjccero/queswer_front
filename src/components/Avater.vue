@@ -4,19 +4,19 @@
 <script>
 export default {
   name: "avater",
-  props: ["uid", "avater"],
+  props: ["uId", "avater"],
   data() {
     return {
-      avaterUrl: "api/img/" + (this.avater ? this.uid : "null") + ".png"
+      avaterUrl: "api/img/" + (this.avater ? this.uId : "null") + ".png"
     };
   },
   methods: {
     toPeople() {
-      if (this.uid != null) {
+      if (this.uId != null) {
         this.$router.push({
           path: "/people",
           query: {
-            uid: this.uid
+            uId: this.uId
           }
         });
         if (this.$route.path === "/people") {

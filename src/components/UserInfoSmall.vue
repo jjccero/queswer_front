@@ -1,6 +1,6 @@
 <template>
   <span class="userInfoSmall">
-    <avater :uid="userInfo.user.uid" :avater="userInfo.user.avater" class="userInfoSmall_avater" />
+    <avater :uId="userInfo.user.uId" :avater="userInfo.user.avater" class="userInfoSmall_avater" />
     <b
       class="userInfoSmall_text"
       :class="{'anonymous':userInfo.anonymous}"
@@ -17,7 +17,7 @@ export default {
     return {
       avaterUrl:
         "api/img/" +
-        (this.userInfo.avater ? this.userInfo.uid : "null") +
+        (this.userInfo.avater ? this.userInfo.uId : "null") +
         ".png"
     };
   },

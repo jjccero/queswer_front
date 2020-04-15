@@ -57,19 +57,12 @@ export const _insertAnswer = params => {
 export const _updateAnswer = params => {
   return axios.post("updateAnswer", params);
 };
-export const _getUserInfo = params => {
-  return axios.post("/getUserInfo", params);
-};
 
 export const _getTopicList = () => {
   return axios.get("/getTopicList");
 };
 export const _addTopic = params => {
   return axios.post("/addTopic", params);
-};
-
-export const _getOpptunityList = params => {
-  return axios.get("/getOpptunityList", { params: params });
 };
 
 export const _signup = params => {

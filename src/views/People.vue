@@ -45,14 +45,13 @@ export default {
       str: "<p>gg</p>"
     };
   },
-  props: ["uid"],
   name: "people",
   created() {
-    var people_uid = this.$route.query.uid;
-    if (people_uid != null) {
+    var peopleUId = this.$route.query.uId;
+    if (peopleUId != null) {
       _selectUserInfo({
-        people_uid: people_uid,
-        uid: this.uid
+        peopleUId: peopleUId,
+        uId: this.uId
       }).then(res => {
         this.userInfo = res.data;
       });
@@ -62,9 +61,12 @@ export default {
     avaterUrl() {
       return (
         "api/img/" +
-        (this.userInfo.user.avater ? this.userInfo.user.uid : "null") +
+        (this.userInfo.user.avater ? this.userInfo.user.uId : "null") +
         ".png"
       );
+    },
+    uId() {
+      return this.$store.getter.uId;
     }
   }
 };

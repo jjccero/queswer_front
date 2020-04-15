@@ -14,7 +14,6 @@ import {
   _createIndex
 } from "../js/api";
 export default {
-  props: ["uid"],
   data() {
     return {
       questionInfos: []
@@ -48,13 +47,18 @@ export default {
     },
     insertQuestion() {
       var param = {
-        uid: this.$getUid(),
-        question: "hh",
+        uId: this.uId,
+        title: "hh",
         anonymous: false
       };
       _insertQuestion(param).then(res => {
         console.log(res.data);
       });
+    }
+  },
+  computed: {
+    uId() {
+      return this.$store.getter.uId;
     }
   }
 };

@@ -2,7 +2,7 @@
   <div>
     <el-tag
       v-for="topic in topicList"
-      :key="topic.tid"
+      :key="topic.tId"
       @close="deleteTopic"
       class="topic_delete_tag"
       closable
@@ -17,7 +17,7 @@ export default {
   data() {
     return {
       topicList: [],
-      topic_name: ""
+      topicName: ""
     };
   },
   created() {
@@ -33,9 +33,9 @@ export default {
       _addTopic({
         topic_name: this.topic_name
       }).then(res => {
-        var tid = res.data;
-        if (tid > 0) {
-          this.topicList.push({ tid: tid, topic_name: this.topic_name });
+        var tId = res;
+        if (tId > 0) {
+          this.topicList.push({ tId: tId, topicName: this.topicName });
         }
       });
     },

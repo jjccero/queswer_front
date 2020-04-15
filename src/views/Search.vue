@@ -17,18 +17,14 @@
     <div v-if="searched">
       <el-card :body-style="{ padding: '10px' }" style="text-align:left;">
         <div v-if="select==='1'">
-          <div
-            v-for="questionInfo in questionInfoDatas"
-            :key="questionInfo.question.qid"
-            :uid="uid"
-          >
+          <div v-for="questionInfo in questionInfoDatas" :key="questionInfo.question.qId">
             <div v-html="redFont(questionInfo.question.question,template)" class="question"></div>
             <div v-html="redFont(questionInfo.question.detail,template)" style="margin-top:10px;"></div>
             <el-divider class="divider"></el-divider>
           </div>
         </div>
         <div v-else-if="select==='2'">
-          <div v-for="userInfo in userInfoDatas" :key="userInfo.user.uid">
+          <div v-for="userInfo in userInfoDatas" :key="userInfo.user.uId">
             <userInfo :userInfo="userInfo"></userInfo>
             <el-divider class="divider"></el-divider>
           </div>
@@ -71,7 +67,7 @@ export default {
       if (this.select === "1") {
         _searchQuestionInfos({
           question: this.template,
-          uid: this.uid
+          uId: this.uId
         }).then(res => {
           this.questionInfos = res.data;
           this.searched = true;
@@ -80,7 +76,7 @@ export default {
       } else {
         _searchUserInfos({
           nickname: this.template,
-          uid: this.uid
+          uId: this.uId
         }).then(res => {
           this.userInfos = res.data;
           this.searched = true;
@@ -127,12 +123,14 @@ export default {
     length() {
       if (this.select === "1") return this.questionInfos.length;
       else if (this.select === "2") return this.userInfos.length;
+    },
+    uId() {
+      return this.$store.getter.uId;
     }
   },
   components: {
     userInfo
-  },
-  props: ["uid"]
+  }
 };
 </script>
 <style>

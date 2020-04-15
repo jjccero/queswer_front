@@ -1,19 +1,18 @@
 <template>
   <div>
-    <el-tabs type="border-card" v-model="tab_index" style="margin-bottom:10px;">
+    <el-tabs type="border-card" v-model="tabIndex" style="margin-bottom:10px;">
       <el-tab-pane
         label="热榜"
         name="0"
         style="overflow:auto;"
         v-infinite-scroll="load"
         infinite-scroll-disabled="loading"
-        :style="tab_style"
+        :style="tabStyle"
       >
         <questionInfo
           v-for="questionInfo in questionInfos"
-          :key="questionInfo.question.qid"
+          :key="questionInfo.question.qId"
           :questionInfo="questionInfo"
-          :uid="uid"
         ></questionInfo>
       </el-tab-pane>
       <el-tab-pane label="关注">关注。。</el-tab-pane>
@@ -25,7 +24,6 @@
 import { _getQuestions } from "../js/api";
 import questionInfo from "../components/QuestionInfo";
 export default {
-  props: ["uid"],
   data() {
     return {
       loadingg: true,
@@ -33,8 +31,8 @@ export default {
       questionInfos: [],
       offset: 0,
       count: 10,
-      tab_index: "0",
-      tab_style: {
+      tabIndex: "0",
+      tabStyle: {
         maxHeight: window.innerHeight - 131 + "px"
       }
     };
@@ -42,13 +40,12 @@ export default {
   components: {
     questionInfo
   },
-
   methods: {
     load() {
       if (this.loading) return;
       this.loading = true;
       var params = {
-        uid: this.uid,
+        uId: this.uId,
         offset: this.offset,
         count: this.count
       };
@@ -70,10 +67,14 @@ export default {
   },
   mounted() {
     window.onresize = () => {
-      this.tab_style.maxHeight = window.innerHeight - 131 + "px";
+      this.tabStyle.maxHeight = window.innerHeight - 131 + "px";
     };
   },
-  computed: {}
+  computed: {
+    uId() {
+      return this.$store.getter.uId;
+    }
+  }
 };
 </script>
 <style>

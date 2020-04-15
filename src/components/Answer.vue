@@ -7,9 +7,9 @@
     <div
       class="gmt_create"
       style="margin-top:10px;"
-    >回答于 {{$getTimeString(answer.gmt_modify!=null?answer.gmt_modify:answer.gmt_create)}}</div>
+    >回答于 {{$getTimeString(answer.gmtModify!=null?answer.gmtModify:answer.gmtCreate)}}</div>
     <div style="margin-top:10px">
-      <attitude :uid="uid" :answerInfo="answerInfo"></attitude>
+      <attitude :answerInfo="answerInfo"></attitude>
       <el-button
         type="text"
         @click="updateAnswer"
@@ -52,7 +52,7 @@ export default {
       this.$emit("insertAnswer");
     }
   },
-  props: ["answerInfo", "uid", "answered", "questioned"]
+  props: ["answerInfo", "answered", "questioned"]
 };
 </script>
 

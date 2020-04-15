@@ -2,7 +2,7 @@
   <div class="userInfo">
     <avater
       style="float:left;"
-      :uid="userInfo.user.uid"
+      :uId="userInfo.user.uId"
       :avater="userInfo.user.avater"
       class="avater"
     />
@@ -26,7 +26,7 @@ export default {
     return {
       avaterUrl:
         "api/img/" +
-        (this.userInfo.avater ? this.userInfo.uid : "null") +
+        (this.userInfo.avater ? this.userInfo.uId : "null") +
         ".png"
     };
   },

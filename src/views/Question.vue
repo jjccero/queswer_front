@@ -3,7 +3,7 @@
     <div style="float:left;">
       <el-tag
         v-for="topic in questionInfo.topics"
-        :key="topic.tid"
+        :key="topic.tId"
         style="margin-right:10px;"
       >{{topic.topic_name}}</el-tag>
     </div>
@@ -34,7 +34,7 @@
       <div v-if="questionInfo.defaultAnswer != null">
         <answer
           :answerInfo="questionInfo.defaultAnswer"
-          :uid="uid"
+          :uId="uId"
           :answered="false"
           :questioned="questionInfo.questioned"
           @deleteAnswer="deleteAnswer"
@@ -43,7 +43,6 @@
       <div v-if="questionInfo.userAnswer!= null">
         <answer
           :answerInfo="questionInfo.userAnswer"
-          :uid="uid"
           :answered="true"
           :questioned="questionInfo.questioned"
           @deleteAnswer="deleteAnswer"
@@ -56,10 +55,9 @@
         class="divider"
       >{{answerInfos.length===0?'暂无其他回答':('更多'+answerInfos.length+'个回答')}}</el-divider>
       <template v-for="answerInfo in answerInfos">
-        <div :key="answerInfo.answer.aid" style="text-align:left;">
+        <div :key="answerInfo.answer.aId" style="text-align:left;">
           <answer
             :answerInfo="answerInfo"
-            :uid="uid"
             :answered="false"
             :questioned="questionInfo.questioned"
             @deleteAnswer="deleteAnswer"
@@ -95,7 +93,6 @@ import {
   _insertFollow,
   _getAnswers,
   _deleteFollow,
-  _getUserInfo,
   _insertAnswer,
   _updateAnswer,
   _deleteAnswer
@@ -106,14 +103,14 @@ export default {
   data() {
     return {
       questionInfo: {
-        qid: this.$route.query.qid,
+        qId: this.$route.query.qId,
         question: {
           anonymous: false,
-          question: null,
+          title: null,
           detail: null,
-          gmt_create: 0,
-          gmt_modify: null,
-          uid: null
+          gmtCreate: 0,
+          gmtModify: null,
+          uId: null
         },
         follow: false,
         followed: false,
@@ -127,13 +124,13 @@ export default {
       answerSet: {},
       answerInfos: [],
       answer: {
-        uid: null,
-        qid: null,
-        aid: null,
-        answer: null,
+        uId: null,
+        qId: null,
+        aId: null,
+        ans: null,
         anonymous: false,
-        gmt_create: 0,
-        gmt_modify: null
+        gmtCreate: 0,
+        gmtModify: null
       },
       showAnswerDrawer: false
     };
@@ -143,20 +140,20 @@ export default {
     userInfo
   },
   created() {
-    var qid = this.$route.query.qid;
-    if (qid == null) return;
+    var qId = this.$route.query.qId;
+    if (qId == null) return;
     _getQuestion({
-      qid: qid,
-      aid: this.$route.query.aid,
-      uid: this.uid
+      qId: qId,
+      aId: this.$route.query.aId,
+      uId: this.uId
     }).then(res => {
       this.questionInfo = res.data;
       if (this.questionInfo.userAnswer != null) {
         this.answer = this.questionInfo.userAnswer.answer;
       }
       _getAnswers({
-        qid: this.$route.query.qid,
-        uid: this.uid
+        qId: this.$route.query.qId,
+        uId: this.uId
       }).then(res => {
         var answerInfos = res.data;
         var old_length = this.answerInfos.length;
@@ -164,25 +161,25 @@ export default {
           var answerInfo = answerInfos[i];
           if (
             this.questionInfo.defaultAnswer != null &&
-            answerInfo.answer.aid === this.questionInfo.defaultAnswer.answer.aid
+            answerInfo.answer.aId === this.questionInfo.defaultAnswer.answer.aId
           ) {
             //若已经是默认回答
             this.questionInfo.defaultAnswer = answerInfo;
           } else if (
             this.questionInfo.userAnswer != null &&
-            answerInfo.answer.aid === this.questionInfo.userAnswer.answer.aid
+            answerInfo.answer.aId === this.questionInfo.userAnswer.answer.aId
           ) {
             this.questionInfo.userAnswer = answerInfo;
           } else {
-            var aid_key = "" + answerInfo.answer.aid;
-            if (this.answerSet.hasOwnProperty(aid_key)) {
+            var aIdKey = "" + answerInfo.answer.aId;
+            if (this.answerSet.hasOwnProperty(aIdKey)) {
               //set中已存在这个key，应该替换掉旧的
               console.log(answerInfo);
-              this.answerInfos[this.answerSet[aid_key]] = answerInfo;
+              this.answerInfos[this.answerSet[aIdKey]] = answerInfo;
             } else {
               //不存在这个key
               this.answerInfos.push(answerInfo);
-              this.answerSet[aid_key] = old_length++;
+              this.answerSet[aIdKey] = old_length++;
             }
           }
         }
@@ -191,13 +188,13 @@ export default {
   },
   methods: {
     handleFollow() {
-      if (this.uid == null) {
+      if (this.uId == null) {
         this.$toLogin(this);
         return;
       }
       var params = {
-        qid: this.$route.query.qid,
-        uid: this.uid
+        qId: this.$route.query.qId,
+        uId: this.uId
       };
       if (this.questionInfo.followed == false) {
         _insertFollow(params).then(res => {
@@ -239,13 +236,13 @@ export default {
     },
     deleteAnswer() {
       var params = {
-        uid: this.uid,
-        aid: this.answer.aid
+        uId: this.uId,
+        aId: this.answer.aId
       };
       _deleteAnswer(params).then(res => {
         if (res.data === true) {
           this.questionInfo.userAnswer = null;
-          this.answer.aid = null;
+          this.answer.aId = null;
           this.$message({
             showClose: true,
             message: "删除成功",
@@ -255,12 +252,12 @@ export default {
       });
     },
     insertAnswer() {
-      this.answer.uid = this.uid;
-      this.answer.qid = this.questionInfo.question.qid;
-      if (this.answer.aid != null) {
+      this.answer.uId = this.uId;
+      this.answer.qId = this.questionInfo.question.qId;
+      if (this.answer.aId != null) {
         _updateAnswer(this.answer).then(res => {
           if (res.data === true) {
-            this.answer.gmt_modify = this.$nowTimestamp();
+            this.answer.gmtModify = this.$nowTimestamp();
             this.questionInfo.userAnswer.answer = this.answer;
             this.questionInfo.userAnswer.userInfo = this.$userInfo(
               this.answer.anonymous
@@ -270,10 +267,10 @@ export default {
         });
       } else {
         _insertAnswer(this.answer).then(res => {
-          var aid = Number(res.data);
-          if (aid > 0) {
-            this.answer.aid = res.data;
-            this.answer.gmt_create = this.$nowTimestamp();
+          var aId = Number(res.data);
+          if (aId > 0) {
+            this.answer.aId = res.data;
+            this.answer.gmtCreate = this.$nowTimestamp();
             var answerInfo = {
               answer: this.answer,
               against: 0,
@@ -288,8 +285,11 @@ export default {
       }
     }
   },
-  props: ["uid"],
-  computed: {}
+  computed: {
+    uId() {
+      return this.$store.getter.uId;
+    }
+  }
 };
 </script>
 

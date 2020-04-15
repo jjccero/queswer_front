@@ -3,10 +3,9 @@
     <div class="home_header">
       <div class="home_main">
         <div class="home_queswer">问答社区</div>
-
         <el-dropdown class="home_user">
-          <span v-if="user.uid!=null" style="float: right;">
-            <avater :uid="user.uid" :avater="user.avater" class="home_avater"></avater>
+          <span v-if="uId!=null" style="float: right;">
+            <avater :uId="uId" :avater="user.avater" class="home_avater"></avater>
             <el-dropdown-menu>
               <el-dropdown-item @click.native="logout">注销</el-dropdown-item>
             </el-dropdown-menu>
@@ -31,7 +30,7 @@
     </div>
     <div class="home_main">
       <transition name="fade" mode="out-in">
-        <router-view :uid="user.uid"></router-view>
+        <router-view></router-view>
       </transition>
     </div>
   </div>
@@ -43,27 +42,23 @@ export default {
     avater
   },
   data() {
-    return {
-      user: {
-        uid: null,
-        avater: null
-      },
-      content: ""
-    };
+    return {};
   },
-  created() {
-    var user = JSON.parse(sessionStorage.getItem("user"));
-    if (user != null) this.user = user;
-  },
+  created() {},
   methods: {
     login() {
       this.$toLogin(this);
     },
     logout() {
-      this.user = {
-        uid: null
-      };
-      sessionStorage.removeItem("user");
+      this.$store.commit("logout");
+    }
+  },
+  computed: {
+    uId() {
+      return this.$store.getter.uId;
+    },
+    user() {
+      return this.$store.getter.user;
     }
   }
 };
