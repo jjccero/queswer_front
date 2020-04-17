@@ -66,7 +66,7 @@ export default {
       );
     },
     uId() {
-      return this.$store.getter.uId;
+      return this.$store.getters.uId;
     }
   }
 };

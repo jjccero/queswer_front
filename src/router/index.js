@@ -21,9 +21,9 @@ export default new Router({
           component: () => import("@/views/TopicList")
         },
         {
-          path: "/developApi",
+          path: "/develop",
           name: "开发者接口",
-          component: () => import("@/views/DevelopApi")
+          component: () => import("@/views/Develop")
         },
         {
           path: "/question",

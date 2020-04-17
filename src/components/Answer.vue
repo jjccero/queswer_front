@@ -3,7 +3,7 @@
     <div>
       <userInfo :userInfo="answerInfo.userInfo"></userInfo>
     </div>
-    <div v-html="answer.answer" class="answer"></div>
+    <div v-html="answer.ans" class="answer"></div>
     <div
       class="gmt_create"
       style="margin-top:10px;"
@@ -19,7 +19,7 @@
       >修改</el-button>
       <el-button
         type="text"
-        @click="deleteAnswer"
+        @click="handleDeleteAnswer"
         v-if="answered"
         icon="el-icon-delete"
         style="color:red;"
@@ -45,8 +45,8 @@ export default {
   },
   created() {},
   methods: {
-    deleteAnswer() {
-      this.$emit("deleteAnswer");
+    handleDeleteAnswer() {
+      this.$emit("handleDeleteAnswer");
     },
     updateAnswer() {
       this.$emit("insertAnswer");

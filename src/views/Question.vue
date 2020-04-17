@@ -34,10 +34,9 @@
       <div v-if="questionInfo.defaultAnswer != null">
         <answer
           :answerInfo="questionInfo.defaultAnswer"
-          :uId="uId"
           :answered="false"
           :questioned="questionInfo.questioned"
-          @deleteAnswer="deleteAnswer"
+          @handleDeleteAnswer="handleDeleteAnswer"
         ></answer>
       </div>
       <div v-if="questionInfo.userAnswer!= null">
@@ -45,8 +44,8 @@
           :answerInfo="questionInfo.userAnswer"
           :answered="true"
           :questioned="questionInfo.questioned"
-          @deleteAnswer="deleteAnswer"
-          @insertAnswer="showAnswerDrawer=true"
+          @handleDeleteAnswer="handleDeleteAnswer"
+          @preAnswer="showAnswerDrawer=true"
         ></answer>
       </div>
     </el-card>
@@ -56,12 +55,7 @@
       >{{answerInfos.length===0?'暂无其他回答':('更多'+answerInfos.length+'个回答')}}</el-divider>
       <template v-for="answerInfo in answerInfos">
         <div :key="answerInfo.answer.aId" style="text-align:left;">
-          <answer
-            :answerInfo="answerInfo"
-            :answered="false"
-            :questioned="questionInfo.questioned"
-            @deleteAnswer="deleteAnswer"
-          ></answer>
+          <answer :answerInfo="answerInfo" :answered="false" :questioned="questionInfo.questioned"></answer>
         </div>
       </template>
     </el-card>
@@ -83,20 +77,18 @@
         </el-col>
       </el-row>
       <el-checkbox v-model="answer.anonymous">开启匿名</el-checkbox>
-      <el-button type="primary" @click="insertAnswer">提交</el-button>
+      <el-button type="primary" @click="handleAnswer">提交</el-button>
     </el-drawer>
   </div>
 </template>
 <script>
+import { getQuestion, saveFollow, deleteFollow } from "@/api/question";
 import {
-  _getQuestion,
-  _insertFollow,
-  _getAnswers,
-  _deleteFollow,
-  _insertAnswer,
-  _updateAnswer,
-  _deleteAnswer
-} from "../js/api";
+  saveAnswer,
+  updateAnswer,
+  deleteAnswer,
+  queryAnswers
+} from "@/api/answer";
 import answer from "../components/Answer";
 import userInfo from "../components/UserInfo";
 export default {
@@ -142,20 +134,20 @@ export default {
   created() {
     var qId = this.$route.query.qId;
     if (qId == null) return;
-    _getQuestion({
+    getQuestion({
       qId: qId,
       aId: this.$route.query.aId,
       uId: this.uId
     }).then(res => {
-      this.questionInfo = res.data;
+      this.questionInfo = res;
       if (this.questionInfo.userAnswer != null) {
         this.answer = this.questionInfo.userAnswer.answer;
       }
-      _getAnswers({
+      queryAnswers({
         qId: this.$route.query.qId,
         uId: this.uId
       }).then(res => {
-        var answerInfos = res.data;
+        var answerInfos = res;
         var old_length = this.answerInfos.length;
         for (var i = 0; i < answerInfos.length; ++i) {
           var answerInfo = answerInfos[i];
@@ -174,7 +166,6 @@ export default {
             var aIdKey = "" + answerInfo.answer.aId;
             if (this.answerSet.hasOwnProperty(aIdKey)) {
               //set中已存在这个key，应该替换掉旧的
-              console.log(answerInfo);
               this.answerInfos[this.answerSet[aIdKey]] = answerInfo;
             } else {
               //不存在这个key
@@ -188,17 +179,13 @@ export default {
   },
   methods: {
     handleFollow() {
-      if (this.uId == null) {
-        this.$toLogin(this);
-        return;
-      }
       var params = {
         qId: this.$route.query.qId,
         uId: this.uId
       };
       if (this.questionInfo.followed == false) {
-        _insertFollow(params).then(res => {
-          if (res.data === true) {
+        saveFollow(params).then(res => {
+          if (res === true) {
             this.$message({
               showClose: true,
               message: "关注成功",
@@ -215,8 +202,8 @@ export default {
           }
         });
       } else {
-        _deleteFollow(params).then(res => {
-          if (res.data) {
+        deleteFollow(params).then(res => {
+          if (res === true) {
             this.$message({
               showClose: true,
               message: "取消关注成功",
@@ -234,13 +221,13 @@ export default {
         });
       }
     },
-    deleteAnswer() {
+    handleDeleteAnswer() {
       var params = {
         uId: this.uId,
         aId: this.answer.aId
       };
-      _deleteAnswer(params).then(res => {
-        if (res.data === true) {
+      deleteAnswer(params).then(res => {
+        if (res === true) {
           this.questionInfo.userAnswer = null;
           this.answer.aId = null;
           this.$message({
@@ -251,12 +238,12 @@ export default {
         }
       });
     },
-    insertAnswer() {
+    handleAnswer() {
       this.answer.uId = this.uId;
       this.answer.qId = this.questionInfo.question.qId;
       if (this.answer.aId != null) {
-        _updateAnswer(this.answer).then(res => {
-          if (res.data === true) {
+        updateAnswer(this.answer).then(res => {
+          if (res === true) {
             this.answer.gmtModify = this.$nowTimestamp();
             this.questionInfo.userAnswer.answer = this.answer;
             this.questionInfo.userAnswer.userInfo = this.$userInfo(
@@ -266,10 +253,10 @@ export default {
           }
         });
       } else {
-        _insertAnswer(this.answer).then(res => {
-          var aId = Number(res.data);
+        saveAnswer(this.answer).then(res => {
+          var aId = Number(res);
           if (aId > 0) {
-            this.answer.aId = res.data;
+            this.answer.aId = aId;
             this.answer.gmtCreate = this.$nowTimestamp();
             var answerInfo = {
               answer: this.answer,
@@ -287,7 +274,7 @@ export default {
   },
   computed: {
     uId() {
-      return this.$store.getter.uId;
+      return this.$store.getters.uId;
     }
   }
 };

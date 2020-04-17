@@ -16,7 +16,8 @@ import {
   getUid,
   toLogin,
   getCountString,
-  nowTimestamp
+  nowTimestamp,
+  userInfo
 } from "./js/utils";
 Vue.prototype.$getTimeString = getTimeString;
 Vue.prototype.$getUid = getUid;

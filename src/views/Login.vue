@@ -10,8 +10,8 @@
             <el-form-item label="密码" prop="password">
               <el-input v-model="loginForm.password" placeholder="请输入密码"></el-input>
             </el-form-item>
-            <el-button type="primary" @click="login">登陆</el-button>
-            <el-button type="primary" @click="login">注册</el-button>
+            <el-button type="primary" @click="handleLogin">登陆</el-button>
+            <el-button type="primary" @click="handleLogin">注册</el-button>
           </el-form>
         </el-row>
         <el-row></el-row>
@@ -20,7 +20,7 @@
   </div>
 </template>
 <script>
-import { _login } from "../js/api";
+import { login } from "@/api/user";
 export default {
   data() {
     return {
@@ -32,8 +32,8 @@ export default {
     };
   },
   methods: {
-    login() {
-      _login(this.loginForm).then(res => {
+    handleLogin() {
+      login(this.loginForm).then(res => {
         switch (res.authority) {
           case -2:
             this.$message({

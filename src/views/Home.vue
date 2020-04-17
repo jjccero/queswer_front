@@ -55,10 +55,10 @@ export default {
   },
   computed: {
     uId() {
-      return this.$store.getter.uId;
+      return this.$store.getters.uId;
     },
     user() {
-      return this.$store.getter.user;
+      return this.$store.getters.user;
     }
   }
 };

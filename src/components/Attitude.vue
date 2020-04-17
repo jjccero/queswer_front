@@ -2,14 +2,14 @@
   <span style="height: 40px;margin-top:4px;">
     <el-button
       size="small"
-      @click="updateAttitude(true)"
+      @click="handleUpdateAttitude(true)"
       icon="el-icon-caret-top"
       type="primary"
       plain
-    >{{getCountString(agree)}} {{attituded?"已赞同":''}}</el-button>
+    >{{getCountString(agree)}} {{attituded===true?"已赞同":''}}</el-button>
     <el-button
       size="small"
-      @click="updateAttitude(false)"
+      @click="handleUpdateAttitude(false)"
       icon="el-icon-caret-bottom"
       style="margin-left:0px;"
       type="danger"
@@ -18,7 +18,7 @@
     <el-button
       type="text"
       :loading="reviewLoading"
-      @click="getReviews"
+      @click="handleQueryReviews"
       icon="el-icon-chat-round"
       style="color:gray;margin-left:10px;"
     >{{reviewCount}}</el-button>
@@ -43,7 +43,7 @@
           <el-button
             style="float:right;margin-bottom:10px;"
             type="primary"
-            @click="insertReview"
+            @click="handleSaveReview"
             plain
           >评论</el-button>
           <el-button
@@ -60,12 +60,8 @@
 </template>
 <script>
 import review from "../components/Review";
-import {
-  _updateAttitude,
-  _deleteAttitude,
-  _getReviews,
-  _insertReview
-} from "../js/api";
+import { updateAttitude, deleteAttitude } from "@/api/answer";
+import { queryReviews, saveReview } from "@/api/review";
 export default {
   name: "attitude",
   components: {
@@ -90,10 +86,9 @@ export default {
       return set;
     },
     uId() {
-      return this.$store.getter.uId;
+      return this.$store.getters.uId;
     }
   },
-
   props: ["answerInfo"],
   data() {
     return {
@@ -110,25 +105,25 @@ export default {
     };
   },
   methods: {
-    getReviews() {
+    handleQueryReviews() {
       this.showReview = !this.showReview;
       if (this.showReview === false) return;
       this.reviewLoading = true;
-      _getReviews({ aId: this.answerInfo.answer.aId, uId: this.uId }).then(
+      queryReviews({ aId: this.answerInfo.answer.aId, uId: this.uId }).then(
         res => {
-          this.reviews = res.data;
+          this.reviews = res;
           this.reviewLoading = false;
         }
       );
     },
-    insertReview() {
+    handleSaveReview() {
       var reviewForm = {
         uId: this.uId,
         aId: this.answerInfo.answer.aId,
         replyRId: this.replyRId,
         review: this.review
       };
-      _insertReview(reviewForm).then(res => {
+      saveReview(reviewForm).then(res => {
         var rId = Number(res);
         if (rId > 0) {
           this.review = "";
@@ -150,7 +145,6 @@ export default {
     reply(replyRId) {
       this.replyRId = replyRId;
     },
-
     getUserInfo(rId) {
       if (rId != null) return this.reviewSet[rId];
       else return null;
@@ -158,16 +152,16 @@ export default {
     getCountString(count) {
       return this.$getCountString(count);
     },
-    updateAttitude(attitude) {
+    handleUpdateAttitude(atti) {
       var params = {
         uId: this.uId,
         aId: this.answerInfo.answer.aId
       };
-      if (this.attituded === attitude) {
-        _deleteAttitude(params).then(res => {
-          if (res.data === true) {
+      if (this.attituded === atti) {
+        deleteAttitude(params).then(res => {
+          if (res === true) {
             this.attituded = null;
-            if (attitude) {
+            if (atti) {
               --this.agree;
             } else {
               --this.against;
@@ -175,10 +169,10 @@ export default {
           }
         });
       } else {
-        params["attitude"] = attitude;
-        _updateAttitude(params).then(res => {
-          if (res.data === true) {
-            if (attitude) {
+        params["atti"] = atti;
+        updateAttitude(params).then(res => {
+          if (res === true) {
+            if (atti) {
               if (this.attituded === false) --this.against;
               ++this.agree;
               this.attituded = true;

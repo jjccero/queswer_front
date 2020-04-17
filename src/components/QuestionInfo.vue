@@ -22,14 +22,14 @@
       @click="toQuestion"
       class="question"
       style="margin-top:10px;"
-    >{{questionInfo.question.question}}</div>
+    >{{questionInfo.question.title}}</div>
     <div style="margin-top:10px;">
       <div v-if="questionInfo.defaultAnswer!=null">
         <div
           ref="answer"
           class="questionInfo_answer"
           :style="answerStyle"
-          v-html="questionInfo.defaultAnswer.answer.answer"
+          v-html="questionInfo.defaultAnswer.answer.ans"
         ></div>
         <div v-show="!isShowAll" class="hide_all">
           <el-button @click="showAll" type="text" class="showAll_btn" icon="el-icon-arrow-down">查看全文</el-button>
@@ -87,8 +87,8 @@ export default {
         this.$router.resolve({
           path: "/question",
           query: {
-            qid: this.questionInfo.question.qid,
-            aid: this.aid
+            qId: this.questionInfo.question.qId,
+            aId: this.aId
           }
         }).href,
         "_blank"
@@ -96,25 +96,25 @@ export default {
     }
   },
   computed: {
-    aid() {
+    aId() {
       return this.questionInfo.defaultAnswer != null
-        ? this.questionInfo.defaultAnswer.answer.aid
+        ? this.questionInfo.defaultAnswer.answer.aId
         : null;
     },
     ReplyInfo() {
-      var notReply = this.reply_rid === null;
+      var notReply = this.replyRId === null;
       return (
         (notReply ? "评论" : "回复") +
         "给" +
         (notReply
           ? this.answerInfo.userInfo.nickname
-          : this.getUserInfo(this.reply_rid).nickname)
+          : this.getUserInfo(this.replyRId).nickname)
       );
     },
     reviewSet() {
       var set = {};
       this.reviews.forEach(element => {
-        set[element.review.rid] = element.userInfo;
+        set[element.revi.rId] = element.userInfo;
       });
       return set;
     }

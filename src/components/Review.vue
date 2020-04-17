@@ -9,25 +9,25 @@
       <div class="gmt_create review_time">
         <span>{{reviewInfo.questioned?"(提问者)":" "}}</span>
         <span>{{reviewInfo.answered?"(回答者)":" "}}</span>
-        <span>{{(review.reply_rid!=null?'回复':'评论')+'于 '+$getTimeString(this.review.gmtCreate)}}</span>
+        <span>{{(review.replyRId!=null?'回复':'评论')+'于 '+$getTimeString(this.review.gmtCreate)}}</span>
       </div>
     </div>
     <div
       style="clear:left;margin-top:10px;"
-      :class="{'review_deleted':review.review===null}"
-    >{{review.review!=null?review.review:'该评论已删除'}}</div>
+      :class="{'review_deleted':review.revi===null}"
+    >{{review.revi!=null?review.revi:'该评论已删除'}}</div>
 
     <div>
       <el-button
         type="text"
-        @click="updateApprove"
+        @click="handleUpdateApprove"
         :class="{'approved':!reviewInfo.approved}"
         :loading="approveLoading"
       >赞{{reviewInfo.approveCount}}</el-button>
       <el-button type="text" @click="reply" style="color:gray;" icon="el-icon-chat-dot-round">回复</el-button>
       <el-button
         type="text"
-        @click="deleteReview"
+        @click="handleDeleteReview"
         v-if="canDelete"
         style="color:red;"
         icon="el-icon-delete"
@@ -37,7 +37,7 @@
   </div>
 </template>
 <script>
-import { _deleteReview, _updateApprove } from "../js/api";
+import { deleteReview, updateApprove } from "@/api/review";
 import userInfoSmall from "../components/UserInfoSmall";
 export default {
   name: "review",
@@ -56,36 +56,36 @@ export default {
       return this.reviewed && !this.review.deleted;
     },
     uId() {
-      return this.$store.getter.uId;
+      return this.$store.getters.uId;
     }
   },
   created() {},
   methods: {
     reply() {
-      this.$emit("reply", this.review.rid);
+      this.$emit("reply", this.review.rId);
     },
-    deleteReview() {
+    handleDeleteReview() {
       var params = {
         uId: this.uId,
-        rid: this.review.rid
+        rId: this.review.rId
       };
-      _deleteReview(params).then(res => {
-        if (res.data === true) {
-          this.review.review = null;
+      deleteReview(params).then(res => {
+        if (res === true) {
+          this.review.revi = null;
           this.review.deleted = true;
         }
       });
     },
-    updateApprove() {
+    handleUpdateApprove() {
       this.approveLoading = true;
       var approve = !this.reviewInfo.approved;
       var params = {
         uId: this.uId,
-        rid: this.review.rid,
+        rId: this.review.rId,
         approve: approve
       };
-      _updateApprove(params).then(res => {
-        if (res.data === true) {
+      updateApprove(params).then(res => {
+        if (res === true) {
           this.reviewInfo.approved = !this.reviewInfo.approved;
           if (approve) ++this.reviewInfo.approveCount;
           else --this.reviewInfo.approveCount;

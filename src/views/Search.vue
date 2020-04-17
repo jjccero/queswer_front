@@ -125,7 +125,7 @@ export default {
       else if (this.select === "2") return this.userInfos.length;
     },
     uId() {
-      return this.$store.getter.uId;
+      return this.$store.getters.uId;
     }
   },
   components: {

@@ -21,7 +21,7 @@
   </div>
 </template>
 <script>
-import { _getQuestions } from "../js/api";
+import { queryQuestions } from "@/api/question";
 import questionInfo from "../components/QuestionInfo";
 export default {
   data() {
@@ -49,10 +49,10 @@ export default {
         offset: this.offset,
         count: this.count
       };
-      _getQuestions(params).then(res => {
-        this.questionInfos = this.questionInfos.concat(res.data);
-        this.offset += res.data.length;
-        if (res.data.length < this.count) {
+      queryQuestions(params).then(res => {
+        this.questionInfos = this.questionInfos.concat(res);
+        this.offset += res.length;
+        if (res.length < this.count) {
           this.$message({
             message: "暂时没有更多了",
             type: "warning"
@@ -72,7 +72,7 @@ export default {
   },
   computed: {
     uId() {
-      return this.$store.getter.uId;
+      return this.$store.getters.uId;
     }
   }
 };
