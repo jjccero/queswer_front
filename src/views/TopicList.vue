@@ -6,8 +6,8 @@
       @close="deleteTopic"
       class="topic_delete_tag"
       closable
-    >{{topic.topic_name}}</el-tag>
-    <el-input v-model="topic_name"></el-input>
+    >{{topic.topicName}}</el-tag>
+    <el-input v-model="topicName"></el-input>
     <el-button type="primary" @click="addTopic">添加</el-button>
   </div>
 </template>
@@ -31,7 +31,7 @@ export default {
     },
     addTopic() {
       _addTopic({
-        topic_name: this.topic_name
+        topicName: this.topicName
       }).then(res => {
         var tId = res;
         if (tId > 0) {

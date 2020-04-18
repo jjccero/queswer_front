@@ -52,17 +52,6 @@ export const getCountString = count => {
   return count;
 };
 
-/**
- * 获取用户信息
- */
-export const getUid = () => {
-  var user = JSON.parse(sessionStorage.getItem("user"));
-  if (user != null) {
-    return user.uid;
-  }
-  return null;
-};
-
 export const toLogin = Vue => {
   Vue.$router.push("/login");
 };
@@ -70,12 +59,11 @@ export const toLogin = Vue => {
 export const nowTimestamp = () => {
   return new Date().getTime() / 1000;
 };
-
+import store from "../store";
 export const userInfo = anonymous => {
-  var user = JSON.parse(sessionStorage.getItem("user"));
   var UserInfo = {
     anonymous: anonymous,
-    user: user
+    user: store.getters.user
   };
   return UserInfo;
 };

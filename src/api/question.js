@@ -24,17 +24,17 @@ export function getQuestion(params) {
   });
 }
 
-export function saveFollow(params) {
+export function saveSubscribe(params) {
   return request({
-    url: "/saveFollow",
+    url: "/saveSubscribe",
     method: "get",
     params
   });
 }
 
-export function deleteFollow(params) {
+export function deleteSubscribe(params) {
   return request({
-    url: "/deleteFollow",
+    url: "/deleteSubscribe",
     method: "get",
     params
   });

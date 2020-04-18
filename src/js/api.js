@@ -13,10 +13,6 @@ export const _signup = params => {
   return axios.post("/signup", params);
 };
 
-export const _selectUserInfo = params => {
-  return axios.get("selectUserInfo", { params: params });
-};
-
 export const _searchQuestionInfos = params => {
   return axios.get("searchQuestionInfos", { params: params });
 };

@@ -13,14 +13,12 @@ Vue.use(ElementUI);
 import "./js/api";
 import {
   getTimeString,
-  getUid,
   toLogin,
   getCountString,
   nowTimestamp,
   userInfo
 } from "./js/utils";
 Vue.prototype.$getTimeString = getTimeString;
-Vue.prototype.$getUid = getUid;
 Vue.prototype.$toLogin = toLogin;
 Vue.prototype.$getCountString = getCountString;
 Vue.prototype.$nowTimestamp = nowTimestamp;

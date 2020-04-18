@@ -44,7 +44,9 @@ export default {
   data() {
     return {};
   },
-  created() {},
+  created() {
+    this.$store.commit("init");
+  },
   methods: {
     login() {
       this.$toLogin(this);

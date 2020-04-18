@@ -37,7 +37,7 @@
   </div>
 </template>
 <script>
-import { _selectUserInfo } from "../js/api";
+import { getUserInfo } from "@/api/user";
 export default {
   data() {
     return {
@@ -49,7 +49,7 @@ export default {
   created() {
     var peopleUId = this.$route.query.uId;
     if (peopleUId != null) {
-      _selectUserInfo({
+      getUserInfo({
         peopleUId: peopleUId,
         uId: this.uId
       }).then(res => {

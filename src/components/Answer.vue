@@ -10,21 +10,23 @@
     >回答于 {{$getTimeString(answer.gmtModify!=null?answer.gmtModify:answer.gmtCreate)}}</div>
     <div style="margin-top:10px">
       <attitude :answerInfo="answerInfo"></attitude>
-      <el-button
-        type="text"
-        @click="updateAnswer"
-        v-if="answered"
-        icon="el-icon-edit-outline"
-        style="color:gray;"
-      >修改</el-button>
-      <el-button
-        type="text"
-        @click="handleDeleteAnswer"
-        v-if="answered"
-        icon="el-icon-delete"
-        style="color:red;"
-      >删除</el-button>
-      <el-button size="small" type="text" icon="el-icon-warning-outline" style="color:gray;">举报</el-button>
+      <span style="margin-left:10px;">
+        <el-button
+          type="text"
+          @click="preAnswer"
+          v-if="answered"
+          icon="el-icon-edit-outline"
+          style="color:gray;"
+        >修改</el-button>
+        <el-button
+          type="text"
+          @click="handleDeleteAnswer"
+          v-if="answered"
+          icon="el-icon-delete"
+          style="color:red;"
+        >删除</el-button>
+        <el-button type="text" icon="el-icon-warning-outline" style="color:gray;">举报</el-button>
+      </span>
     </div>
     <el-divider class="divider"></el-divider>
   </div>
@@ -48,8 +50,8 @@ export default {
     handleDeleteAnswer() {
       this.$emit("handleDeleteAnswer");
     },
-    updateAnswer() {
-      this.$emit("insertAnswer");
+    preAnswer() {
+      this.$emit("preAnswer");
     }
   },
   props: ["answerInfo", "answered", "questioned"]

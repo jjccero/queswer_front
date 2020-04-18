@@ -17,14 +17,24 @@ const store = new Vuex.Store({
     user: defaultUser
   },
   mutations: {
+    init: state => {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (user != null) {
+        localStorage.setItem("user", JSON.stringify(user));
+        state.user = user;
+      }
+    },
     setToken: (state, token) => {
       state.token = token;
     },
     setUser: (state, user) => {
       state.user = user;
+      localStorage.setItem("user", JSON.stringify(user));
     },
-    logout() {
+    logout(state) {
       state.user = defaultUser;
+      localStorage.removeItem("user");
+      state.token = null;
     }
   },
   getters: {

@@ -7,3 +7,11 @@ export function login(data) {
     data
   });
 }
+
+export function getUserInfo(params) {
+  return request({
+    url: "/getUserInfo",
+    method: "get",
+    params
+  });
+}

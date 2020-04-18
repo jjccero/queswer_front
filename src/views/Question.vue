@@ -5,17 +5,21 @@
         v-for="topic in questionInfo.topics"
         :key="topic.tId"
         style="margin-right:10px;"
-      >{{topic.topic_name}}</el-tag>
+      >{{topic.topicName}}</el-tag>
     </div>
     <div style="float:right;">
       <el-button
-        v-if="questionInfo.followed"
+        v-if="questionInfo.subscribed"
         type="text"
-        @click="handleFollow"
+        @click="handleSubscribe"
         icon="el-icon-star-on"
       ></el-button>
-      <el-button v-else type="text" @click="handleFollow" icon="el-icon-star-off"></el-button>
-      <el-button type="text" class="follow" style="margin-left:0">{{questionInfo.followCount}}</el-button>
+      <el-button v-else type="text" @click="handleSubscribe" icon="el-icon-star-off"></el-button>
+      <el-button
+        type="text"
+        class="subscribe_btn"
+        style="margin-left:0"
+      >{{questionInfo.subscribeCount}}</el-button>
       <el-divider direction="vertical"></el-divider>
       <i class="el-icon-view"></i>
       <span class="viewed">{{questionInfo.viewCount}}</span>
@@ -23,7 +27,7 @@
 
       <el-button type="text" @click="showAnswerDrawer=true" icon="el-icon-edit">回答</el-button>
     </div>
-    <h1 style="clear:both;">{{questionInfo.question.question}}</h1>
+    <h1 style="clear:both;">{{questionInfo.question.title}}</h1>
     <div style="color:gray;font-size:10px;margin-top:10px;">问题描述：</div>
     <div v-html="questionInfo.question.detail"></div>
     <el-card
@@ -70,7 +74,7 @@
         <el-col :span="20">
           <el-input
             type="textarea"
-            v-model="answer.answer"
+            v-model="answer.ans"
             placeholder="请输入回答"
             :autosize="{ minRows: 8, maxRows:10}"
           ></el-input>
@@ -82,7 +86,7 @@
   </div>
 </template>
 <script>
-import { getQuestion, saveFollow, deleteFollow } from "@/api/question";
+import { getQuestion, saveSubscribe, deleteSubscribe } from "@/api/question";
 import {
   saveAnswer,
   updateAnswer,
@@ -104,9 +108,8 @@ export default {
           gmtModify: null,
           uId: null
         },
-        follow: false,
-        followed: false,
-        followCount: 0,
+        subscribed: false,
+        subscribeCount: 0,
         viewCount: 0,
         topics: [],
         questioned: false,
@@ -178,21 +181,21 @@ export default {
     });
   },
   methods: {
-    handleFollow() {
+    handleSubscribe() {
       var params = {
         qId: this.$route.query.qId,
         uId: this.uId
       };
-      if (this.questionInfo.followed == false) {
-        saveFollow(params).then(res => {
+      if (this.questionInfo.subscribed == false) {
+        saveSubscribe(params).then(res => {
           if (res === true) {
             this.$message({
               showClose: true,
               message: "关注成功",
               type: "success"
             });
-            this.questionInfo.followed = true;
-            ++this.questionInfo.followCount;
+            this.questionInfo.subscribed = true;
+            ++this.questionInfo.subscribeCount;
           } else {
             this.$message({
               showClose: true,
@@ -202,15 +205,15 @@ export default {
           }
         });
       } else {
-        deleteFollow(params).then(res => {
+        deleteSubscribe(params).then(res => {
           if (res === true) {
             this.$message({
               showClose: true,
               message: "取消关注成功",
               type: "success"
             });
-            this.questionInfo.followed = false;
-            --this.questionInfo.followCount;
+            this.questionInfo.subscribed = false;
+            --this.questionInfo.subscribeCount;
           } else {
             this.$message({
               showClose: true,
@@ -286,7 +289,7 @@ export default {
   font-size: 30px;
   font-weight: bold;
 }
-.follow {
+.subscribe_btn {
   font-size: 17px;
 }
 .divider {
