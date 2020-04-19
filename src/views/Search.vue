@@ -9,7 +9,7 @@
         <i
           slot="suffix"
           class="el-input__icon el-icon-search"
-          @click="search"
+          @click="handleSearch"
           style="cursor:pointer;"
         ></i>
       </el-input>
@@ -18,7 +18,11 @@
       <el-card :body-style="{ padding: '10px' }" style="text-align:left;">
         <div v-if="select==='1'">
           <div v-for="questionInfo in questionInfoDatas" :key="questionInfo.question.qId">
-            <div v-html="redFont(questionInfo.question.question,template)" class="question"></div>
+            <div
+              v-html="redFont(questionInfo.question.title,template)"
+              class="question"
+              @click="toQuestion(questionInfo.question.qId)"
+            ></div>
             <div v-html="redFont(questionInfo.question.detail,template)" style="margin-top:10px;"></div>
             <el-divider class="divider"></el-divider>
           </div>
@@ -42,7 +46,7 @@
 </template>
 <script>
 import userInfo from "../components/UserInfo";
-import { _searchUserInfos, _searchQuestionInfos } from "../js/api";
+import { searchUserInfos, searchQuestionInfos } from "@/api/search";
 export default {
   data() {
     return {
@@ -58,27 +62,27 @@ export default {
     };
   },
   methods: {
-    search() {
+    handleSearch() {
       this.searched = false;
       this.template = this.content.trim().toLowerCase();
       if (this.template === "") return;
       this.currentPage = 1;
       this.loading = true;
       if (this.select === "1") {
-        _searchQuestionInfos({
-          question: this.template,
+        searchQuestionInfos({
+          title: this.template,
           uId: this.uId
         }).then(res => {
-          this.questionInfos = res.data;
+          this.questionInfos = res;
           this.searched = true;
           this.loading = false;
         });
       } else {
-        _searchUserInfos({
+        searchUserInfos({
           nickname: this.template,
           uId: this.uId
         }).then(res => {
-          this.userInfos = res.data;
+          this.userInfos = res;
           this.searched = true;
           this.loading = false;
         });
@@ -105,6 +109,18 @@ export default {
         }
       }
       return res;
+    },
+    toQuestion(qId) {
+      window.open(
+        this.$router.resolve({
+          path: "/question",
+          query: {
+            qId: qId,
+            aId: null
+          }
+        }).href,
+        "_blank"
+      );
     }
   },
   computed: {

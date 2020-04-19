@@ -53,7 +53,7 @@ export default {
         peopleUId: peopleUId,
         uId: this.uId
       }).then(res => {
-        this.userInfo = res.data;
+        this.userInfo = res;
       });
     }
   },

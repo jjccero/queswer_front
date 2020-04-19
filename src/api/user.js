@@ -15,3 +15,35 @@ export function getUserInfo(params) {
     params
   });
 }
+
+export function saveFollow(params) {
+  return request({
+    url: "/saveFollow",
+    method: "get",
+    params
+  });
+}
+
+export function deleteFollow(params) {
+  return request({
+    url: "/deleteFollow",
+    method: "get",
+    params
+  });
+}
+
+export function queryUserInfosByFollowerId(params) {
+  return request({
+    url: "/queryUserInfosByFollowerId",
+    method: "get",
+    params
+  });
+}
+
+export function queryFollowerInfosIdsByUId(params) {
+  return request({
+    url: "/queryFollowerInfosIdsByUId",
+    method: "get",
+    params
+  });
+}

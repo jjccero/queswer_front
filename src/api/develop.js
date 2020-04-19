@@ -6,3 +6,10 @@ export function init() {
     method: "get"
   });
 }
+
+export function createIndex() {
+  return request({
+    url: "/createIndex",
+    method: "get"
+  });
+}
