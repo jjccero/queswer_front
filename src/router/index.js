@@ -18,7 +18,7 @@ export default new Router({
         {
           path: "/topics",
           name: "话题",
-          component: () => import("@/views/TopicList")
+          component: () => import("@/views/Topics")
         },
         {
           path: "/develop",

@@ -29,17 +29,17 @@
       <el-card :body-style="{ padding: '10px' }" v-if="showReview">
         <div style="height:600px;overflow:auto;">
           <template v-for="reviewInfo in reviews">
-            <div :key="reviewInfo.review.rId">
+            <div :key="reviewInfo.review.reviewId">
               <review
                 :reviewInfo="reviewInfo"
-                :reply_userInfo="getUserInfo(reviewInfo.review.replyRId)"
+                :reply_userInfo="getUserInfo(reviewInfo.review.replyId)"
                 @reply="reply"
               ></review>
             </div>
           </template>
         </div>
         <div style="margin-top:10px;">
-          <el-input style="width:420px;" v-model="review" :placeholder="ReplyInfo"></el-input>
+          <el-input style="width:420px;" v-model="revi" :placeholder="ReplyInfo"></el-input>
           <el-button
             style="float:right;margin-bottom:10px;"
             type="primary"
@@ -81,12 +81,12 @@ export default {
     reviewSet() {
       var set = {};
       this.reviews.forEach(element => {
-        set[element.review.rId] = element.userInfo;
+        set[element.review.reviewId] = element.userInfo;
       });
       return set;
     },
-    uId() {
-      return this.$store.getters.uId;
+    userId() {
+      return this.$store.getters.userId;
     }
   },
   props: ["answerInfo"],
@@ -97,7 +97,7 @@ export default {
       against: this.answerInfo.against,
       showReview: false,
       reviews: [],
-      review: "",
+      revi: "",
       replyRId: null,
       reviewLoading: false,
       reviewCount: this.answerInfo.reviewCount,
@@ -109,25 +109,26 @@ export default {
       this.showReview = !this.showReview;
       if (this.showReview === false) return;
       this.reviewLoading = true;
-      queryReviews({ aId: this.answerInfo.answer.aId, uId: this.uId }).then(
-        res => {
-          this.reviews = res;
-          this.reviewLoading = false;
-        }
-      );
+      queryReviews({
+        answerId: this.answerInfo.answer.answerId,
+        userId: this.userId
+      }).then(res => {
+        this.reviews = res;
+        this.reviewLoading = false;
+      });
     },
     handleSaveReview() {
       var reviewForm = {
-        uId: this.uId,
-        aId: this.answerInfo.answer.aId,
+        userId: this.userId,
+        answerId: this.answerInfo.answer.answerId,
         replyRId: this.replyRId,
-        review: this.review
+        revi: this.revi
       };
       saveReview(reviewForm).then(res => {
-        var rId = Number(res);
-        if (rId > 0) {
-          this.review = "";
-          reviewForm["rId"] = rId;
+        var reviewId = Number(res);
+        if (reviewId > 0) {
+          this.revi = "";
+          reviewForm["reviewId"] = reviewId;
           reviewForm["gmtCreate"] = this.$nowTimestamp();
           var reviewInfo = {
             review: reviewForm,
@@ -145,8 +146,8 @@ export default {
     reply(replyRId) {
       this.replyRId = replyRId;
     },
-    getUserInfo(rId) {
-      if (rId != null) return this.reviewSet[rId];
+    getUserInfo(reviewId) {
+      if (reviewId != null) return this.reviewSet[reviewId];
       else return null;
     },
     getCountString(count) {
@@ -154,8 +155,8 @@ export default {
     },
     handleUpdateAttitude(atti) {
       var params = {
-        uId: this.uId,
-        aId: this.answerInfo.answer.aId
+        userId: this.userId,
+        answerId: this.answerInfo.answer.answerId
       };
       if (this.attituded === atti) {
         deleteAttitude(params).then(res => {

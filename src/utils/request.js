@@ -4,7 +4,7 @@ import store from "@/store";
 const service = axios.create({
   baseURL: "/api", // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 5000 // request timeout
+  timeout: 60000 // request timeout
 });
 
 //发起请求的拦截器

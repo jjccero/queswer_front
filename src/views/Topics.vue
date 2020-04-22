@@ -1,41 +1,41 @@
 <template>
   <div>
     <el-tag
-      v-for="topic in topicList"
-      :key="topic.tId"
+      v-for="topic in topics"
+      :key="topic.topicId"
       @close="deleteTopic"
       class="topic_delete_tag"
       closable
     >{{topic.topicName}}</el-tag>
     <el-input v-model="topicName"></el-input>
-    <el-button type="primary" @click="addTopic">添加</el-button>
+    <el-button type="primary" @click="handleSaveTopic">添加</el-button>
   </div>
 </template>
 <script>
-import { _getTopicList, _addTopic } from "../js/api";
+import { queryTopics, saveTopic } from "@/api/topic";
 export default {
   data() {
     return {
-      topicList: [],
+      topics: [],
       topicName: ""
     };
   },
   created() {
-    this.getTopicList();
+    this.handleQueryTopics();
   },
   methods: {
-    getTopicList() {
-      _getTopicList().then(res => {
-        this.topicList = res.data;
+    handleQueryTopics() {
+      queryTopics().then(res => {
+        this.topics = res;
       });
     },
-    addTopic() {
-      _addTopic({
+    handleSaveTopic() {
+      saveTopic({
         topicName: this.topicName
       }).then(res => {
-        var tId = res;
-        if (tId > 0) {
-          this.topicList.push({ tId: tId, topicName: this.topicName });
+        var topicId = res;
+        if (topicId > 0) {
+          this.topics.push({ topicId: topicId, topicName: this.topicName });
         }
       });
     },

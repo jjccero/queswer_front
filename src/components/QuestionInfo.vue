@@ -1,9 +1,9 @@
 <template>
   <div class="questionInfo" style="width:100%;">
-    <div style="line-height:30px;">
+    <div style="line-height:30px;" v-if="!activity.userId">
       <div v-if="questionInfo.defaultAnswer!=null">
         <userInfoSmall style :userInfo="questionInfo.defaultAnswer.userInfo"></userInfoSmall>
-        <b style="margin-left:10px;">回答了问题</b>
+        <b style="margin-left:10px;">{{actionStr}}</b>
         <span
           class="gmt_create"
           style="float:right;"
@@ -11,12 +11,16 @@
       </div>
       <div v-else>
         <userInfoSmall style :userInfo="questionInfo.userInfo"></userInfoSmall>
-        <b style="margin-left:10px;">提出了问题</b>
+        <b style="margin-left:10px;">{{actionStr}}</b>
         <span
           class="gmt_create"
           style="float:right;"
         >{{$getTimeString(questionInfo.question.gmtCreate)}}</span>
       </div>
+    </div>
+    <div v-else>
+      <b>{{actionStr}}</b>
+      <span class="gmt_create" style="float:right;">{{$getTimeString(activity.gmtCreate)}}</span>
     </div>
     <div
       @click="toQuestion"
@@ -25,26 +29,10 @@
     >{{questionInfo.question.title}}</div>
     <div style="margin-top:10px;">
       <div v-if="questionInfo.defaultAnswer!=null">
-        <div
-          ref="answer"
-          class="questionInfo_answer"
-          :style="answerStyle"
-          v-html="questionInfo.defaultAnswer.answer.ans"
-        ></div>
-        <div v-show="!isShowAll" class="hide_all">
-          <el-button @click="showAll" type="text" class="showAll_btn" icon="el-icon-arrow-down">查看全文</el-button>
-        </div>
-        <div style="margin-top:10px;">
-          <attitude :answerInfo="questionInfo.defaultAnswer"></attitude>
-        </div>
+        <AnswerInfo :answerInfo="questionInfo.defaultAnswer" />
       </div>
       <div v-else>
-        <div
-          ref="answer"
-          class="questionInfo_answer"
-          :style="answerStyle"
-          v-html="questionInfo.question.detail"
-        ></div>
+        <div v-html="questionInfo.question.detail"></div>
       </div>
     </div>
     <el-divider class="divider"></el-divider>
@@ -52,43 +40,34 @@
 </template>
 <script>
 import userInfoSmall from "../components/UserInfoSmall";
-import attitude from "../components/Attitude";
+import AnswerInfo from "../components/AnswerInfo";
 export default {
   name: "questionInfo",
-  props: ["questionInfo"],
+  props: ["questionInfo", "activity"],
   components: {
-    attitude,
+    AnswerInfo,
     userInfoSmall
   },
   data() {
     return {
-      isShowAll: false,
-      answerStyle: {
-        maxHeight: "200px"
-      }
+      actionStrs: [
+        "关注了用户",
+        "添加了问题",
+        "关注了问题",
+        "关注了话题",
+        "回答了问题",
+        "赞同了回答"
+      ]
     };
   },
-  mounted() {
-    if (this.questionInfo.defaultAnswer != null) {
-      var obj = this.$refs.answer;
-      if (obj.scrollHeight < 200) {
-        this.isShowAll = true;
-      }
-    }
-  },
   methods: {
-    showAll() {
-      this.isShowAll = true;
-      var obj = this.$refs.answer;
-      this.answerStyle.maxHeight = obj.scrollHeight + "px";
-    },
     toQuestion() {
       window.open(
         this.$router.resolve({
           path: "/question",
           query: {
-            qId: this.questionInfo.question.qId,
-            aId: this.aId
+            questionId: this.questionInfo.question.questionId,
+            answerId: this.answerId
           }
         }).href,
         "_blank"
@@ -96,28 +75,15 @@ export default {
     }
   },
   computed: {
-    aId() {
+    answerId() {
       return this.questionInfo.defaultAnswer != null
-        ? this.questionInfo.defaultAnswer.answer.aId
+        ? this.questionInfo.defaultAnswer.answer.answerId
         : null;
     },
-    ReplyInfo() {
-      var notReply = this.replyRId === null;
-      return (
-        (notReply ? "评论" : "回复") +
-        "给" +
-        (notReply
-          ? this.answerInfo.userInfo.nickname
-          : this.getUserInfo(this.replyRId).nickname)
-      );
+    actionStr() {
+      return this.activity ? this.actionStrs[this.activity.act] : "";
     },
-    reviewSet() {
-      var set = {};
-      this.reviews.forEach(element => {
-        set[element.revi.rId] = element.userInfo;
-      });
-      return set;
-    }
+    gmtCreate() {}
   }
 };
 </script>
@@ -126,28 +92,5 @@ export default {
   width: 100%;
   text-align: left;
   clear: both;
-}
-.questionInfo_answer {
-  clear: both;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.showAll_btn {
-  width: 100%;
-  color: black;
-  text-align: center;
-}
-
-.hide_all {
-  position: relative;
-  height: 40px;
-  width: 100%;
-  margin-top: -40px;
-  margin-left: -10px;
-  background-image: linear-gradient(
-    -180deg,
-    rgba(255, 255, 255, 0) 0%,
-    #fff 70%
-  );
 }
 </style>

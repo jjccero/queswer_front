@@ -3,11 +3,15 @@
     <div class="home_header">
       <div class="home_main">
         <div class="home_queswer">问答社区</div>
-        <el-dropdown class="home_user">
-          <span v-if="uId!=null" style="float: right;">
-            <avater :uId="uId" :avater="user.avater" class="home_avater"></avater>
-            <el-dropdown-menu>
-              <el-dropdown-item @click.native="logout">注销</el-dropdown-item>
+        <el-dropdown :show-timeout="0" trigger="click" class="home_user">
+          <span v-if="userId!=null" style="float: right;">
+            <el-badge :is-dot="false">
+              <img :src="avaterUrl" class="home_avater" />
+            </el-badge>
+
+            <el-dropdown-menu style="width:100px;text-align:center;">
+              <el-dropdown-item @click.native="toPeople">个人主页</el-dropdown-item>
+              <el-dropdown-item @click.native="logout" divided>注销</el-dropdown-item>
             </el-dropdown-menu>
           </span>
           <span v-else>
@@ -36,11 +40,7 @@
   </div>
 </template>
 <script>
-import avater from "../components/Avater";
 export default {
-  components: {
-    avater
-  },
   data() {
     return {};
   },
@@ -53,14 +53,30 @@ export default {
     },
     logout() {
       this.$store.commit("logout");
+    },
+    toPeople() {
+      if (this.userId != null) {
+        this.$router.push({
+          path: "/people",
+          query: {
+            userId: this.userId
+          }
+        });
+        if (this.$route.path === "/people") {
+          location.reload();
+        }
+      }
     }
   },
   computed: {
-    uId() {
-      return this.$store.getters.uId;
+    userId() {
+      return this.$store.getters.userId;
     },
     user() {
       return this.$store.getters.user;
+    },
+    avaterUrl() {
+      return "api/img/" + this.userId + ".png";
     }
   }
 };
@@ -69,6 +85,7 @@ export default {
 .home_user {
   float: right;
   line-height: 50px;
+  cursor: pointer;
 }
 .home_header {
   width: 100%;

@@ -2,7 +2,7 @@
   <div v-if="userInfo!=null">
     <div class="user_card" style="width:100%;">
       <div style="background-color: #999999;height:60px;">
-        <el-button type="info" style="float:right;margin-top:10px;">私信</el-button>
+        <el-button type="info" @click="handleFollow" style="float:right;margin-top:10px;">私信</el-button>
         <el-button type="info" style="float:right;margin-top:10px;" icon="el-icon-user">关注</el-button>
         <el-button type="info" style="float:right;margin-top:10px;" plain>私信</el-button>
       </div>
@@ -30,43 +30,110 @@
         </div>
       </div>
     </div>
-    <div style="height:600px;margin-top:10px;float:left;">
-      <div class="user_card" style="height:600px; width:500px;" v-html="str"></div>
-      <div class="user_card" style="height:600px; width:290px;margin-left:10px;"></div>
+    <div style="height:600px;margin-top:10px;float:left;" class="activites_div_div">
+      <div
+        class="activites_div user_card"
+        v-infinite-scroll="load"
+        infinite-scroll-disabled="loading"
+      >
+        <div v-for="(activityInfo,index) in activityInfos" :key="index">
+          <ActivityInfo :activityInfo="activityInfo"></ActivityInfo>
+        </div>
+      </div>
+      <div class="user_card" style="height:600px; width:290px;margin-left:10px;">关注{{sexStr}}</div>
     </div>
   </div>
 </template>
 <script>
-import { getUserInfo } from "@/api/user";
+import { getUserInfo, queryPeopleActivities, saveFollow } from "@/api/user";
+import ActivityInfo from "../components/ActivityInfo";
 export default {
+  name: "people",
   data() {
     return {
-      userInfo: null,
-      str: "<p>gg</p>"
+      userInfo: {
+        user: {
+          authority: 0,
+          avater: null,
+          gmtCreate: 0,
+          intro: "",
+          nickname: "",
+          sex: null,
+          userId: null
+        },
+        followCount: 0,
+        followersCount: 0,
+        followed: false
+      },
+      str: "<p>gg</p>",
+      loadingg: true,
+      loading: false,
+      activityInfos: [],
+      offset: 0,
+      limit: 10
     };
   },
-  name: "people",
+  components: {
+    ActivityInfo
+  },
   created() {
-    var peopleUId = this.$route.query.uId;
-    if (peopleUId != null) {
+    var peopleId = this.peopleId;
+    if (peopleId != null) {
       getUserInfo({
-        peopleUId: peopleUId,
-        uId: this.uId
+        peopleId: peopleId,
+        userId: this.userId
       }).then(res => {
         this.userInfo = res;
       });
     }
   },
+  methods: {
+    load() {
+      if (this.loading) return;
+      this.loading = true;
+      var params = {
+        peopleId: this.peopleId,
+        userId: this.userId,
+        offset: this.offset,
+        limit: this.limit
+      };
+      queryPeopleActivities(params).then(res => {
+        this.activityInfos = this.activityInfos.concat(res);
+        this.offset += res.length;
+        if (res.length < this.limit) {
+          console.log("暂时没有更多了");
+          setTimeout(() => {
+            this.loading = false;
+            console.log("冷却完成");
+          }, 1000);
+        } else this.loading = false;
+      });
+    },
+    handleFollow() {}
+  },
   computed: {
     avaterUrl() {
       return (
         "api/img/" +
-        (this.userInfo.user.avater ? this.userInfo.user.uId : "null") +
+        (this.userInfo.user.avater ? this.userInfo.user.userId : "null") +
         ".png"
       );
     },
-    uId() {
-      return this.$store.getters.uId;
+    userId() {
+      return this.$store.getters.userId;
+    },
+    sexStr() {
+      switch (this.userInfo.user.sex) {
+        case 0:
+          return "他";
+        case 1:
+          return "她";
+        default:
+          return "ta";
+      }
+    },
+    peopleId() {
+      return this.$route.query.userId;
     }
   }
 };
@@ -112,5 +179,16 @@ export default {
 }
 .user_detail_value {
   font-size: 15px;
+}
+.activites_div {
+  height: 580px;
+  width: 480px;
+  overflow: auto;
+  padding: 10px;
+}
+.activites_div_div > ::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  background-color: transparent;
 }
 </style>

@@ -11,8 +11,9 @@
       >
         <questionInfo
           v-for="questionInfo in questionInfos"
-          :key="questionInfo.question.qId"
+          :key="questionInfo.question.questionId"
           :questionInfo="questionInfo"
+          :activity="{act:questionInfo.defaultAnswer!=null?4:1}"
         ></questionInfo>
       </el-tab-pane>
       <el-tab-pane label="关注">关注。。</el-tab-pane>
@@ -30,7 +31,7 @@ export default {
       loading: false,
       questionInfos: [],
       offset: 0,
-      count: 10,
+      limit: 10,
       tabIndex: "0",
       tabStyle: {
         maxHeight: window.innerHeight - 131 + "px"
@@ -45,18 +46,15 @@ export default {
       if (this.loading) return;
       this.loading = true;
       var params = {
-        uId: this.uId,
+        userId: this.userId,
         offset: this.offset,
-        count: this.count
+        limit: this.limit
       };
       queryQuestions(params).then(res => {
         this.questionInfos = this.questionInfos.concat(res);
         this.offset += res.length;
-        if (res.length < this.count) {
-          this.$message({
-            message: "暂时没有更多了",
-            type: "warning"
-          });
+        if (res.length < this.limit) {
+          console.log("暂时没有更多了");
           setTimeout(() => {
             this.loading = false;
             console.log("冷却完成");
@@ -71,8 +69,8 @@ export default {
     };
   },
   computed: {
-    uId() {
-      return this.$store.getters.uId;
+    userId() {
+      return this.$store.getters.userId;
     }
   }
 };

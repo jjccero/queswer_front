@@ -40,9 +40,25 @@ export function queryUserInfosByFollowerId(params) {
   });
 }
 
-export function queryFollowerInfosIdsByUId(params) {
+export function queryFollowerInfosByPeopleId(params) {
   return request({
-    url: "/queryFollowerInfosIdsByUId",
+    url: "/queryFollowerInfosByPeopleId",
+    method: "get",
+    params
+  });
+}
+
+export function signup(data) {
+  return request({
+    url: "/signup",
+    method: "post",
+    data
+  });
+}
+
+export function queryPeopleActivities(params) {
+  return request({
+    url: "/queryPeopleActivities",
     method: "get",
     params
   });

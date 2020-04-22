@@ -3,7 +3,7 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 const defaultUser = {
-  uId: null,
+  userId: null,
   nickname: null,
   intro: null,
   avater: null,
@@ -39,7 +39,7 @@ const store = new Vuex.Store({
   },
   getters: {
     token: state => state.token,
-    uId: state => state.user.uId,
+    userId: state => state.user.userId,
     user: state => state.user
   }
 });

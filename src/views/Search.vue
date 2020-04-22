@@ -17,18 +17,18 @@
     <div v-if="searched">
       <el-card :body-style="{ padding: '10px' }" style="text-align:left;">
         <div v-if="select==='1'">
-          <div v-for="questionInfo in questionInfoDatas" :key="questionInfo.question.qId">
+          <div v-for="questionInfo in questionInfoDatas" :key="questionInfo.question.questionId">
             <div
               v-html="redFont(questionInfo.question.title,template)"
               class="question"
-              @click="toQuestion(questionInfo.question.qId)"
+              @click="toQuestion(questionInfo.question.questionId)"
             ></div>
             <div v-html="redFont(questionInfo.question.detail,template)" style="margin-top:10px;"></div>
             <el-divider class="divider"></el-divider>
           </div>
         </div>
         <div v-else-if="select==='2'">
-          <div v-for="userInfo in userInfoDatas" :key="userInfo.user.uId">
+          <div v-for="userInfo in userInfoDatas" :key="userInfo.user.userId">
             <userInfo :userInfo="userInfo"></userInfo>
             <el-divider class="divider"></el-divider>
           </div>
@@ -71,7 +71,7 @@ export default {
       if (this.select === "1") {
         searchQuestionInfos({
           title: this.template,
-          uId: this.uId
+          userId: this.userId
         }).then(res => {
           this.questionInfos = res;
           this.searched = true;
@@ -80,7 +80,7 @@ export default {
       } else {
         searchUserInfos({
           nickname: this.template,
-          uId: this.uId
+          userId: this.userId
         }).then(res => {
           this.userInfos = res;
           this.searched = true;
@@ -110,13 +110,13 @@ export default {
       }
       return res;
     },
-    toQuestion(qId) {
+    toQuestion(questionId) {
       window.open(
         this.$router.resolve({
           path: "/question",
           query: {
-            qId: qId,
-            aId: null
+            questionId: questionId,
+            answerId: null
           }
         }).href,
         "_blank"
@@ -140,8 +140,8 @@ export default {
       if (this.select === "1") return this.questionInfos.length;
       else if (this.select === "2") return this.userInfos.length;
     },
-    uId() {
-      return this.$store.getters.uId;
+    userId() {
+      return this.$store.getters.userId;
     }
   },
   components: {

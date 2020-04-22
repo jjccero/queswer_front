@@ -9,7 +9,7 @@
       <div class="gmt_create review_time">
         <span>{{reviewInfo.questioned?"(提问者)":" "}}</span>
         <span>{{reviewInfo.answered?"(回答者)":" "}}</span>
-        <span>{{(review.replyRId!=null?'回复':'评论')+'于 '+$getTimeString(this.review.gmtCreate)}}</span>
+        <span>{{(review.replyId!=null?'回复':'评论')+'于 '+$getTimeString(this.review.gmtCreate)}}</span>
       </div>
     </div>
     <div
@@ -50,24 +50,24 @@ export default {
   props: ["reviewInfo", "reply_userInfo"],
   computed: {
     reviewed() {
-      return this.uId != null && this.uId == this.review.uId;
+      return this.userId != null && this.userId == this.review.userId;
     },
     canDelete() {
       return this.reviewed && !this.review.deleted;
     },
-    uId() {
-      return this.$store.getters.uId;
+    userId() {
+      return this.$store.getters.userId;
     }
   },
   created() {},
   methods: {
     reply() {
-      this.$emit("reply", this.review.rId);
+      this.$emit("reply", this.review.reviewId);
     },
     handleDeleteReview() {
       var params = {
-        uId: this.uId,
-        rId: this.review.rId
+        userId: this.userId,
+        reviewId: this.review.reviewId
       };
       deleteReview(params).then(res => {
         if (res === true) {
@@ -80,8 +80,8 @@ export default {
       this.approveLoading = true;
       var approve = !this.reviewInfo.approved;
       var params = {
-        uId: this.uId,
-        rId: this.review.rId,
+        userId: this.userId,
+        reviewId: this.review.reviewId,
         approve: approve
       };
       updateApprove(params).then(res => {
