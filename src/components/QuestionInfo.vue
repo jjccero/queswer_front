@@ -82,8 +82,7 @@ export default {
     },
     actionStr() {
       return this.activity ? this.actionStrs[this.activity.act] : "";
-    },
-    gmtCreate() {}
+    }
   }
 };
 </script>

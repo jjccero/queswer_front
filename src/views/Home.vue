@@ -4,11 +4,10 @@
       <div class="home_main">
         <div class="home_queswer">问答社区</div>
         <el-dropdown :show-timeout="0" trigger="click" class="home_user">
-          <span v-if="userId!=null" style="float: right;">
+          <span v-if="userId!=null" style="float: right;height:50px;">
             <el-badge :is-dot="false">
               <img :src="avaterUrl" class="home_avater" />
             </el-badge>
-
             <el-dropdown-menu style="width:100px;text-align:center;">
               <el-dropdown-item @click.native="toPeople">个人主页</el-dropdown-item>
               <el-dropdown-item @click.native="logout" divided>注销</el-dropdown-item>
@@ -76,7 +75,7 @@ export default {
       return this.$store.getters.user;
     },
     avaterUrl() {
-      return "api/img/" + this.userId + ".png";
+      return "api/img/" + (this.user.avater ? this.userId : "null") + ".png";
     }
   }
 };
@@ -113,6 +112,7 @@ export default {
 }
 .home_avater {
   width: 40px;
+  height: 40px;
   margin: 5px 0 5px 0;
   border-radius: 10%;
   float: right;

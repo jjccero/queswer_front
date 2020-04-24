@@ -1,10 +1,19 @@
 <template>
-  <div v-if="userInfo!=null">
-    <div class="user_card" style="width:100%;">
-      <div style="background-color: #999999;height:60px;">
-        <el-button type="info" @click="handleFollow" style="float:right;margin-top:10px;">私信</el-button>
-        <el-button type="info" style="float:right;margin-top:10px;" icon="el-icon-user">关注</el-button>
-        <el-button type="info" style="float:right;margin-top:10px;" plain>私信</el-button>
+  <div v-if="userInfo!=null" style="text-align: left;font-size:15px;">
+    <div class="user_card">
+      <div style="background-color: #999999;height:50px;">
+        <el-dropdown :show-timeout="0" trigger="click" style="float: right;margin-right:20px;">
+          <span>
+            <i
+              class="el-icon-more"
+              style="color:white;font-size:20px;cursor: pointer;line-height:50px;"
+            ></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item @click.native="handleFollow">{{userInfo.followed?'已':''}}关注</el-dropdown-item>
+            <el-dropdown-item>发消息</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </div>
       <div>
         <div class="user_avater_border">
@@ -13,74 +22,70 @@
         <div class="user_detail">
           <div style="font-size:30px;font-weight:bold;clear:right;">{{userInfo.user.nickname}}</div>
           <div class="user_detail_value">{{userInfo.user.intro}}</div>
-          <div>
-            <span class="user_detail_field">坐标</span>
-            <span class="user_detail_value">M78</span>
-          </div>
-          <div>
-            <span class="user_detail_field">所在行业</span>
-            <span class="user_detail_value">体育</span>
-          </div>
-          <div>
-            <span class="user_detail_field">职业经历</span>
-            <span class="user_detail_value">地球</span>
-            <b>·</b>
-            <span class="user_detail_value">少年健身教练</span>
-          </div>
         </div>
       </div>
     </div>
-    <div style="height:600px;margin-top:10px;float:left;" class="activites_div_div">
-      <div
-        class="activites_div user_card"
-        v-infinite-scroll="load"
-        infinite-scroll-disabled="loading"
-      >
-        <div v-for="(activityInfo,index) in activityInfos" :key="index">
-          <ActivityInfo :activityInfo="activityInfo"></ActivityInfo>
+    <div class="activities_div_div">
+      <div class="user_card" style="text-align:center;width:200px;padding: 10px 0 10px;">
+        <div class="follow_div" style="width:99px;border-right: 1px solid #ebebeb;">
+          <div>关注{{sexStr}}</div>
+          <el-tooltip :content="''+userInfo.followersCount" placement="left-start">
+            <b class="follow_div_b">{{userInfo.followersCount}}</b>
+          </el-tooltip>
+        </div>
+        <div class="follow_div" style="width:100px;">
+          <div>{{sexStr}}关注</div>
+          <el-tooltip :content="''+userInfo.followCount" placement="right-start">
+            <b class="follow_div_b">{{userInfo.followCount}}</b>
+          </el-tooltip>
         </div>
       </div>
-      <div class="user_card" style="height:600px; width:290px;margin-left:10px;">关注{{sexStr}}</div>
+      <div class="activities_div" v-infinite-scroll="load" infinite-scroll-disabled="loading">
+        <el-timeline style="font-size: 16px;">
+          <el-timeline-item
+            v-for="(activityInfo,index) in activityInfos"
+            :key="index"
+            :timestamp="$getTimeString(activityInfo.activity.gmtCreate)"
+            :color="colors[activityInfo.activity.act]"
+            size="large"
+            placement="top"
+          >
+            <el-card :body-style="{ padding: '10px' }">
+              <ActivityInfo :activityInfo="activityInfo" />
+            </el-card>
+          </el-timeline-item>
+        </el-timeline>
+      </div>
     </div>
   </div>
 </template>
 <script>
-import { getUserInfo, queryPeopleActivities, saveFollow } from "@/api/user";
+import {
+  getUserInfo,
+  queryPeopleActivities,
+  saveFollow,
+  deleteFollow
+} from "@/api/user";
 import ActivityInfo from "../components/ActivityInfo";
 export default {
   name: "people",
   data() {
     return {
-      userInfo: {
-        user: {
-          authority: 0,
-          avater: null,
-          gmtCreate: 0,
-          intro: "",
-          nickname: "",
-          sex: null,
-          userId: null
-        },
-        followCount: 0,
-        followersCount: 0,
-        followed: false
-      },
-      str: "<p>gg</p>",
-      loadingg: true,
+      userInfo: null,
       loading: false,
       activityInfos: [],
       offset: 0,
-      limit: 10
+      limit: 10,
+      colors: ["#DD0000", "brown", "#0000DD", "#48B753", "#DDA522", "green"]
     };
   },
   components: {
     ActivityInfo
   },
   created() {
-    var peopleId = this.peopleId;
-    if (peopleId != null) {
+    if (this.peopleId != null) {
       getUserInfo({
-        peopleId: peopleId,
+        peopleId: this.peopleId,
         userId: this.userId
       }).then(res => {
         this.userInfo = res;
@@ -109,7 +114,27 @@ export default {
         } else this.loading = false;
       });
     },
-    handleFollow() {}
+    handleFollow() {
+      const params = {
+        peopleId: this.peopleId,
+        userId: this.userId
+      };
+      if (this.userInfo.followed) {
+        deleteFollow(params).then(res => {
+          if (res === true) {
+            --this.userInfo.followersCount;
+            this.userInfo.followed = false;
+          }
+        });
+      } else {
+        saveFollow(params).then(res => {
+          if (res === true) {
+            ++this.userInfo.followersCount;
+            this.userInfo.followed = true;
+          }
+        });
+      }
+    }
   },
   computed: {
     avaterUrl() {
@@ -123,6 +148,7 @@ export default {
       return this.$store.getters.userId;
     },
     sexStr() {
+      if (this.isMe) return "我";
       switch (this.userInfo.user.sex) {
         case 0:
           return "他";
@@ -133,7 +159,10 @@ export default {
       }
     },
     peopleId() {
-      return this.$route.query.userId;
+      return Number(this.$route.query.userId);
+    },
+    isMe() {
+      return this.peopleId === this.userId;
     }
   }
 };
@@ -173,22 +202,31 @@ export default {
 .user_detail_field {
   width: 100px;
   margin-right: 20px;
-  font-size: 15px;
   float: left;
   font-weight: bold;
 }
-.user_detail_value {
-  font-size: 15px;
-}
-.activites_div {
+.activities_div {
   height: 580px;
-  width: 480px;
+  width: 580px;
   overflow: auto;
   padding: 10px;
 }
-.activites_div_div > ::-webkit-scrollbar {
-  width: 0;
-  height: 0;
+.activities_div_div {
+  width: 800px;
+  margin-top: 10px;
+  float: left;
+}
+.activities_div_div > ::-webkit-scrollbar {
   background-color: transparent;
+}
+.follow_div {
+  float: left;
+  height: 50px;
+}
+.follow_div_b {
+  cursor: pointer;
+  font-size: 20px;
+  height: 30px;
+  line-height: 30px;
 }
 </style>

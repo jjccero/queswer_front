@@ -1,13 +1,14 @@
 <template>
   <div style="text-align:left;">
     <div style="height:30px;line-height:30px;">
-      <b style="float:left;clear:left;">{{actionStr}}</b>
+      <userInfoSmall v-if="userInfo" :userInfo="userInfo" style="margin-right:10px;"></userInfoSmall>
+      <b style="float:left;">{{actionStr}}</b>
       <span
         class="gmt_create"
         style="float:right;"
       >{{$getTimeString(activityInfo.activity.gmtCreate)}}</span>
     </div>
-    <div v-if="hasPeople||hasAnswer||hasQuestion" style="height:30px;">
+    <div v-if="(!userInfo)&&(hasPeople||hasAnswer||hasQuestion)" style="height:30px;">
       <userInfoSmall v-if="hasPeople" :userInfo="activityInfo.info"></userInfoSmall>
       <userInfoSmall v-else-if="hasAnswer" :userInfo="activityInfo.info.defaultAnswer.userInfo"></userInfoSmall>
       <userInfoSmall v-else :userInfo="activityInfo.info.userInfo"></userInfoSmall>
@@ -23,7 +24,6 @@
       style="margin-top:10px;"
       :answerInfo="activityInfo.info.defaultAnswer"
     />
-    <el-divider class="divider"></el-divider>
   </div>
 </template>
 <script>
@@ -39,7 +39,7 @@ export default {
     return {
       actionStrs: [
         "关注了用户",
-        "添加了问题",
+        "提出了问题",
         "关注了问题",
         "关注了话题",
         "回答了问题",
@@ -74,6 +74,14 @@ export default {
     },
     hasPeople() {
       return this.activityInfo.activity.act === 0;
+    },
+    userInfo() {
+      return this.activityInfo.userInfo;
+    },
+    answerId() {
+      return this.hasAnswer
+        ? this.activityInfo.info.defaultAnswer.answer.answerId
+        : null;
     }
   }
 };

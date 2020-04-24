@@ -63,3 +63,11 @@ export function queryPeopleActivities(params) {
     params
   });
 }
+
+export function queryFollowActivities(params) {
+  return request({
+    url: "/queryFollowActivities",
+    method: "get",
+    params
+  });
+}
