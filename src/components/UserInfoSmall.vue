@@ -20,7 +20,7 @@ export default {
   data() {
     return {
       avaterUrl:
-        "api/img/" +
+        "/api/img/" +
         (this.userInfo.avater ? this.userInfo.userId : "null") +
         ".png"
     };

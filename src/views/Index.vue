@@ -35,12 +35,10 @@
 <script>
 import { queryFollowActivities } from "@/api/user";
 import { queryQuestions } from "@/api/question";
-import questionInfo from "../components/QuestionInfo";
 import ActivityInfo from "../components/ActivityInfo";
 export default {
   data() {
     return {
-      offset: 0,
       limit: 10,
       tabIndex: "0",
       tabStyle: {
@@ -50,12 +48,12 @@ export default {
       loading1: false,
       questionInfos: [],
       activityInfos: [],
+      page0: 0,
       page1: 0,
       show1: false
     };
   },
   components: {
-    questionInfo,
     ActivityInfo
   },
   methods: {
@@ -64,12 +62,12 @@ export default {
       this.loading0 = true;
       var params = {
         userId: this.userId,
-        offset: this.offset,
+        page: this.page0,
         limit: this.limit
       };
       queryQuestions(params).then(res => {
         this.questionInfos = this.questionInfos.concat(res);
-        this.offset += res.length;
+        ++this.page0;
         if (res.length < this.limit) {
           console.log("暂时没有更多了");
           setTimeout(() => {
@@ -84,7 +82,8 @@ export default {
       this.loading1 = true;
       var params = {
         userId: this.userId,
-        page: this.page1
+        page: this.page1,
+        limit: this.limit
       };
       queryFollowActivities(params).then(res => {
         this.activityInfos = this.activityInfos.concat(res);

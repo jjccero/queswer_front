@@ -1,60 +1,65 @@
 <template>
-  <div v-if="userInfo!=null" style="text-align: left;font-size:15px;">
-    <div class="user_card">
-      <div style="background-color: #999999;height:50px;">
+  <div v-if="userInfo!=null" style="text-align: left;">
+    <div class="user_card" style="font-size:15px;">
+      <div class="user_avater_border">
+        <img :src="avaterUrl" class="user_avater" />
+      </div>
+      <div style="width:612px;float:left;padding: 10px 0 10px;">
         <el-dropdown :show-timeout="0" trigger="click" style="float: right;margin-right:20px;">
           <span>
-            <i
-              class="el-icon-more"
-              style="color:white;font-size:20px;cursor: pointer;line-height:50px;"
-            ></i>
+            <i class="el-icon-more" style="color:gray;cursor: pointer;line-height:50px;"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item @click.native="handleFollow">{{userInfo.followed?'已':''}}关注</el-dropdown-item>
             <el-dropdown-item>发消息</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-      </div>
-      <div>
-        <div class="user_avater_border">
-          <img :src="avaterUrl" class="user_avater" />
-        </div>
-        <div class="user_detail">
-          <div style="font-size:30px;font-weight:bold;clear:right;">{{userInfo.user.nickname}}</div>
-          <div class="user_detail_value">{{userInfo.user.intro}}</div>
+        <div>
+          <div style="float:right;text-align:center;width:200px;">
+            <div class="follow_div" style="width:99px;border-right: 1px solid #ebebeb;">
+              <div>关注{{sexStr}}</div>
+              <el-tooltip :content="''+userInfo.followersCount" placement="left-start">
+                <b class="follow_div_b">{{userInfo.followersCount}}</b>
+              </el-tooltip>
+            </div>
+            <div class="follow_div" style="width:100px;">
+              <div>{{sexStr}}关注</div>
+              <el-tooltip :content="''+userInfo.followCount" placement="right-start">
+                <b class="follow_div_b">{{userInfo.followCount}}</b>
+              </el-tooltip>
+            </div>
+          </div>
+          <b style="line-height:50px;height:50px;font-size:30px;">{{userInfo.user.nickname}}</b>
+          <div class="user_detail">
+            <div class="user_detail_value">{{userInfo.user.intro}}</div>
+          </div>
         </div>
       </div>
     </div>
-    <div class="activities_div_div">
-      <div class="user_card" style="text-align:center;width:200px;padding: 10px 0 10px;">
-        <div class="follow_div" style="width:99px;border-right: 1px solid #ebebeb;">
-          <div>关注{{sexStr}}</div>
-          <el-tooltip :content="''+userInfo.followersCount" placement="left-start">
-            <b class="follow_div_b">{{userInfo.followersCount}}</b>
-          </el-tooltip>
-        </div>
-        <div class="follow_div" style="width:100px;">
-          <div>{{sexStr}}关注</div>
-          <el-tooltip :content="''+userInfo.followCount" placement="right-start">
-            <b class="follow_div_b">{{userInfo.followCount}}</b>
-          </el-tooltip>
+    <div class="activities_div_div user_card">
+      <div style="text-align:center;border-bottom: 1px solid #ebebeb;">
+        <el-menu :default-active="tabindex" mode="horizontal" @select="handleSelect">
+          <el-menu-item v-for="(item,index) in menu" :key="index" :index="''+index">
+            <span>{{item}}</span>
+          </el-menu-item>
+        </el-menu>
+      </div>
+      <div
+        class="activities_div"
+        v-show="tabindex==='0'"
+        v-infinite-scroll="load"
+        infinite-scroll-disabled="loading"
+      >
+        <div v-for="(activityInfo,index) in activityInfos" :key="index">
+          <ActivityInfo :activityInfo="activityInfo" />
+          <el-divider class="divider"></el-divider>
         </div>
       </div>
-      <div class="activities_div" v-infinite-scroll="load" infinite-scroll-disabled="loading">
-        <el-timeline style="font-size: 16px;">
-          <el-timeline-item
-            v-for="(activityInfo,index) in activityInfos"
-            :key="index"
-            :timestamp="$getTimeString(activityInfo.activity.gmtCreate)"
-            :color="colors[activityInfo.activity.act]"
-            size="large"
-            placement="top"
-          >
-            <el-card :body-style="{ padding: '10px' }">
-              <ActivityInfo :activityInfo="activityInfo" />
-            </el-card>
-          </el-timeline-item>
-        </el-timeline>
+      <div v-if="tabindex==='3'" class="activities_div">
+        <div v-for="(activityInfo,index) in activityInfos" :key="index">
+          <ActivityInfo :activityInfo="activityInfo" />
+          <el-divider class="divider"></el-divider>
+        </div>
       </div>
     </div>
   </div>
@@ -64,9 +69,13 @@ import {
   getUserInfo,
   queryPeopleActivities,
   saveFollow,
-  deleteFollow
+  deleteFollow,
+  queryUserInfosByFollowerId,
+  queryFollowerInfosByPeopleId,
+  queryAnswersByUserId,
+  queryQuestionsByUserId,
 } from "@/api/user";
-import ActivityInfo from "../components/ActivityInfo";
+import ActivityInfo from "../components/ActivityInfo"
 export default {
   name: "people",
   data() {
@@ -74,9 +83,12 @@ export default {
       userInfo: null,
       loading: false,
       activityInfos: [],
-      offset: 0,
+      page: 0,
       limit: 10,
-      colors: ["#DD0000", "brown", "#0000DD", "#48B753", "#DDA522", "green"]
+      colors: ["#DD0000", "brown", "#0000DD", "#48B753", "#DDA522", "green"],
+      menu: ["动态", "回答", "提问", "订阅"],
+      tabindex: "0",
+      
     };
   },
   components: {
@@ -99,12 +111,12 @@ export default {
       var params = {
         peopleId: this.peopleId,
         userId: this.userId,
-        offset: this.offset,
+        page: this.page,
         limit: this.limit
       };
       queryPeopleActivities(params).then(res => {
         this.activityInfos = this.activityInfos.concat(res);
-        this.offset += res.length;
+        ++this.page;
         if (res.length < this.limit) {
           console.log("暂时没有更多了");
           setTimeout(() => {
@@ -134,12 +146,15 @@ export default {
           }
         });
       }
+    },
+    handleSelect(key, keyPath) {
+      this.tabindex = key;
     }
   },
   computed: {
     avaterUrl() {
       return (
-        "api/img/" +
+        "/api/img/" +
         (this.userInfo.user.avater ? this.userInfo.user.userId : "null") +
         ".png"
       );
@@ -159,10 +174,23 @@ export default {
       }
     },
     peopleId() {
-      return Number(this.$route.query.userId);
+      return Number(this.$route.params.peopleId);
     },
     isMe() {
       return this.peopleId === this.userId;
+    }
+  },
+  watch: {
+    peopleId(val) {
+      this.userInfo = null;
+      this.activityInfos = [];
+      this.page = 0;
+      getUserInfo({
+        peopleId: this.peopleId,
+        userId: this.userId
+      }).then(res => {
+        this.userInfo = res;
+      });
     }
   }
 };
@@ -175,8 +203,8 @@ export default {
   border-radius: 5%;
 }
 .user_avater_border {
-  margin: -30px 0 0 20px;
-  background-color: #ffffff;
+  margin: 10px;
+  background-color: gray;
   width: 168px;
   height: 168px;
   border-radius: 5%;
@@ -190,7 +218,6 @@ export default {
 }
 .user_detail {
   float: left;
-  margin: 0 40px 10px;
   text-align: left;
   width: 532px;
 }
@@ -199,15 +226,8 @@ export default {
   clear: left;
   margin-top: 10px;
 }
-.user_detail_field {
-  width: 100px;
-  margin-right: 20px;
-  float: left;
-  font-weight: bold;
-}
 .activities_div {
-  height: 580px;
-  width: 580px;
+  height: 600px;
   overflow: auto;
   padding: 10px;
 }
@@ -217,6 +237,7 @@ export default {
   float: left;
 }
 .activities_div_div > ::-webkit-scrollbar {
+  width: 0;
   background-color: transparent;
 }
 .follow_div {

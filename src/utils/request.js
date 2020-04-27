@@ -1,6 +1,7 @@
 import axios from "axios";
 import store from "@/store";
 
+
 const service = axios.create({
   baseURL: "/api", // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
@@ -12,7 +13,6 @@ service.interceptors.request.use(
   config => {
     const token = store.getters.token;
     if (token) {
-      config.headers["token"] = token;
     }
     return config;
   },
@@ -23,8 +23,15 @@ service.interceptors.request.use(
 );
 
 service.interceptors.response.use(
-  response => {
-    return response.data;
+  response => { 
+    let code=response.data.code;
+    if(code!==0){
+      if(code===10000)
+        return Promise.reject(new Error("用户的非法请求"))
+    }
+    else{
+      return response.data.data;
+    }
   },
   error => {
     console.log(error);

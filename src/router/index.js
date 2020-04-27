@@ -22,7 +22,7 @@ export default new Router({
         },
         {
           path: "/develop",
-          name: "开发者接口",
+          name: "开发",
           component: () => import("@/views/Develop")
         },
         {
@@ -32,7 +32,7 @@ export default new Router({
           hidden: true
         },
         {
-          path: "/people",
+          path: "/people/:peopleId",
           name: "用户",
           component: () => import("@/views/People"),
           hidden: true

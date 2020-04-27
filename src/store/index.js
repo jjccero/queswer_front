@@ -13,7 +13,7 @@ const defaultUser = {
 };
 const store = new Vuex.Store({
   state: {
-    token: null,
+    token: 'hello',
     user: defaultUser
   },
   mutations: {

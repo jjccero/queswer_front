@@ -7,21 +7,15 @@ export default {
   props: ["userId", "avater"],
   data() {
     return {
-      avaterUrl: "api/img/" + (this.avater ? this.userId : "null") + ".png"
+      avaterUrl: "/api/img/" + (this.avater ? this.userId : "null") + ".png"
     };
   },
   methods: {
     toPeople() {
       if (this.userId != null) {
         this.$router.push({
-          path: "/people",
-          query: {
-            userId: this.userId
-          }
+          path: "/people/" + this.userId
         });
-        if (this.$route.path === "/people") {
-          location.reload();
-        }
       }
     }
   }

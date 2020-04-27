@@ -56,14 +56,11 @@ export default {
     toPeople() {
       if (this.userId != null) {
         this.$router.push({
-          path: "/people",
-          query: {
-            userId: this.userId
-          }
+          path: "/people/" + this.userId
         });
-        if (this.$route.path === "/people") {
-          location.reload();
-        }
+        // if (this.$route.path === "/people") {
+        //   location.reload();
+        // }
       }
     }
   },
@@ -75,7 +72,7 @@ export default {
       return this.$store.getters.user;
     },
     avaterUrl() {
-      return "api/img/" + (this.user.avater ? this.userId : "null") + ".png";
+      return "/api/img/" + (this.user.avater ? this.userId : "null") + ".png";
     }
   }
 };

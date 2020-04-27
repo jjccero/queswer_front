@@ -71,3 +71,19 @@ export function queryFollowActivities(params) {
     params
   });
 }
+
+export function queryAnswersByUserId(params) {
+  return request({
+    url: "/queryAnswersByUserId",
+    method: "get",
+    params
+  });
+}
+
+export function queryQuestionsByUserId(params) {
+  return request({
+    url: "/queryQuestionsByUserId",
+    method: "get",
+    params
+  });
+}
