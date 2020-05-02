@@ -66,7 +66,6 @@ export default {
     },
     handleDeleteReview() {
       var params = {
-        userId: this.userId,
         reviewId: this.review.reviewId
       };
       deleteReview(params).then(res => {
@@ -80,7 +79,6 @@ export default {
       this.approveLoading = true;
       var approve = !this.reviewInfo.approved;
       var params = {
-        userId: this.userId,
         reviewId: this.review.reviewId,
         approve: approve
       };

@@ -61,7 +61,6 @@ export default {
       if (this.loading0) return;
       this.loading0 = true;
       var params = {
-        userId: this.userId,
         page: this.page0,
         limit: this.limit
       };
@@ -81,7 +80,6 @@ export default {
       if (this.loading1) return;
       this.loading1 = true;
       var params = {
-        userId: this.userId,
         page: this.page1,
         limit: this.limit
       };

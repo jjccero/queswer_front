@@ -10,7 +10,7 @@
             </el-badge>
             <el-dropdown-menu style="width:100px;text-align:center;">
               <el-dropdown-item @click.native="toPeople">个人主页</el-dropdown-item>
-              <el-dropdown-item @click.native="logout" divided>注销</el-dropdown-item>
+              <el-dropdown-item @click.native="handleLogout" divided>注销</el-dropdown-item>
             </el-dropdown-menu>
           </span>
           <span v-else>
@@ -39,6 +39,7 @@
   </div>
 </template>
 <script>
+import { logout } from "@/api/user";
 export default {
   data() {
     return {};
@@ -48,19 +49,22 @@ export default {
   },
   methods: {
     login() {
-      this.$toLogin(this);
+      this.$router.push("/login");
     },
-    logout() {
-      this.$store.commit("logout");
+    handleLogout() {
+      const params = {
+        token: this.$store.getters.token
+      };
+      logout(params).then(res => {
+        console.log(res);
+        this.$store.commit("logout");
+      });
     },
     toPeople() {
       if (this.userId != null) {
         this.$router.push({
           path: "/people/" + this.userId
         });
-        // if (this.$route.path === "/people") {
-        //   location.reload();
-        // }
       }
     }
   },

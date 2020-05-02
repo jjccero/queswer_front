@@ -1,6 +1,7 @@
 import axios from "axios";
 import store from "@/store";
-
+import { Message } from "element-ui";
+import router from "../router";
 
 const service = axios.create({
   baseURL: "/api", // url = base url + request url
@@ -13,6 +14,7 @@ service.interceptors.request.use(
   config => {
     const token = store.getters.token;
     if (token) {
+      config.headers["token"] = token;
     }
     return config;
   },
@@ -23,18 +25,28 @@ service.interceptors.request.use(
 );
 
 service.interceptors.response.use(
-  response => { 
-    let code=response.data.code;
-    if(code!==0){
-      if(code===10000)
-        return Promise.reject(new Error("用户的非法请求"))
-    }
-    else{
+  response => {
+    let code = response.data.code;
+    if (code !== 0) {
+      let message = response.data.data;
+      if (code === 10001) router.push("/login");
+      Message({
+        message: message,
+        type: "error",
+        duration: 5 * 1000
+      });
+      return Promise.reject(new Error(message));
+    } else {
       return response.data.data;
     }
   },
   error => {
     console.log(error);
+    Message({
+      message: error,
+      type: "error",
+      duration: 5 * 1000
+    });
   }
 );
 export default service;

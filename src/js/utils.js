@@ -52,10 +52,6 @@ export const getCountString = count => {
   return count;
 };
 
-export const toLogin = Vue => {
-  Vue.$router.push("/login");
-};
-
 export const nowTimestamp = () => {
   return new Date().getTime() / 1000;
 };

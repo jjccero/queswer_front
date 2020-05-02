@@ -139,16 +139,14 @@ export default {
     if (questionId == null) return;
     getQuestion({
       questionId: questionId,
-      answerId: this.$route.query.answerId,
-      userId: this.userId
+      answerId: this.$route.query.answerId
     }).then(res => {
       this.questionInfo = res;
       if (this.questionInfo.userAnswer != null) {
         this.answer = this.questionInfo.userAnswer.answer;
       }
       queryAnswers({
-        questionId: this.$route.query.questionId,
-        userId: this.userId
+        questionId: this.$route.query.questionId
       }).then(res => {
         var answerInfos = res;
         var old_length = this.answerInfos.length;
@@ -185,8 +183,7 @@ export default {
   methods: {
     handleSubscribe() {
       var params = {
-        questionId: this.$route.query.questionId,
-        userId: this.userId
+        questionId: this.$route.query.questionId
       };
       if (this.questionInfo.subscribed == false) {
         saveSubscribe(params).then(res => {
@@ -228,7 +225,6 @@ export default {
     },
     handleDeleteAnswer() {
       var params = {
-        userId: this.userId,
         answerId: this.answer.answerId
       };
       deleteAnswer(params).then(res => {

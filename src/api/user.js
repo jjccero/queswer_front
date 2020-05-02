@@ -8,6 +8,14 @@ export function login(data) {
   });
 }
 
+export function logout(params) {
+  return request({
+    url: "/logout",
+    method: "get",
+    params
+  });
+}
+
 export function getUserInfo(params) {
   return request({
     url: "/getUserInfo",

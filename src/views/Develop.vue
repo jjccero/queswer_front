@@ -49,11 +49,6 @@ export default {
       });
     }
   },
-  computed: {
-    userId() {
-      return this.$store.getters.userId;
-    }
-  },
   created() {
     console.log([1, 2, 3].indexOf(4));
   }

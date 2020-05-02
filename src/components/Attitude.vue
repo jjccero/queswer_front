@@ -84,9 +84,6 @@ export default {
         set[element.review.reviewId] = element.userInfo;
       });
       return set;
-    },
-    userId() {
-      return this.$store.getters.userId;
     }
   },
   props: ["answerInfo"],
@@ -110,8 +107,7 @@ export default {
       if (this.showReview === false) return;
       this.reviewLoading = true;
       queryReviews({
-        answerId: this.answerInfo.answer.answerId,
-        userId: this.userId
+        answerId: this.answerInfo.answer.answerId
       }).then(res => {
         this.reviews = res;
         this.reviewLoading = false;
@@ -119,7 +115,6 @@ export default {
     },
     handleSaveReview() {
       var reviewForm = {
-        userId: this.userId,
         answerId: this.answerInfo.answer.answerId,
         replyRId: this.replyRId,
         revi: this.revi
@@ -155,7 +150,6 @@ export default {
     },
     handleUpdateAttitude(atti) {
       var params = {
-        userId: this.userId,
         answerId: this.answerInfo.answer.answerId
       };
       if (this.attituded === atti) {

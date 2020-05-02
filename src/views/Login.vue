@@ -34,7 +34,8 @@ export default {
   methods: {
     handleLogin() {
       login(this.loginForm).then(res => {
-        switch (res.authority) {
+        const user = res.user;
+        switch (user.authority) {
           case -2:
             this.$message({
               showClose: true,
@@ -55,7 +56,7 @@ export default {
               message: "登陆成功",
               type: "success"
             });
-            this.$store.commit("setUser", res);
+            this.$store.commit("login", res);
             this.$router.back();
           }
         }

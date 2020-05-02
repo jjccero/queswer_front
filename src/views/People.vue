@@ -61,6 +61,19 @@
           <el-divider class="divider"></el-divider>
         </div>
       </div>
+      <div v-if="tabindex==='3'">
+        <div v-for="userInfo in userInfoDatas" :key="userInfo.user.userId">
+          <userInfo :userInfo="userInfo"></userInfo>
+          <el-divider class="divider"></el-divider>
+        </div>
+        <el-pagination
+          :current-page.sync="currentPage"
+          :page-size="pageSize"
+          layout="total,prev, pager, next, jumper"
+          :total="length"
+          style="text-align:center;"
+        ></el-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -73,9 +86,9 @@ import {
   queryUserInfosByFollowerId,
   queryFollowerInfosByPeopleId,
   queryAnswersByUserId,
-  queryQuestionsByUserId,
+  queryQuestionsByUserId
 } from "@/api/user";
-import ActivityInfo from "../components/ActivityInfo"
+import ActivityInfo from "../components/ActivityInfo";
 export default {
   name: "people",
   data() {
@@ -88,7 +101,8 @@ export default {
       colors: ["#DD0000", "brown", "#0000DD", "#48B753", "#DDA522", "green"],
       menu: ["动态", "回答", "提问", "订阅"],
       tabindex: "0",
-      
+      firstLoadUserInfos: false,
+      firstLoadFollowerInfos: false
     };
   },
   components: {
@@ -97,8 +111,7 @@ export default {
   created() {
     if (this.peopleId != null) {
       getUserInfo({
-        peopleId: this.peopleId,
-        userId: this.userId
+        peopleId: this.peopleId
       }).then(res => {
         this.userInfo = res;
       });
@@ -110,7 +123,6 @@ export default {
       this.loading = true;
       var params = {
         peopleId: this.peopleId,
-        userId: this.userId,
         page: this.page,
         limit: this.limit
       };
@@ -128,8 +140,7 @@ export default {
     },
     handleFollow() {
       const params = {
-        peopleId: this.peopleId,
-        userId: this.userId
+        peopleId: this.peopleId
       };
       if (this.userInfo.followed) {
         deleteFollow(params).then(res => {
@@ -178,19 +189,6 @@ export default {
     },
     isMe() {
       return this.peopleId === this.userId;
-    }
-  },
-  watch: {
-    peopleId(val) {
-      this.userInfo = null;
-      this.activityInfos = [];
-      this.page = 0;
-      getUserInfo({
-        peopleId: this.peopleId,
-        userId: this.userId
-      }).then(res => {
-        this.userInfo = res;
-      });
     }
   }
 };

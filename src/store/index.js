@@ -1,46 +1,62 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import { getChatWebSocket } from "@/utils/socket.js";
 Vue.use(Vuex);
 
-const defaultUser = {
-  userId: null,
-  nickname: null,
-  intro: null,
-  avater: null,
-  gmtCreate: null,
-  authority: null,
-  sex: null
+const defaultLoginResult = {
+  token: null, //已经登陆的标志
+  user: {
+    userId: null,
+    nickname: null,
+    intro: null,
+    avater: null,
+    gmtCreate: null,
+    authority: null,
+    sex: null
+  }
 };
 const store = new Vuex.Store({
   state: {
-    token: 'hello',
-    user: defaultUser
+    loginResult: defaultLoginResult,
+    chatWebSocket: null,
+    messages: new Map()
   },
   mutations: {
-    init: state => {
-      const user = JSON.parse(localStorage.getItem("user"));
-      if (user != null) {
-        localStorage.setItem("user", JSON.stringify(user));
-        state.user = user;
+    init(state) {
+      const loginResult = JSON.parse(localStorage.getItem("loginResult"));
+      if (loginResult != null) {
+        localStorage.setItem("loginResult", JSON.stringify(loginResult));
+        state.loginResult = loginResult;
+        state.chatWebSocket = getChatWebSocket(loginResult.token);
       }
     },
-    setToken: (state, token) => {
-      state.token = token;
-    },
-    setUser: (state, user) => {
-      state.user = user;
-      localStorage.setItem("user", JSON.stringify(user));
+    login(state, loginResult) {
+      localStorage.setItem("loginResult", JSON.stringify(loginResult));
+      state.loginResult = loginResult;
+      state.chatWebSocket = getChatWebSocket(loginResult.token);
     },
     logout(state) {
-      state.user = defaultUser;
-      localStorage.removeItem("user");
-      state.token = null;
+      localStorage.removeItem("loginResult");
+      state.loginResult = defaultLoginResult;
+      state.chatWebSocket.close();
+      state.chatWebSocket = null;
+      state.chatWebSocket = new Map();
+    },
+
+    receiveMessage(state, message) {
+      let dstId = message.dstId;
+      if (dstId === state.loginResult.user.userId) dstId = message.srcId;
+      const list = state.messages.get();
+      if (list == null) {
+        state.messages.set(dstId, [message]);
+      } else list.push(message);
     }
   },
   getters: {
-    token: state => state.token,
-    userId: state => state.user.userId,
-    user: state => state.user
+    token: state => state.loginResult.token,
+    userId: state => state.loginResult.user.userId,
+    user: state => state.loginResult.user,
+    chatWebSocket: state => state.chatWebSocket
   }
 });
 export default store;
