@@ -18,12 +18,7 @@ export default {
     avater
   },
   data() {
-    return {
-      avaterUrl:
-        "/api/img/" +
-        (this.userInfo.avater ? this.userInfo.userId : "null") +
-        ".png"
-    };
+    return {};
   },
   name: "userInfoSmall",
   props: ["userInfo"]

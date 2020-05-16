@@ -19,11 +19,11 @@
         <div v-if="select==='1'">
           <div v-for="questionInfo in questionInfoDatas" :key="questionInfo.question.questionId">
             <div
-              v-html="redFont(questionInfo.question.title,template)"
+              v-html="redFont(questionInfo.question.title)"
               class="question"
               @click="toQuestion(questionInfo.question.questionId)"
             ></div>
-            <div v-html="redFont(questionInfo.question.detail,template)" style="margin-top:10px;"></div>
+            <div v-html="redFont(questionInfo.question.detail)" style="margin-top:10px;"></div>
             <el-divider class="divider"></el-divider>
           </div>
         </div>
@@ -58,7 +58,8 @@ export default {
       loading: false,
       currentPage: 1,
       pageSize: 10,
-      template: ""
+      template: "",
+      templates: []
     };
   },
   methods: {
@@ -73,7 +74,8 @@ export default {
           title: this.template,
           userId: this.userId
         }).then(res => {
-          this.questionInfos = res;
+          this.questionInfos = res.questionInfos;
+          this.templates = res.templates;
           this.searched = true;
           this.loading = false;
         });
@@ -88,15 +90,27 @@ export default {
         });
       }
     },
-    redFont(raw_str, template) {
+    redFont(raw_str) {
       if (raw_str == null) return null;
       var str = raw_str.toLowerCase();
       var index_last = 0;
-      var index_this = 0;
+
       var res = "";
       while (true) {
-        index_this = str.indexOf(template, index_last);
-        if (index_this != -1) {
+        let template = null;
+        let index_this = -1;
+        this.templates.forEach(element => {
+          let index_element = str.indexOf(element, index_last);
+          if (
+            index_this === -1 ||
+            (index_element !== -1 && index_element < index_this)
+          ) {
+            index_this = index_element;
+            template = element;
+            console.log(element);
+          }
+        });
+        if (index_this !== -1) {
           res += "<span>" + raw_str.slice(index_last, index_this) + "</span>";
           res +=
             '<span class="font_red">' +

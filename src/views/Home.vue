@@ -76,7 +76,11 @@ export default {
       return this.$store.getters.user;
     },
     avaterUrl() {
-      return "/api/img/" + (this.user.avater ? this.userId : "null") + ".png";
+      return (
+        "http://localhost:8080/img/" +
+        (this.user.avater ? this.userId : "null") +
+        ".png"
+      );
     }
   }
 };

@@ -7,15 +7,21 @@ export default {
   props: ["userId", "avater"],
   data() {
     return {
-      avaterUrl: "/api/img/" + (this.avater ? this.userId : "null") + ".png"
+      avaterUrl:
+        "http://localhost:8080/img/" +
+        (this.avater ? this.userId : "null") +
+        ".png"
     };
   },
   methods: {
     toPeople() {
       if (this.userId != null) {
-        this.$router.push({
-          path: "/people/" + this.userId
-        });
+        window.open(
+          this.$router.resolve({
+            path: "/people/" + this.userId
+          }).href,
+          "_blank"
+        );
       }
     }
   }

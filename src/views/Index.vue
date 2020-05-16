@@ -68,7 +68,9 @@ export default {
         this.questionInfos = this.questionInfos.concat(res);
         ++this.page0;
         if (res.length < this.limit) {
-          console.log("暂时没有更多了");
+          this.$message({
+            message: "暂时没有更多了"
+          });
           setTimeout(() => {
             this.loading0 = false;
             console.log("冷却完成");

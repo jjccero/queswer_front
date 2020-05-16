@@ -58,9 +58,9 @@ export default {
 }
 .hide_all {
   position: relative;
-  height: 40px;
+  height: 50px;
   width: 100%;
-  margin-top: -40px;
+  margin-top: -50px;
   margin-left: 0px;
   background-image: linear-gradient(
     -180deg,
