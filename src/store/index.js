@@ -19,21 +19,15 @@ const store = new Vuex.Store({
   state: {
     loginResult: defaultLoginResult,
     chatWebSocket: null,
-    messages: new Map()
+    messageGroup: new Map()
   },
   mutations: {
     init(state) {
       const loginResult = JSON.parse(localStorage.getItem("loginResult"));
       if (loginResult != null) {
-        localStorage.setItem("loginResult", JSON.stringify(loginResult));
         state.loginResult = loginResult;
         state.chatWebSocket = getChatWebSocket(loginResult.token);
       }
-    },
-    login(state, loginResult) {
-      localStorage.setItem("loginResult", JSON.stringify(loginResult));
-      state.loginResult = loginResult;
-      state.chatWebSocket = getChatWebSocket(loginResult.token);
     },
     logout(state) {
       localStorage.removeItem("loginResult");
@@ -42,21 +36,28 @@ const store = new Vuex.Store({
       state.chatWebSocket = null;
       state.chatWebSocket = new Map();
     },
-
     receiveMessage(state, message) {
+      const messageGroup = state.messageGroup;
       let dstId = message.dstId;
       if (dstId === state.loginResult.user.userId) dstId = message.srcId;
-      const list = state.messages.get();
+      const list = messageGroup.get(dstId);
       if (list == null) {
-        state.messages.set(dstId, [message]);
-      } else list.push(message);
+        messageGroup.set(dstId, [message]);
+      } else {
+        list.push(message);
+        messageGroup.set(dstId, list);
+      }
+      state.messageGroup = null;
+      state.messageGroup = messageGroup;
     }
   },
+  actions: {},
   getters: {
     token: state => state.loginResult.token,
     userId: state => state.loginResult.user.userId,
     user: state => state.loginResult.user,
-    chatWebSocket: state => state.chatWebSocket
+    chatWebSocket: state => state.chatWebSocket,
+    messageGroup: state => state.messageGroup
   }
 });
 export default store;

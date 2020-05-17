@@ -10,8 +10,12 @@ export function getChatWebSocket(token) {
   };
   //收到消息
   webSocket.onmessage = function(ev) {
-    const message = JSON.parse(ev.data);
-    store.commit("receiveMessage", message);
+    const data = JSON.parse(ev.data);
+    if (data instanceof Array) {
+      data.forEach(message => {
+        store.commit("receiveMessage", message);
+      });
+    } else store.commit("receiveMessage", data);
   };
   return webSocket;
 }

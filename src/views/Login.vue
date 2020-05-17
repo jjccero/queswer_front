@@ -56,7 +56,7 @@ export default {
               message: "登陆成功",
               type: "success"
             });
-            this.$store.commit("login", res);
+            localStorage.setItem("loginResult", JSON.stringify(res));
             this.$router.back();
           }
         }
