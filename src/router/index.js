@@ -41,16 +41,6 @@ export default new Router({
           path: "/search",
           iconCls: "el-icon-search",
           component: () => import("@/views/Search")
-        },
-        {
-          path: "/chat",
-          name: "聊天",
-          component: () => import("@/views/Chat")
-        },
-        {
-          path: "/asking",
-          name: "提问",
-          component: () => import("@/views/Asking")
         }
       ]
     },

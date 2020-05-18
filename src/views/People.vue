@@ -11,7 +11,7 @@
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item @click.native="handleFollow">{{userInfo.followed?'已':''}}关注</el-dropdown-item>
-            <el-dropdown-item>发消息</el-dropdown-item>
+            <el-dropdown-item @click.native="handleOpenChat">发消息</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
         <div>
@@ -75,6 +75,9 @@
         ></el-pagination>
       </div>
     </div>
+    <el-dialog :visible.sync="showChat" :before-close="handleCloseChat">
+      <Chat v-if="showChat" :peopleUserInfo="userInfo" />
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -88,6 +91,7 @@ import {
   queryAnswersByUserId,
   queryQuestionsByUserId
 } from "@/api/user";
+import Chat from "../components/Chat";
 import ActivityInfo from "../components/ActivityInfo";
 export default {
   name: "people",
@@ -102,11 +106,13 @@ export default {
       menu: ["动态", "回答", "提问", "订阅"],
       tabindex: "0",
       firstLoadUserInfos: false,
-      firstLoadFollowerInfos: false
+      firstLoadFollowerInfos: false,
+      showChat: false
     };
   },
   components: {
-    ActivityInfo
+    ActivityInfo,
+    Chat
   },
   created() {
     if (this.peopleId != null) {
@@ -160,12 +166,20 @@ export default {
     },
     handleSelect(key, keyPath) {
       this.tabindex = key;
+    },
+    handleOpenChat() {
+      this.$store.commit("readMessage");
+      this.showChat = true;
+    },
+    handleCloseChat() {
+      this.$store.commit("closeMessage");
+      this.showChat = false;
     }
   },
   computed: {
     avaterUrl() {
       return (
-        "/api/img/" +
+        "http://localhost:8080/img/" +
         (this.userInfo.user.avater ? this.userInfo.user.userId : "null") +
         ".png"
       );

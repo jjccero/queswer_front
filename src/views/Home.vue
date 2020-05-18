@@ -5,11 +5,14 @@
         <div class="home_queswer">问答社区</div>
         <el-dropdown :show-timeout="0" trigger="click" class="home_user">
           <span v-if="userId!=null" style="float: right;height:50px;">
-            <el-badge :is-dot="false">
+            <el-badge :is-dot="messageCount!==0">
               <img :src="avaterUrl" class="home_avater" />
             </el-badge>
             <el-dropdown-menu style="width:100px;text-align:center;">
               <el-dropdown-item @click.native="toPeople">个人主页</el-dropdown-item>
+              <el-dropdown-item @click.native="handleOpenChat">
+                <el-badge :value="messageCount" :max="99">消息</el-badge>
+              </el-dropdown-item>
               <el-dropdown-item @click.native="handleLogout" divided>注销</el-dropdown-item>
             </el-dropdown-menu>
           </span>
@@ -36,16 +39,25 @@
         <router-view></router-view>
       </transition>
     </div>
+    <el-dialog :visible.sync="showChat" :before-close="handleCloseChat">
+      <Chat v-if="showChat" />
+    </el-dialog>
   </div>
 </template>
 <script>
+import Chat from "../components/Chat";
 import { logout } from "@/api/user";
 export default {
   data() {
-    return {};
+    return {
+      showChat: false
+    };
   },
   created() {
     this.$store.commit("init");
+  },
+  components: {
+    Chat
   },
   methods: {
     login() {
@@ -66,9 +78,20 @@ export default {
           path: "/people/" + this.userId
         });
       }
+    },
+    handleOpenChat() {
+      this.$store.commit("readMessage");
+      this.showChat = true;
+    },
+    handleCloseChat() {
+      this.$store.commit("closeMessage");
+      this.showChat = false;
     }
   },
   computed: {
+    messageCount() {
+      return this.$store.getters.messageCount;
+    },
     userId() {
       return this.$store.getters.userId;
     },
