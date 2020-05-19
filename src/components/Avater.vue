@@ -13,12 +13,9 @@ export default {
   methods: {
     toPeople() {
       if (this.userId != null) {
-        window.open(
-          this.$router.resolve({
-            path: "/people/" + this.userId
-          }).href,
-          "_blank"
-        );
+        this.$router.push({
+          path: "/people/" + this.userId
+        });
       }
     }
   }

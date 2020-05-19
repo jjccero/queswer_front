@@ -41,7 +41,7 @@
         <router-view></router-view>
       </transition>
     </div>
-    <el-dialog :visible.sync="showChat" :before-close="handleCloseChat">
+    <el-dialog :visible.sync="showChat" :before-close="handleCloseChat" class="chat_dialog">
       <Chat v-if="showChat" />
     </el-dialog>
   </div>
@@ -155,6 +155,9 @@ export default {
 }
 .el-dialog {
   width: 600px;
+}
+.chat_dialog > .el-dialog > .el-dialog__body {
+  padding: 30px 0 0 0;
 }
 .el-menu.el-menu--horizontal {
   border-bottom: 0;

@@ -1,11 +1,7 @@
 <template>
   <div style="text-align:left;">
     <div style="float:left;">
-      <el-tag
-        v-for="topic in questionInfo.question.topics"
-        :key="topic"
-        style="margin-right:10px;"
-      >{{topic}}</el-tag>
+      <TopicTag v-for="topic in questionInfo.question.topics" :key="topic" :topic="topic" />
     </div>
     <div style="float:right;">
       <el-button
@@ -59,7 +55,7 @@
       >{{answerInfos.length===0?'暂无其他回答':('更多'+answerInfos.length+'个回答')}}</el-divider>
       <template v-for="answerInfo in answerInfos">
         <div :key="answerInfo.answer.answerId" style="text-align:left;">
-          <answer :answerInfo="answerInfo" :answered="false" :questioned="questionInfo.questioned"></answer>
+          <answer :answerInfo="answerInfo" :answered="false" :questioned="questionInfo.questioned" />
         </div>
       </template>
     </el-card>
@@ -100,6 +96,7 @@ import {
   deleteAnswer,
   queryAnswers
 } from "@/api/answer";
+import TopicTag from "../components/TopicTag";
 import Answer from "../components/Answer";
 import UserInfo from "../components/UserInfo";
 import SaveQuestion from "../components/SaveQuestion";
@@ -142,7 +139,8 @@ export default {
   components: {
     Answer,
     UserInfo,
-    SaveQuestion
+    SaveQuestion,
+    TopicTag
   },
   created() {
     var questionId = this.$route.query.questionId;

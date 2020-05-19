@@ -61,18 +61,9 @@
           <el-divider class="divider"></el-divider>
         </div>
       </div>
-      <div v-if="tabindex==='3'">
-        <div v-for="userInfo in userInfoDatas" :key="userInfo.user.userId">
-          <userInfo :userInfo="userInfo"></userInfo>
-          <el-divider class="divider"></el-divider>
-        </div>
-        <el-pagination
-          :current-page.sync="currentPage"
-          :page-size="pageSize"
-          layout="total,prev, pager, next, jumper"
-          :total="length"
-          style="text-align:center;"
-        ></el-pagination>
+
+      <div v-if="tabindex==='4'||tabindex==='5'">
+        <UserInfoTable :userInfos="userInfos" />
       </div>
     </div>
     <el-dialog :visible.sync="showChat" :before-close="handleCloseChat">
@@ -92,6 +83,7 @@ import {
   queryQuestionsByUserId
 } from "@/api/user";
 import Chat from "../components/Chat";
+import UserInfoTable from "../components/UserInfoTable";
 import ActivityInfo from "../components/ActivityInfo";
 export default {
   name: "people",
@@ -103,7 +95,7 @@ export default {
       page: 0,
       limit: 10,
       colors: ["#DD0000", "brown", "#0000DD", "#48B753", "#DDA522", "green"],
-      menu: ["动态", "回答", "提问", "订阅"],
+      userInfos: [],
       tabindex: "0",
       firstLoadUserInfos: false,
       firstLoadFollowerInfos: false,
@@ -112,18 +104,29 @@ export default {
   },
   components: {
     ActivityInfo,
-    Chat
+    Chat,
+    UserInfoTable
   },
   created() {
-    if (this.peopleId != null) {
-      getUserInfo({
-        peopleId: this.peopleId
-      }).then(res => {
-        this.userInfo = res;
-      });
-    }
+    this.init();
   },
   methods: {
+    init() {
+      if (this.peopleId != null) {
+        this.userInfo = null;
+        this.loading = false;
+        this.page = 0;
+        this.activityInfos = [];
+        this.userInfos = [];
+        this.firstLoadUserInfos = false;
+        this.firstLoadFollowerInfos = false;
+        getUserInfo({
+          peopleId: this.peopleId
+        }).then(res => {
+          this.userInfo = res;
+        });
+      }
+    },
     load() {
       if (this.loading) return;
       this.loading = true;
@@ -178,10 +181,9 @@ export default {
   },
   computed: {
     avaterUrl() {
-      return (
-        "http://localhost:8080/img/" +
-        (this.userInfo.user.avater ? this.userInfo.user.userId : "null") +
-        ".png"
+      return this.$avaterUrl(
+        this.userInfo.user.avater,
+        this.userInfo.user.userId
       );
     },
     userId() {
@@ -203,6 +205,38 @@ export default {
     },
     isMe() {
       return this.peopleId === this.userId;
+    },
+    menu() {
+      return [
+        "动态",
+        "回答",
+        "提问",
+        "订阅",
+        "关注" + this.sexStr + "的",
+        this.sexStr + "关注的"
+      ];
+    }
+  },
+  watch: {
+    tabindex(val) {
+      const params = {
+        peopleId: this.peopleId
+      };
+      this.page = 0;
+      if (val === "4") {
+        queryFollowerInfosByPeopleId(params).then(res => {
+          this.userInfos = res;
+        });
+      } else if (val === "5") {
+        queryUserInfosByFollowerId(params).then(res => {
+          this.userInfos = res;
+        });
+      } else {
+        this.userInfos = [];
+      }
+    },
+    peopleId(val) {
+      this.init();
     }
   }
 };
@@ -239,7 +273,7 @@ export default {
   margin-top: 10px;
 }
 .activities_div {
-  height: 600px;
+  height: 580px;
   overflow: auto;
   padding: 10px;
 }

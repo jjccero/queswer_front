@@ -16,6 +16,11 @@ export default new Router({
           component: () => import("@/views/Index")
         },
         {
+          path: "/search",
+          iconCls: "el-icon-search",
+          component: () => import("@/views/Search")
+        },
+        {
           path: "/develop",
           name: "开发",
           component: () => import("@/views/Develop")
@@ -33,15 +38,16 @@ export default new Router({
           hidden: true
         },
         {
+          path: "/topic/:topic",
+          name: "话题",
+          component: () => import("@/views/Topic"),
+          hidden: true
+        },
+        {
           path: "/setting",
           name: "设置",
           component: () => import("@/views/Setting"),
           hidden: true
-        },
-        {
-          path: "/search",
-          iconCls: "el-icon-search",
-          component: () => import("@/views/Search")
         }
       ]
     },

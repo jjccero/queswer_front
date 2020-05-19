@@ -13,35 +13,10 @@
           style="cursor:pointer;"
         ></i>
       </el-input>
-      <el-button style="float:right;" type="primary" @click="showQuestion = true">提问</el-button>
+      <el-button style="float:right;" @click="showQuestion = true">提问</el-button>
     </div>
     <div v-if="searched" class="search_card">
-      <el-card :body-style="{ padding: '10px' }">
-        <div v-if="select==='1'">
-          <div v-for="questionInfo in questionInfoDatas" :key="questionInfo.question.questionId">
-            <div
-              v-html="redFont(questionInfo.question.title)"
-              class="question"
-              @click="toQuestion(questionInfo.question.questionId)"
-            ></div>
-            <div v-html="redFont(questionInfo.question.detail)" style="margin-top:10px;"></div>
-            <el-divider class="divider"></el-divider>
-          </div>
-        </div>
-        <div v-else-if="select==='2'">
-          <div v-for="userInfo in userInfoDatas" :key="userInfo.user.userId">
-            <userInfo :userInfo="userInfo"></userInfo>
-            <el-divider class="divider"></el-divider>
-          </div>
-        </div>
-        <el-pagination
-          :current-page.sync="currentPage"
-          :page-size="pageSize"
-          layout="total,prev, pager, next, jumper"
-          :total="length"
-          style="text-align:center;"
-        ></el-pagination>
-      </el-card>
+      <UserInfoTable :userInfos="userInfos" />
     </div>
     <el-dialog :visible.sync="showQuestion">
       <SaveQuestion v-if="showQuestion" />
@@ -51,6 +26,7 @@
 <script>
 import UserInfo from "../components/UserInfo";
 import SaveQuestion from "../components/SaveQuestion";
+import UserInfoTable from "../components/UserInfoTable";
 import { searchUserInfos, searchQuestionInfos } from "@/api/search";
 export default {
   data() {
@@ -100,7 +76,6 @@ export default {
       if (raw_str == null) return null;
       var str = raw_str.toLowerCase();
       var index_last = 0;
-
       var res = "";
       while (true) {
         let template = null;
@@ -129,29 +104,11 @@ export default {
         }
       }
       return res;
-    },
-    toQuestion(questionId) {
-      window.open(
-        this.$router.resolve({
-          path: "/question",
-          query: {
-            questionId: questionId,
-            answerId: null
-          }
-        }).href,
-        "_blank"
-      );
     }
   },
   computed: {
     questionInfoDatas() {
       return this.questionInfos.slice(
-        (this.currentPage - 1) * this.pageSize,
-        this.currentPage * this.pageSize
-      );
-    },
-    userInfoDatas() {
-      return this.userInfos.slice(
         (this.currentPage - 1) * this.pageSize,
         this.currentPage * this.pageSize
       );
@@ -166,13 +123,13 @@ export default {
   },
   components: {
     UserInfo,
-    SaveQuestion
+    SaveQuestion,
+    UserInfoTable
   }
 };
 </script>
 <style>
 .div_input {
-  background-color: #ffffff;
   width: 800px;
   height: 40px;
 }
