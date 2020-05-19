@@ -10,10 +10,12 @@
             </el-badge>
             <el-dropdown-menu style="width:100px;text-align:center;">
               <el-dropdown-item @click.native="toPeople">个人主页</el-dropdown-item>
+
               <el-dropdown-item @click.native="handleOpenChat">
                 <el-badge :value="messageCount" :max="99">消息</el-badge>
               </el-dropdown-item>
-              <el-dropdown-item @click.native="handleLogout" divided>注销</el-dropdown-item>
+              <el-dropdown-item @click.native="toUpdate" divided>设置</el-dropdown-item>
+              <el-dropdown-item @click.native="handleLogout">注销</el-dropdown-item>
             </el-dropdown-menu>
           </span>
           <span v-else>
@@ -73,11 +75,14 @@ export default {
       });
     },
     toPeople() {
-      if (this.userId != null) {
-        this.$router.push({
-          path: "/people/" + this.userId
-        });
-      }
+      this.$router.push({
+        path: "/people/" + this.userId
+      });
+    },
+    toUpdate() {
+      this.$router.push({
+        path: "/setting"
+      });
     },
     handleOpenChat() {
       this.$store.commit("readMessage");
@@ -99,11 +104,7 @@ export default {
       return this.$store.getters.user;
     },
     avaterUrl() {
-      return (
-        "http://localhost:8080/img/" +
-        (this.user.avater ? this.userId : "null") +
-        ".png"
-      );
+      return this.$avaterUrl(this.user.avater, this.userId);
     }
   }
 };
@@ -152,7 +153,9 @@ export default {
 .anonymous {
   color: gray;
 }
-
+.el-dialog {
+  width: 600px;
+}
 .el-menu.el-menu--horizontal {
   border-bottom: 0;
   height: 50px;

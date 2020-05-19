@@ -16,11 +16,6 @@ export default new Router({
           component: () => import("@/views/Index")
         },
         {
-          path: "/topics",
-          name: "话题",
-          component: () => import("@/views/Topics")
-        },
-        {
           path: "/develop",
           name: "开发",
           component: () => import("@/views/Develop")
@@ -35,6 +30,12 @@ export default new Router({
           path: "/people/:peopleId",
           name: "用户",
           component: () => import("@/views/People"),
+          hidden: true
+        },
+        {
+          path: "/setting",
+          name: "设置",
+          component: () => import("@/views/Setting"),
           hidden: true
         },
         {

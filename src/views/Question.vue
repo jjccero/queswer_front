@@ -2,10 +2,10 @@
   <div style="text-align:left;">
     <div style="float:left;">
       <el-tag
-        v-for="topic in questionInfo.topics"
-        :key="topic.tId"
+        v-for="topic in questionInfo.question.topics"
+        :key="topic"
         style="margin-right:10px;"
-      >{{topic.topicName}}</el-tag>
+      >{{topic}}</el-tag>
     </div>
     <div style="float:right;">
       <el-button
@@ -24,7 +24,7 @@
       <i class="el-icon-view"></i>
       <span class="viewed">{{questionInfo.viewCount}}</span>
       <el-divider direction="vertical"></el-divider>
-
+      <el-button type="text" @click="showQuestion=true">修改问题</el-button>
       <el-button type="text" @click="showAnswerDrawer=true" icon="el-icon-edit">回答</el-button>
     </div>
     <h1 style="clear:both;">{{questionInfo.question.title}}</h1>
@@ -83,6 +83,13 @@
       <el-checkbox v-model="answer.anonymous">开启匿名</el-checkbox>
       <el-button type="primary" @click="handleAnswer">提交</el-button>
     </el-drawer>
+    <el-dialog :visible.sync="showQuestion">
+      <SaveQuestion
+        v-if="showQuestion"
+        :question="questionInfo.question"
+        @updateQuestion="updateQuestion"
+      />
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -93,8 +100,9 @@ import {
   deleteAnswer,
   queryAnswers
 } from "@/api/answer";
-import answer from "../components/Answer";
-import userInfo from "../components/UserInfo";
+import Answer from "../components/Answer";
+import UserInfo from "../components/UserInfo";
+import SaveQuestion from "../components/SaveQuestion";
 export default {
   data() {
     return {
@@ -106,12 +114,12 @@ export default {
           detail: null,
           gmtCreate: 0,
           gmtModify: null,
-          userId: null
+          userId: null,
+          topics: []
         },
         subscribed: false,
         subscribeCount: 0,
         viewCount: 0,
-        topics: [],
         questioned: false,
         defaultAnswer: null,
         userAnswer: null
@@ -127,12 +135,14 @@ export default {
         gmtCreate: 0,
         gmtModify: null
       },
-      showAnswerDrawer: false
+      showAnswerDrawer: false,
+      showQuestion: false
     };
   },
   components: {
-    answer,
-    userInfo
+    Answer,
+    UserInfo,
+    SaveQuestion
   },
   created() {
     var questionId = this.$route.query.questionId;
@@ -271,6 +281,10 @@ export default {
           }
         });
       }
+    },
+    updateQuestion(question) {
+      this.questionInfo.question = question;
+      this.showQuestion = false;
     }
   },
   computed: {

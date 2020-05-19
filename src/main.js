@@ -14,12 +14,14 @@ import {
   getTimeString,
   getCountString,
   nowTimestamp,
-  userInfo
+  userInfo,
+  avaterUrl
 } from "./js/utils";
 Vue.prototype.$getTimeString = getTimeString;
 Vue.prototype.$getCountString = getCountString;
 Vue.prototype.$nowTimestamp = nowTimestamp;
 Vue.prototype.$userInfo = userInfo;
+Vue.prototype.$avaterUrl = avaterUrl;
 /* eslint-disable no-new */
 new Vue({
   el: "#app",

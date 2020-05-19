@@ -81,6 +81,13 @@ const store = new Vuex.Store({
     },
     closeMessage(state) {
       state.isChat = false;
+    },
+    setInfo(state, info) {
+      const user = state.loginResult.user;
+      user.nickname = info.nickname;
+      user.sex = info.sex;
+      user.intro = info.intro;
+      user.email = info.email;
     }
   },
   actions: {},

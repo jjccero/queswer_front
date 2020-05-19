@@ -63,3 +63,7 @@ export const userInfo = anonymous => {
   };
   return UserInfo;
 };
+
+export const avaterUrl = (avater, userId) => {
+  return "/api/img/" + (avater ? userId : "null") + ".png";
+};

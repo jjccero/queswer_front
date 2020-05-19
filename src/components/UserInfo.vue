@@ -25,7 +25,7 @@ export default {
   data() {
     return {};
   },
-  name: "userInfo",
+  name: "UserInfo",
   props: ["userInfo"]
 };
 </script>

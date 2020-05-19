@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="div_input">
-      <el-input v-model="content" placeholder="搜索感兴趣的内容吧">
+      <el-input v-model="content" placeholder="搜索感兴趣的内容吧" style="float:left;width:90%">
         <el-select v-model="select" slot="prepend" style="width:80px;">
           <el-option label="问题" value="1"></el-option>
           <el-option label="用户" value="2"></el-option>
@@ -13,9 +13,10 @@
           style="cursor:pointer;"
         ></i>
       </el-input>
+      <el-button style="float:right;" type="primary" @click="showQuestion = true">提问</el-button>
     </div>
-    <div v-if="searched">
-      <el-card :body-style="{ padding: '10px' }" style="text-align:left;">
+    <div v-if="searched" class="search_card">
+      <el-card :body-style="{ padding: '10px' }">
         <div v-if="select==='1'">
           <div v-for="questionInfo in questionInfoDatas" :key="questionInfo.question.questionId">
             <div
@@ -42,10 +43,14 @@
         ></el-pagination>
       </el-card>
     </div>
+    <el-dialog :visible.sync="showQuestion">
+      <SaveQuestion v-if="showQuestion" />
+    </el-dialog>
   </div>
 </template>
 <script>
-import userInfo from "../components/UserInfo";
+import UserInfo from "../components/UserInfo";
+import SaveQuestion from "../components/SaveQuestion";
 import { searchUserInfos, searchQuestionInfos } from "@/api/search";
 export default {
   data() {
@@ -59,7 +64,8 @@ export default {
       currentPage: 1,
       pageSize: 10,
       template: "",
-      templates: []
+      templates: [],
+      showQuestion: false
     };
   },
   methods: {
@@ -159,14 +165,16 @@ export default {
     }
   },
   components: {
-    userInfo
+    UserInfo,
+    SaveQuestion
   }
 };
 </script>
 <style>
 .div_input {
   background-color: #ffffff;
-  margin: 0 auto;
+  width: 800px;
+  height: 40px;
 }
 .el-input-group__prepend {
   background-color: #ffffff;
@@ -174,7 +182,11 @@ export default {
 .font_red {
   color: red;
 }
-
+.search_card {
+  text-align: left;
+  margin-top: 10px;
+  clear: both;
+}
 .div_span_detail {
   font-size: 15px;
 }

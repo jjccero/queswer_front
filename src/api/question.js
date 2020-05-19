@@ -8,6 +8,14 @@ export function saveQuestion(data) {
   });
 }
 
+export function updateQuestion(data) {
+  return request({
+    url: "/updateQuestion",
+    method: "post",
+    data
+  });
+}
+
 export function queryQuestions(params) {
   return request({
     url: "/queryQuestions",

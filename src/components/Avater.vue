@@ -5,13 +5,10 @@
 export default {
   name: "avater",
   props: ["userId", "avater"],
-  data() {
-    return {
-      avaterUrl:
-        "http://localhost:8080/img/" +
-        (this.avater ? this.userId : "null") +
-        ".png"
-    };
+  computed: {
+    avaterUrl() {
+      return this.$avaterUrl(this.avater, this.userId);
+    }
   },
   methods: {
     toPeople() {

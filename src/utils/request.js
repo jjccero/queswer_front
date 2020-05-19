@@ -4,7 +4,7 @@ import { Message } from "element-ui";
 import router from "../router";
 
 const service = axios.create({
-  baseURL: "http://localhost:8080", // url = base url + request url
+  baseURL: "/api/", // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 60000 // request timeout
 });

@@ -22,7 +22,7 @@
       icon="el-icon-chat-round"
       style="color:gray;margin-left:10px;"
     >{{reviewCount}}</el-button>
-    <el-dialog :visible.sync="showReview">
+    <el-dialog :visible.sync="showReview" class="review_dialog">
       <div slot="title" class="review_title">
         <b>共{{reviewCount}}条评论</b>
       </div>
@@ -184,12 +184,6 @@ export default {
 };
 </script>
 <style>
-.el-dialog {
-  width: 600px;
-}
-.el-dialog > * {
-  padding: 0;
-}
 .el-card__body > ::-webkit-scrollbar {
   width: 0;
   height: 0;
@@ -200,7 +194,10 @@ export default {
   line-height: 56px;
   text-align: center;
 }
-.el-dialog__header {
+.review_dialog > .el-dialog > * {
+  padding: 0;
+}
+.review_dialog > div > .el-dialog__header {
   height: 56px;
 }
 </style>

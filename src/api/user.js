@@ -64,6 +64,30 @@ export function signup(data) {
   });
 }
 
+export function updateUser(data) {
+  return request({
+    url: "/updateUser",
+    method: "post",
+    data
+  });
+}
+
+export function updatePassword(data) {
+  return request({
+    url: "/updatePassword",
+    method: "post",
+    data
+  });
+}
+
+export function updateAvater(data) {
+  return request({
+    url: "/updateAvater",
+    method: "post",
+    data
+  });
+}
+
 export function queryPeopleActivities(params) {
   return request({
     url: "/queryPeopleActivities",
