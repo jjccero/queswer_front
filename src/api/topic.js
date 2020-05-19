@@ -1,16 +1,25 @@
 import request from "@/utils/request";
 
-export function queryTopics() {
+export function saveSubscribeTopic(params) {
   return request({
-    url: "/queryTopics",
-    method: "get"
+    url: "/saveSubscribeTopic",
+    method: "get",
+    params
   });
 }
 
-export function saveTopic(data) {
+export function deleteSubscribeTopic(params) {
   return request({
-    url: "/saveTopic",
-    method: "post",
-    data
+    url: "/deleteSubscribeTopic",
+    method: "get",
+    params
+  });
+}
+
+export function getTopicInfo(params) {
+  return request({
+    url: "/getTopicInfo",
+    method: "get",
+    params
   });
 }

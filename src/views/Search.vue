@@ -15,8 +15,29 @@
       </el-input>
       <el-button style="float:right;" @click="showQuestion = true">提问</el-button>
     </div>
+
     <div v-if="searched" class="search_card">
-      <UserInfoTable :userInfos="userInfos" />
+      <el-card v-if="select==='1'" :body-style="{ padding: '10px' }">
+        <div>
+          <div v-for="questionInfo in questionInfoDatas" :key="questionInfo.question.questionId">
+            <div
+              v-html="redFont(questionInfo.question.title)"
+              class="question"
+              @click="toQuestion(questionInfo.question.questionId)"
+            ></div>
+            <div v-html="redFont(questionInfo.question.detail)" style="margin-top:10px;"></div>
+            <el-divider class="divider"></el-divider>
+          </div>
+        </div>
+        <el-pagination
+          :current-page.sync="currentPage"
+          :page-size="pageSize"
+          layout="total,prev, pager, next, jumper"
+          :total="length"
+          style="text-align:center;"
+        ></el-pagination>
+      </el-card>
+      <UserInfoTable v-if="select==='2'" :userInfos="userInfos" />
     </div>
     <el-dialog :visible.sync="showQuestion">
       <SaveQuestion v-if="showQuestion" />
@@ -88,7 +109,6 @@ export default {
           ) {
             index_this = index_element;
             template = element;
-            console.log(element);
           }
         });
         if (index_this !== -1) {

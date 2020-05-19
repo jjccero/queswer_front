@@ -64,6 +64,14 @@ export function signup(data) {
   });
 }
 
+export function updateAuthority(data) {
+  return request({
+    url: "/updateAuthority",
+    method: "post",
+    data
+  });
+}
+
 export function updateUser(data) {
   return request({
     url: "/updateUser",

@@ -53,10 +53,13 @@ export default {
       return this.userId != null && this.userId == this.review.userId;
     },
     canDelete() {
-      return this.reviewed && !this.review.deleted;
+      return (this.reviewed || this.isAdmin) && !this.review.deleted;
     },
     userId() {
       return this.$store.getters.userId;
+    },
+    isAdmin() {
+      return this.$store.getters.authority > 1;
     }
   },
   created() {},

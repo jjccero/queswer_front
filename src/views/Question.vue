@@ -20,7 +20,9 @@
       <i class="el-icon-view"></i>
       <span class="viewed">{{questionInfo.viewCount}}</span>
       <el-divider direction="vertical"></el-divider>
-      <el-button type="text" @click="showQuestion=true">修改问题</el-button>
+      <el-button type="text" v-if="isAdmin" @click="showQuestion=true">修改问题</el-button>
+      <el-button type="text" v-if="isAdmin" @click="handleDeleteQuestion">删除问题</el-button>
+
       <el-button type="text" @click="showAnswerDrawer=true" icon="el-icon-edit">回答</el-button>
     </div>
     <h1 style="clear:both;">{{questionInfo.question.title}}</h1>
@@ -89,7 +91,12 @@
   </div>
 </template>
 <script>
-import { getQuestion, saveSubscribe, deleteSubscribe } from "@/api/question";
+import {
+  getQuestion,
+  saveSubscribe,
+  deleteSubscribe,
+  deleteQuestion
+} from "@/api/question";
 import {
   saveAnswer,
   updateAnswer,
@@ -283,11 +290,22 @@ export default {
     updateQuestion(question) {
       this.questionInfo.question = question;
       this.showQuestion = false;
+    },
+    handleDeleteQuestion() {
+      const params = {
+        questionId: this.$route.query.questionId
+      };
+      deleteQuestion(params).then(res => {
+        if (res === true) this.$router.push({ path: "/" });
+      });
     }
   },
   computed: {
     userId() {
       return this.$store.getters.userId;
+    },
+    isAdmin() {
+      return this.$store.getters.authority > 1;
     }
   }
 };

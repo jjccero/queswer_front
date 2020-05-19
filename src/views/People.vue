@@ -10,6 +10,14 @@
             <i class="el-icon-more" style="color:gray;cursor: pointer;line-height:50px;"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item
+              v-if="isSuperAdmin&&userInfo.user.authority===1"
+              @click.native="handleUpdateAuthority(0)"
+            >取消社区管理员</el-dropdown-item>
+            <el-dropdown-item
+              v-if="isSuperAdmin&&userInfo.user.authority===0"
+              @click.native="handleUpdateAuthority(1)"
+            >设为社区管理员</el-dropdown-item>
             <el-dropdown-item @click.native="handleFollow">{{userInfo.followed?'已':''}}关注</el-dropdown-item>
             <el-dropdown-item @click.native="handleOpenChat">发消息</el-dropdown-item>
           </el-dropdown-menu>
@@ -80,7 +88,8 @@ import {
   queryUserInfosByFollowerId,
   queryFollowerInfosByPeopleId,
   queryAnswersByUserId,
-  queryQuestionsByUserId
+  queryQuestionsByUserId,
+  updateAuthority
 } from "@/api/user";
 import Chat from "../components/Chat";
 import UserInfoTable from "../components/UserInfoTable";
@@ -177,9 +186,21 @@ export default {
     handleCloseChat() {
       this.$store.commit("closeMessage");
       this.showChat = false;
+    },
+    handleUpdateAuthority(authority) {
+      const data = {
+        userId: this.peopleId,
+        authority: authority
+      };
+      updateAuthority(data).then(res => {
+        if (res === true) this.userInfo.user.authority = authority;
+      });
     }
   },
   computed: {
+    isSuperAdmin() {
+      return this.$store.getters.authority === 2;
+    },
     avaterUrl() {
       return this.$avaterUrl(
         this.userInfo.user.avater,

@@ -23,7 +23,8 @@ export default new Router({
         {
           path: "/develop",
           name: "开发",
-          component: () => import("@/views/Develop")
+          component: () => import("@/views/Develop"),
+          authority: 2
         },
         {
           path: "/question",

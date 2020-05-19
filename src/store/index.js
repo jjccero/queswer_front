@@ -94,6 +94,7 @@ const store = new Vuex.Store({
   getters: {
     token: state => state.loginResult.token,
     userId: state => state.loginResult.user.userId,
+    authority: state => state.loginResult.user.authority,
     user: state => state.loginResult.user,
     chatWebSocket: state => state.chatWebSocket,
     messageGroup: state => state.messageGroup,

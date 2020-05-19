@@ -21,7 +21,7 @@
         <el-button
           type="text"
           @click="handleDeleteAnswer"
-          v-if="answered"
+          v-if="answered||isAdmin"
           icon="el-icon-delete"
           style="color:red;"
         >删除</el-button>
@@ -52,6 +52,11 @@ export default {
     },
     preAnswer() {
       this.$emit("preAnswer");
+    }
+  },
+  computed: {
+    isAdmin() {
+      return this.$store.getters.authority > 1;
     }
   },
   props: ["answerInfo", "answered", "questioned"]

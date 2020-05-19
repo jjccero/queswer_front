@@ -16,6 +16,14 @@ export function updateQuestion(data) {
   });
 }
 
+export function deleteQuestion(params) {
+  return request({
+    url: "/deleteQuestion",
+    method: "get",
+    params
+  });
+}
+
 export function queryQuestions(params) {
   return request({
     url: "/queryQuestions",
