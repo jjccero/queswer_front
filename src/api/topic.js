@@ -23,3 +23,19 @@ export function getTopicInfo(params) {
     params
   });
 }
+
+export function queryTopicsByUserId(params) {
+  return request({
+    url: "/queryTopicsByUserId",
+    method: "get",
+    params
+  });
+}
+
+export function queryTopicQuestionInfosByUserId(params) {
+  return request({
+    url: "/queryTopicQuestionInfosByUserId",
+    method: "get",
+    params
+  });
+}

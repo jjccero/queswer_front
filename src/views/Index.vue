@@ -9,7 +9,7 @@
           :style="tabStyle"
         >
           <div v-for="questionInfo in questionInfos" :key="questionInfo.question.questionId">
-            <ActivityInfo :activityInfo="questionInfo2ActvityInfo(questionInfo)"></ActivityInfo>
+            <ActivityInfo :activityInfo="$questionInfo2ActvityInfo(questionInfo)"></ActivityInfo>
             <el-divider class="divider"></el-divider>
           </div>
         </div>
@@ -28,14 +28,30 @@
           </div>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="周围">回答。。</el-tab-pane>
+      <el-tab-pane label="话题" name="2">
+        <div>
+          <TopicTag v-for="topic in topics" :key="topic" :topic="topic" />
+        </div>
+        <div style="margin-top:10px;">
+          <el-button @click="handleQueryTopicQuestionInfosByUserId">没看到满意的？换一批</el-button>
+          <div v-for="questionInfo in topicQuestionInfos" :key="questionInfo.question.questionId">
+            <ActivityInfo :activityInfo="$questionInfo2ActvityInfo(questionInfo)"></ActivityInfo>
+            <el-divider class="divider"></el-divider>
+          </div>
+        </div>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 <script>
 import { queryFollowActivities } from "@/api/user";
 import { queryQuestions } from "@/api/question";
+import {
+  queryTopicsByUserId,
+  queryTopicQuestionInfosByUserId
+} from "@/api/topic";
 import ActivityInfo from "../components/ActivityInfo";
+import TopicTag from "../components/TopicTag";
 export default {
   data() {
     return {
@@ -48,13 +64,16 @@ export default {
       loading1: false,
       questionInfos: [],
       activityInfos: [],
+      topicQuestionInfos: [],
       page0: 0,
       page1: 0,
-      show1: false
+      show1: false,
+      topics: []
     };
   },
   components: {
-    ActivityInfo
+    ActivityInfo,
+    TopicTag
   },
   methods: {
     load0() {
@@ -97,36 +116,23 @@ export default {
         } else this.loading1 = false;
       });
     },
-    questionInfo2ActvityInfo(questionInfo) {
-      if (questionInfo.defaultAnswer != null) {
-        const answer = questionInfo.defaultAnswer.answer;
-        return {
-          info: questionInfo,
-          activity: {
-            act: 4,
-            userId: answer.userId,
-            id: answer.answerId,
-            gmtCreate: answer.gmtCreate
-          },
-          userInfo: questionInfo.defaultAnswer.userInfo
-        };
-      } else {
-        return {
-          info: questionInfo,
-          activity: {
-            act: 1,
-            userId: questionInfo.question.userId,
-            id: questionInfo.question.questionId,
-            gmtCreate: questionInfo.question.gmtCreate
-          },
-          userInfo: questionInfo.userInfo
-        };
-      }
+    handleQueryTopicQuestionInfosByUserId() {
+      queryTopicQuestionInfosByUserId().then(res => {
+        this.topicQuestionInfos = res;
+      });
     }
   },
   watch: {
     tabIndex(val) {
       if (val === "1") this.show1 = true;
+      else if (val === "2") {
+        queryTopicsByUserId().then(res => {
+          this.topics = res;
+        });
+        if (this.topicQuestionInfos.length === 0) {
+          this.handleQueryTopicQuestionInfosByUserId();
+        }
+      }
     }
   },
   mounted() {
@@ -137,6 +143,9 @@ export default {
   computed: {
     userId() {
       return this.$store.getters.userId;
+    },
+    authority() {
+      return this.$store.getters.authority;
     }
   }
 };

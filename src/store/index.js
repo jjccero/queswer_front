@@ -82,12 +82,22 @@ const store = new Vuex.Store({
     closeMessage(state) {
       state.isChat = false;
     },
+    setUser(state, user) {
+      state.loginResult.user = user;
+      localStorage.setItem("loginResult", JSON.stringify(state.loginResult));
+    },
     setInfo(state, info) {
       const user = state.loginResult.user;
       user.nickname = info.nickname;
       user.sex = info.sex;
       user.intro = info.intro;
       user.email = info.email;
+      localStorage.setItem("loginResult", JSON.stringify(state.loginResult));
+    },
+    setAvater(state) {
+      const user = state.loginResult.user;
+      user.avater = 1;
+      localStorage.setItem("loginResult", JSON.stringify(state.loginResult));
     }
   },
   actions: {},

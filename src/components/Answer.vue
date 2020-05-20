@@ -25,7 +25,6 @@
           icon="el-icon-delete"
           style="color:red;"
         >删除</el-button>
-        <el-button type="text" icon="el-icon-warning-outline" style="color:gray;">举报</el-button>
       </span>
     </div>
     <el-divider class="divider"></el-divider>

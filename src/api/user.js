@@ -24,6 +24,14 @@ export function getUserInfo(params) {
   });
 }
 
+export function queryUserInfos(data) {
+  return request({
+    url: "/queryUserInfos",
+    method: "post",
+    data
+  });
+}
+
 export function saveFollow(params) {
   return request({
     url: "/saveFollow",
@@ -123,6 +131,22 @@ export function queryAnswersByUserId(params) {
 export function queryQuestionsByUserId(params) {
   return request({
     url: "/queryQuestionsByUserId",
+    method: "get",
+    params
+  });
+}
+
+export function queryTopicsByUserId(params) {
+  return request({
+    url: "/queryTopicsByUserId",
+    method: "get",
+    params
+  });
+}
+
+export function querySubscribeQuestionsByUserId(params) {
+  return request({
+    url: "/querySubscribeQuestionsByUserId",
     method: "get",
     params
   });

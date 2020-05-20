@@ -36,7 +36,7 @@
 </template>
 <script>
 import userInfoSmall from "../components/UserInfoSmall";
-import { getUserInfo } from "@/api/user";
+import { queryUserInfos } from "@/api/user";
 export default {
   name: "Chat",
   data() {
@@ -67,15 +67,13 @@ export default {
     },
     updateMessages() {
       const messageGroup = this.$store.getters.messageGroup;
-      const userInfos = [];
+      const peopleIds = [];
       for (const [userId, messages] of messageGroup) {
-        getUserInfo({
-          peopleId: userId
-        }).then(res => {
-          userInfos.push(res);
-          this.userInfos = userInfos;
-        });
+        peopleIds.push(userId);
       }
+      queryUserInfos(peopleIds).then(res => {
+        this.userInfos = res;
+      });
       if (this.dstId)
         this.messages = this.$store.getters.messageGroup.get(this.dstId);
     }

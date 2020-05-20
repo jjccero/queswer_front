@@ -15,13 +15,15 @@ import {
   getCountString,
   nowTimestamp,
   userInfo,
-  avaterUrl
+  avaterUrl,
+  questionInfo2ActvityInfo
 } from "./js/utils";
 Vue.prototype.$getTimeString = getTimeString;
 Vue.prototype.$getCountString = getCountString;
 Vue.prototype.$nowTimestamp = nowTimestamp;
 Vue.prototype.$userInfo = userInfo;
 Vue.prototype.$avaterUrl = avaterUrl;
+Vue.prototype.$questionInfo2ActvityInfo = questionInfo2ActvityInfo;
 /* eslint-disable no-new */
 new Vue({
   el: "#app",

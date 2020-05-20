@@ -1,6 +1,18 @@
 <template>
   <div>
     <el-card>
+      <el-upload
+        action="/api/uploadAvater"
+        :headers="headers"
+        :show-file-list="false"
+        :on-success="uploadAvaterSuccess"
+        accept=".png, .jpg"
+      >
+        <img :src="avaterUrl" class="user_avater" />
+      </el-upload>
+      <el-divider>
+        <span>INFOMATION</span>
+      </el-divider>
       <el-form
         :rules="userRules"
         label-position="left"
@@ -53,7 +65,7 @@
   </div>
 </template>
 <script>
-import { updateUser, updatePassword, updateAvater } from "@/api/user";
+import { updateUser, updatePassword, uploadAvater } from "@/api/user";
 export default {
   name: "Setting",
   data() {
@@ -143,12 +155,35 @@ export default {
     },
     resetUser() {
       const user = this.$store.getters.user;
-      console.log(user);
       this.userForm.nickname = user.nickname;
       this.userForm.sex = user.sex;
       this.userForm.intro = user.intro;
       this.userForm.email = user.email;
+    },
+    uploadAvaterSuccess(val) {
+      this.$store.commit("setAvater");
+    }
+  },
+  computed: {
+    user() {
+      return this.$store.getters.user;
+    },
+    avaterUrl() {
+      return this.$avaterUrl(this.user.avater, this.user.userId);
+    },
+    headers() {
+      return {
+        token: this.$store.getters.token
+      };
     }
   }
 };
 </script>
+<style scoped>
+.user_avater {
+  width: 160px;
+  padding: 4px;
+  height: 160px;
+  border-radius: 5%;
+}
+</style>

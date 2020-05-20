@@ -63,18 +63,23 @@
           <el-divider class="divider"></el-divider>
         </div>
       </div>
-      <div v-if="tabindex==='3'" class="activities_div">
-        <div v-for="(activityInfo,index) in activityInfos" :key="index">
+      <div v-if="tabindex==='1'||tabindex==='2'" class="activities_div">
+        <div v-for="(activityInfo,index) in questionActivityInfos" :key="index">
           <ActivityInfo :activityInfo="activityInfo" />
           <el-divider class="divider"></el-divider>
         </div>
       </div>
-
+      <div v-if="tabindex==='3'" class="activities_div">
+        <div v-for="(activityInfo,index) in subscribeQuestions" :key="index">
+          <ActivityInfo :activityInfo="activityInfo" />
+          <el-divider class="divider"></el-divider>
+        </div>
+      </div>
       <div v-if="tabindex==='4'||tabindex==='5'">
         <UserInfoTable :userInfos="userInfos" />
       </div>
     </div>
-    <el-dialog :visible.sync="showChat" :before-close="handleCloseChat">
+    <el-dialog :visible.sync="showChat" :before-close="handleCloseChat" class="chat_dialog">
       <Chat v-if="showChat" :peopleUserInfo="userInfo" />
     </el-dialog>
   </div>
@@ -89,7 +94,8 @@ import {
   queryFollowerInfosByPeopleId,
   queryAnswersByUserId,
   queryQuestionsByUserId,
-  updateAuthority
+  updateAuthority,
+  querySubscribeQuestionsByUserId
 } from "@/api/user";
 import Chat from "../components/Chat";
 import UserInfoTable from "../components/UserInfoTable";
@@ -100,7 +106,9 @@ export default {
     return {
       userInfo: null,
       loading: false,
+      subscribeQuestions: [],
       activityInfos: [],
+      questionInfos: [],
       page: 0,
       limit: 10,
       colors: ["#DD0000", "brown", "#0000DD", "#48B753", "#DDA522", "green"],
@@ -198,6 +206,14 @@ export default {
     }
   },
   computed: {
+    questionActivityInfos() {
+      const activityInfos = [];
+      this.questionInfos.forEach(questionInfo => {
+        const activityInfo = this.$questionInfo2ActvityInfo(questionInfo);
+        activityInfos.push(activityInfo);
+      });
+      return activityInfos;
+    },
     isSuperAdmin() {
       return this.$store.getters.authority === 2;
     },
@@ -244,7 +260,19 @@ export default {
         peopleId: this.peopleId
       };
       this.page = 0;
-      if (val === "4") {
+      if (val === "1") {
+        queryAnswersByUserId(params).then(res => {
+          this.questionInfos = res;
+        });
+      } else if (val === "2") {
+        queryQuestionsByUserId(params).then(res => {
+          this.questionInfos = res;
+        });
+      } else if (val === "3") {
+        querySubscribeQuestionsByUserId(params).then(res => {
+          this.subscribeQuestions = res;
+        });
+      } else if (val === "4") {
         queryFollowerInfosByPeopleId(params).then(res => {
           this.userInfos = res;
         });
@@ -294,7 +322,7 @@ export default {
   margin-top: 10px;
 }
 .activities_div {
-  height: 580px;
+  max-height: 580px;
   overflow: auto;
   padding: 10px;
 }

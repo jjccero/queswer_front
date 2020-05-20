@@ -48,7 +48,7 @@
 </template>
 <script>
 import Chat from "../components/Chat";
-import { logout } from "@/api/user";
+import { logout, getUserInfo } from "@/api/user";
 export default {
   data() {
     return {
@@ -57,6 +57,11 @@ export default {
   },
   created() {
     this.$store.commit("init");
+    if (this.userId) {
+      getUserInfo({ peopleId: this.userId }).then(res => {
+        this.$store.commit("setUser", res.user);
+      });
+    }
   },
   components: {
     Chat

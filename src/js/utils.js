@@ -67,3 +67,30 @@ export const userInfo = anonymous => {
 export const avaterUrl = (avater, userId) => {
   return "/api/img/" + (avater ? userId : "null") + ".png";
 };
+
+export const questionInfo2ActvityInfo = questionInfo => {
+  if (questionInfo.defaultAnswer != null) {
+    const answer = questionInfo.defaultAnswer.answer;
+    return {
+      info: questionInfo,
+      activity: {
+        act: 4,
+        userId: answer.userId,
+        id: answer.answerId,
+        gmtCreate: answer.gmtCreate
+      },
+      userInfo: questionInfo.defaultAnswer.userInfo
+    };
+  } else {
+    return {
+      info: questionInfo,
+      activity: {
+        act: 1,
+        userId: questionInfo.question.userId,
+        id: questionInfo.question.questionId,
+        gmtCreate: questionInfo.question.gmtCreate
+      },
+      userInfo: questionInfo.userInfo
+    };
+  }
+};
