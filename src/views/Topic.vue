@@ -1,10 +1,10 @@
 <template>
   <div>
-    <el-tag>{{topic}}</el-tag>
+    <h1>{{topic}}</h1>
     <el-button
       @click="handleChangeSubscribe"
-    >{{topicInfo.subscribeCount}} {{topicInfo.subscribed?"取消订阅":"订阅话题"}}</el-button>
-    <el-card :body-style="{ padding: '10px' }">
+    >{{$getCountString(topicInfo.subscribeCount)}} {{topicInfo.subscribed?"已订阅":"订阅"}}</el-button>
+    <el-card :body-style="{ padding: '10px' }" style="margin-top:10px;">
       <div v-for="(activityInfo,index) in activityInfos" :key="index">
         <ActivityInfo :activityInfo="activityInfo" />
         <el-divider class="divider"></el-divider>

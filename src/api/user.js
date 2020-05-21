@@ -151,3 +151,10 @@ export function querySubscribeQuestionsByUserId(params) {
     params
   });
 }
+
+export function queryAdminInfos() {
+  return request({
+    url: "/queryAdminInfos",
+    method: "get"
+  });
+}

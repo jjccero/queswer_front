@@ -6,12 +6,6 @@ export function restore() {
     method: "get"
   });
 }
-export function flush() {
-  return request({
-    url: "/flush",
-    method: "get"
-  });
-}
 export function backup() {
   return request({
     url: "/backup",

@@ -26,9 +26,12 @@
           </span>
         </el-dropdown>
         <el-menu :default-active="$route.path" mode="horizontal" class="home_menu" router>
-          <!-- 1级菜单 -->
           <template v-for="item in $router.options.routes[0].children">
-            <el-menu-item v-if="!item.hidden" :index="item.path" :key="item.path">
+            <el-menu-item
+              v-if="!item.hidden&&(!item.authority||item.authority<=authority)"
+              :index="item.path"
+              :key="item.path"
+            >
               <span>{{item.name}}</span>
               <i :class="item.iconCls"></i>
             </el-menu-item>
@@ -99,6 +102,9 @@ export default {
     }
   },
   computed: {
+    authority() {
+      return this.$store.getters.authority;
+    },
     messageCount() {
       return this.$store.getters.messageCount;
     },

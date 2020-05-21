@@ -12,7 +12,7 @@ export default new Router({
       children: [
         {
           path: "/index",
-          iconCls: "el-icon-s-home",
+          iconCls: "el-icon-house",
           component: () => import("@/views/Index")
         },
         {
@@ -22,7 +22,7 @@ export default new Router({
         },
         {
           path: "/develop",
-          name: "开发",
+          iconCls: "el-icon-setting",
           component: () => import("@/views/Develop"),
           authority: 2
         },

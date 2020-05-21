@@ -7,8 +7,9 @@
       </div>
       <el-pagination
         :current-page.sync="currentPage"
-        :page-size="pageSize"
-        layout="total,prev, pager, next, jumper"
+        :page-size.sync="pageSize"
+        :page-sizes="[5,10,20,50]"
+        layout="total, sizes, prev, pager, next, jumper"
         :total="userInfos.length"
         style="text-align:center;"
       ></el-pagination>
@@ -27,14 +28,13 @@ export default {
       currentPage: 1
     };
   },
-  created() {
-    console.log(this.userInfos);
-  },
   computed: {
     userInfoDatas() {
+      const currentPage = this.currentPage;
+      const pageSize = this.pageSize;
       return this.userInfos.slice(
-        (this.currentPage - 1) * this.pageSize,
-        this.currentPage * this.pageSize
+        (currentPage - 1) * pageSize,
+        currentPage * pageSize
       );
     }
   },

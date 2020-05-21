@@ -61,7 +61,6 @@
         </div>
       </template>
     </el-card>
-
     <el-drawer
       :visible.sync="showAnswerDrawer"
       size="70%"

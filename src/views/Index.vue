@@ -2,12 +2,7 @@
   <div>
     <el-tabs type="border-card" v-model="tabIndex" style="margin-bottom:10px;">
       <el-tab-pane label="热榜" name="0">
-        <div
-          style="overflow:auto;"
-          v-infinite-scroll="load0"
-          infinite-scroll-disabled="loading0"
-          :style="tabStyle"
-        >
+        <div v-infinite-scroll="load0" infinite-scroll-disabled="loading0" :style="tabStyle">
           <div v-for="questionInfo in questionInfos" :key="questionInfo.question.questionId">
             <ActivityInfo :activityInfo="$questionInfo2ActvityInfo(questionInfo)"></ActivityInfo>
             <el-divider class="divider"></el-divider>
@@ -17,7 +12,6 @@
       <el-tab-pane label="关注" name="1">
         <div
           v-if="show1"
-          style="overflow:auto;"
           v-infinite-scroll="load1"
           infinite-scroll-disabled="loading1"
           :style="tabStyle"
@@ -29,15 +23,19 @@
         </div>
       </el-tab-pane>
       <el-tab-pane label="话题" name="2">
-        <div>
-          <TopicTag v-for="topic in topics" :key="topic" :topic="topic" />
-        </div>
-        <div style="margin-top:10px;">
-          <el-button @click="handleQueryTopicQuestionInfosByUserId">没看到满意的？换一批</el-button>
+        <div :style="tabStyle" ref="topicQuestionInfos">
           <div v-for="questionInfo in topicQuestionInfos" :key="questionInfo.question.questionId">
             <ActivityInfo :activityInfo="$questionInfo2ActvityInfo(questionInfo)"></ActivityInfo>
             <el-divider class="divider"></el-divider>
           </div>
+          <div>
+            <TopicTag v-for="topic in topics" :key="topic" :topic="topic" />
+          </div>
+          <el-button
+            style="margin-top:10px;"
+            @click="handleQueryTopicQuestionInfosByUserId"
+            icon="el-icon-refresh-right"
+          >没看到满意的？换一批</el-button>
         </div>
       </el-tab-pane>
     </el-tabs>
@@ -58,7 +56,8 @@ export default {
       limit: 10,
       tabIndex: "0",
       tabStyle: {
-        maxHeight: window.innerHeight - 131 + "px"
+        maxHeight: window.innerHeight - 131 + "px",
+        overflow: "auto"
       },
       loading0: false,
       loading1: false,
@@ -119,6 +118,8 @@ export default {
     handleQueryTopicQuestionInfosByUserId() {
       queryTopicQuestionInfosByUserId().then(res => {
         this.topicQuestionInfos = res;
+        var obj = this.$refs.topicQuestionInfos;
+        obj.scrollTop = 0;
       });
     }
   },
