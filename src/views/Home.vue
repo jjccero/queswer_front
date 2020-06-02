@@ -75,7 +75,7 @@ export default {
     },
     handleLogout() {
       const params = {
-        token: this.$store.getters.token
+        sessionId: this.$store.getters.sessionId
       };
       logout(params).then(res => {
         console.log(res);

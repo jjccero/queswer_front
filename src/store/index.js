@@ -4,7 +4,7 @@ import { getChatWebSocket } from "@/utils/socket.js";
 Vue.use(Vuex);
 
 const defaultLoginResult = {
-  token: null, //已经登陆的标志
+  sessionId: null, //已经登陆的标志
   user: {
     userId: null,
     nickname: null,
@@ -43,7 +43,7 @@ const store = new Vuex.Store({
             });
           });
         }
-        state.chatWebSocket = getChatWebSocket(loginResult.token);
+        state.chatWebSocket = getChatWebSocket(loginResult.sessionId);
       }
     },
     logout(state) {
@@ -102,7 +102,7 @@ const store = new Vuex.Store({
   },
   actions: {},
   getters: {
-    token: state => state.loginResult.token,
+    sessionId: state => state.loginResult.sessionId,
     userId: state => state.loginResult.user.userId,
     authority: state => state.loginResult.user.authority,
     user: state => state.loginResult.user,

@@ -173,7 +173,7 @@ export default {
     },
     headers() {
       return {
-        token: this.$store.getters.token
+        sessionId: this.$store.getters.sessionId
       };
     }
   }

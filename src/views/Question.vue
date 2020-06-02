@@ -67,18 +67,19 @@
       :direction="'btt'"
       style="text-align:center;"
     >
-      <el-row type="flex" justify="center">
-        <el-col :span="20">
-          <el-input
-            type="textarea"
-            v-model="answer.ans"
-            placeholder="请输入回答"
-            :autosize="{ minRows: 8, maxRows:10}"
-          ></el-input>
-        </el-col>
-      </el-row>
-      <el-checkbox v-model="answer.anonymous">开启匿名</el-checkbox>
-      <el-button type="primary" @click="handleAnswer">提交</el-button>
+      <div>
+        <el-input
+          type="textarea"
+          v-model="answer.ans"
+          placeholder="请输入回答"
+          :autosize="{ minRows: 8, maxRows:10}"
+          class="question_input"
+        ></el-input>
+      </div>
+      <div>
+        <el-checkbox v-model="answer.anonymous">开启匿名</el-checkbox>
+        <el-button type="primary" @click="handleAnswer">提交</el-button>
+      </div>
     </el-drawer>
     <el-dialog :visible.sync="showQuestion">
       <SaveQuestion
@@ -321,5 +322,9 @@ export default {
 }
 .divider {
   margin: 10px 0 10px 0;
+}
+.question_input {
+  width: 80%;
+  margin-bottom: 10px;
 }
 </style>

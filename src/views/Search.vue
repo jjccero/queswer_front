@@ -124,6 +124,17 @@ export default {
         }
       }
       return res;
+    },
+    toQuestion(questionId) {
+      window.open(
+        this.$router.resolve({
+          path: "/question",
+          query: {
+            questionId
+          }
+        }).href,
+        "_blank"
+      );
     }
   },
   computed: {

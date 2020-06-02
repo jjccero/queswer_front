@@ -1,7 +1,7 @@
 import store from "@/store";
 const url = "ws://localhost:8080/chat/";
-export function getChatWebSocket(token) {
-  const webSocket = new WebSocket(url + token);
+export function getChatWebSocket(sessionId) {
+  const webSocket = new WebSocket(url + sessionId);
   webSocket.onopen = function(ev) {
     console.log("聊天服务开启");
   };

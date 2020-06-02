@@ -4,17 +4,16 @@ import { Message } from "element-ui";
 import router from "../router";
 
 const service = axios.create({
-  baseURL: "/api/", // url = base url + request url
+  baseURL: "/api/" // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 60000 // request timeout
 });
 
 //发起请求的拦截器
 service.interceptors.request.use(
   config => {
-    const token = store.getters.token;
-    if (token) {
-      config.headers["token"] = token;
+    const sessionId = store.getters.sessionId;
+    if (sessionId) {
+      config.headers["sessionId"] = sessionId;
     }
     return config;
   },

@@ -1,19 +1,24 @@
 <template>
   <div>
-    <el-card v-if="showLogin" class="form_card">
-      <el-form :model="loginForm" ref="loginForm" label-width="100px">
+    <el-card class="form_card">
+      <el-form
+        v-show="showLogin"
+        label-position="left"
+        :model="loginForm"
+        ref="loginForm"
+        label-width="100px"
+      >
         <el-form-item label="用户名" prop="username">
           <el-input v-model="loginForm.username" placeholder="请输入用户名"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
           <el-input v-model="loginForm.password" placeholder="请输入密码"></el-input>
         </el-form-item>
-        <el-button type="primary" @click="handleLogin">登陆</el-button>
+        <el-button type="primary" @click="handleLogin">登录</el-button>
         <el-button @click="showLogin=false">注册</el-button>
       </el-form>
-    </el-card>
-    <el-card v-else class="form_card">
       <el-form
+        v-show="!showLogin"
         :rules="signupRules"
         label-position="left"
         :model="signupForm"
@@ -31,7 +36,7 @@
           <el-input type="password" v-model="signupForm.passwordConfirm"></el-input>
         </el-form-item>
         <el-button type="primary" @click="handleSignup">注册</el-button>
-        <el-button @click="showLogin=true">返回登陆</el-button>
+        <el-button @click="showLogin=true">返回登录</el-button>
       </el-form>
     </el-card>
   </div>
@@ -90,32 +95,8 @@ export default {
     handleLogin() {
       const data = JSON.parse(JSON.stringify(this.loginForm));
       login(data).then(res => {
-        const user = res.user;
-        switch (user.authority) {
-          case -2:
-            this.$message({
-              showClose: true,
-              message: "用户名不存在！",
-              type: "error"
-            });
-            break;
-          case -1:
-            this.$message({
-              showClose: true,
-              message: "用户名或密码错误！",
-              type: "error"
-            });
-            break;
-          default: {
-            this.$message({
-              showClose: true,
-              message: "登陆成功",
-              type: "success"
-            });
-            localStorage.setItem("loginResult", JSON.stringify(res));
-            this.$router.back();
-          }
-        }
+        localStorage.setItem("loginResult", JSON.stringify(res));
+        this.$router.back();
       });
     },
     handleSignup() {
@@ -137,7 +118,6 @@ export default {
               });
             }
           });
-          console.log(data);
         }
       });
     }

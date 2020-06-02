@@ -42,7 +42,7 @@ export function getQuestion(params) {
 
 export function saveSubscribe(params) {
   return request({
-    url: "/saveSubscribe",
+    url: "/saveSubscribeQuestion",
     method: "get",
     params
   });
@@ -50,7 +50,7 @@ export function saveSubscribe(params) {
 
 export function deleteSubscribe(params) {
   return request({
-    url: "/deleteSubscribe",
+    url: "/deleteSubscribeQuestion",
     method: "get",
     params
   });
