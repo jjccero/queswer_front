@@ -4,10 +4,14 @@
       <userInfo :userInfo="answerInfo.userInfo"></userInfo>
     </div>
     <div v-html="answer.ans" class="answer"></div>
-    <div
-      class="gmt_create"
-      style="margin-top:10px;"
-    >回答于 {{$getTimeString(answer.gmtModify!=null?answer.gmtModify:answer.gmtCreate)}}</div>
+    <div class="gmt_create" style="margin-top:10px;">
+      回答于
+      {{
+        $getTimeString(
+          answer.gmtModify != null ? answer.gmtModify : answer.gmtCreate
+        )
+      }}
+    </div>
     <div style="margin-top:10px">
       <attitude :answerInfo="answerInfo"></attitude>
       <span style="margin-left:10px;">
@@ -17,14 +21,16 @@
           v-if="answered"
           icon="el-icon-edit-outline"
           style="color:gray;"
-        >修改</el-button>
+          >修改</el-button
+        >
         <el-button
           type="text"
           @click="handleDeleteAnswer"
-          v-if="answered||isAdmin"
+          v-if="answered || isAdmin"
           icon="el-icon-delete"
           style="color:red;"
-        >删除</el-button>
+          >删除</el-button
+        >
       </span>
     </div>
     <el-divider class="divider"></el-divider>

@@ -47,8 +47,8 @@ export default {
   data() {
     return {
       loginForm: {
-        username: "jjc",
-        password: "jjc"
+        username: "",
+        password: ""
       },
       signupForm: {
         username: "",

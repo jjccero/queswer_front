@@ -65,7 +65,7 @@ export const userInfo = anonymous => {
 };
 
 export const avaterUrl = (avater, userId) => {
-  return "/api/img/" + (avater ? userId : "null") + ".png";
+  return "/img/" + (avater ? userId : "null") + ".png";
 };
 
 export const questionInfo2ActvityInfo = questionInfo => {

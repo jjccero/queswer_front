@@ -1,5 +1,5 @@
 import store from "@/store";
-const url = "ws://localhost:8080/chat/";
+const url = "ws://81.70.38.35:8090/chat/";
 export function getChatWebSocket(sessionId) {
   const webSocket = new WebSocket(url + sessionId);
   webSocket.onopen = function(ev) {

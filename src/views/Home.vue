@@ -31,6 +31,7 @@
               v-if="!item.hidden&&(!item.authority||item.authority<=authority)"
               :index="item.path"
               :key="item.path"
+              style=""
             >
               <span>{{item.name}}</span>
               <i :class="item.iconCls"></i>
@@ -174,10 +175,6 @@ export default {
   border-bottom: 0;
   height: 50px;
 }
-.el-menu--horizontal > .el-menu-item {
-  line-height: 50px;
-  height: 50px;
-}
 .question {
   font-weight: bold;
   font-size: 20px;
@@ -186,5 +183,9 @@ export default {
 }
 .divider {
   margin: 10px 0 10px 0;
+}
+.el-menu--horizontal > .el-menu-item {
+  line-height: 50px;
+  height: 50px;
 }
 </style>

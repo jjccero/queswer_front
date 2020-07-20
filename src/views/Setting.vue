@@ -2,7 +2,7 @@
   <div>
     <el-card>
       <el-upload
-        action="/api/uploadAvater"
+        action="/uploadAvater"
         :headers="headers"
         :show-file-list="false"
         :on-success="uploadAvaterSuccess"
